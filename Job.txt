@@ -1,0 +1,2 @@
+1. mmenu:
+ - home, blog, ai chat, interview, setting ,user 

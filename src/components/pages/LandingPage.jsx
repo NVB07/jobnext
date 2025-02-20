@@ -1,4 +1,6 @@
 "use client";
+import Image from "next/image";
+
 import { cn } from "@/lib/utils";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
 import { SparklesText } from "@/components/magicui/sparkles-text";
@@ -6,7 +8,10 @@ import { Marquee } from "@/components/magicui/marquee";
 
 const LandingPage = () => {
     return (
-        <div className="w-full pt-32 px-7 ">
+        <div className="w-full min-[490px]:pt-32 pt-24  ">
+            <div className="min-[490px]:hidden w-full flex items-center justify-center mb-6">
+                <Image src={"/logo.png"} width={80} height={80} alt="logo" className="rounded-xl" />
+            </div>
             <AnimatedGradientText>
                 🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />
                 <span
@@ -17,11 +22,19 @@ const LandingPage = () => {
                     JobNext - AI
                 </span>
             </AnimatedGradientText>
-            <div className=" text-center mt-8 ">
-                <SparklesText sparklesCount={20} className="text-6xl font-medium font-sans mb-5" text="Định hướng nghề nghiệp với AI" />
-                <SparklesText sparklesCount={20} className="text-6xl font-medium font-sans" text="Tìm việc phù hợp và phát triển kỹ năng!" />
+            <div className=" text-center mt-8 px-3">
+                <SparklesText
+                    sparklesCount={20}
+                    className="text-4xl min-[490px]:text-5xl min-[760px]:text-6xl font-medium font-sans mb-5"
+                    text="Định hướng tư vấn nghề nghiệp với AI"
+                />
+                <SparklesText
+                    sparklesCount={20}
+                    className="text-4xl min-[490px]:text-5xl min-[760px]:text-6xl font-medium font-sans"
+                    text="Tìm việc phù hợp và phát triển kỹ năng!"
+                />
             </div>
-            <div className="mt-14">
+            <div className="mt-14 min-[490px]:px-5 px-0">
                 <Marquee pauseOnHover className="[--duration:20s]">
                     {firstRow.map((review) => (
                         <ReviewCard key={review.username} {...review} />
@@ -33,7 +46,7 @@ const LandingPage = () => {
                     ))}
                 </Marquee>
             </div>
-            <div>
+            <div className="min-[490px]:px-7 px-3">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem nesciunt ipsam architecto enim magni ut mollitia repudiandae eaque in. Commodi alias,
                 voluptatem natus culpa illo ullam maxime nam modi est velit aspernatur inventore nisi facere architecto nostrum fugiat tempore ducimus doloribus quisquam
                 quam! Ipsam quam nihil reprehenderit doloribus aliquid maxime obcaecati amet, porro esse atque, fugiat, voluptates voluptatibus impedit voluptatum quos.

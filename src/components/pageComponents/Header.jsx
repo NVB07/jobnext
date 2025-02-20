@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
 
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import IconGroup2 from "@/components/ui/IconGroup2";
 
 const Header = () => {
     const { theme, setTheme } = useTheme();
+    const urlPath = usePathname();
     const toggleTheme = () => {
         if (theme === "light") {
             setTheme("dark");
@@ -21,17 +23,22 @@ const Header = () => {
         }
     };
     return (
-        <div className="w-full flex justify-center fixed top-2 z-50">
-            <div className="w-full max-w-[720px] px-4 h-16 backdrop-blur-lg bg-[hsl(var(--background)/87%)] border border-[#65656542] rounded-3xl flex items-center justify-between">
-                <Link href={"/"} className="flex items-center justify-between  h-full">
+        <div className="w-full flex justify-center  fixed top-0 min-[490px]:top-2 z-50">
+            <div className="w-full max-w-[720px] min-[490px]:px-4 px-1 h-16 backdrop-blur-lg bg-[hsl(var(--background)/87%)] border border-[#65656542] min-[490px]:rounded-3xl rounded-none flex items-center min-[490px]:justify-between justify-center">
+                <Link href={"/"} className="hidden items-center justify-between min-[490px]:flex h-full">
                     <Image src={"/logo.png"} width={40} height={40} alt="logo" className="rounded-xl" />
-                    <p className="ml-1.5 font-bold text-xl"> JobNext</p>
+                    <p className=" min-[570px]:inline-block hidden ml-1.5 font-bold text-xl"> JobNext</p>
                 </Link>
-                <div className="flex items-center justify-between h-full py-2">
+                <div className="flex items-center  justify-center h-full py-2">
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
-                            <TooltipTrigger>
-                                <Link className="mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors" href={"/"}>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
+                                <Link
+                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
+                                        urlPath === "/" && "border border-current] "
+                                    } `}
+                                    href={"/"}
+                                >
                                     <House />
                                 </Link>
                             </TooltipTrigger>
@@ -44,8 +51,13 @@ const Header = () => {
 
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
-                            <TooltipTrigger>
-                                <Link className="mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors" href={"/blog"}>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
+                                <Link
+                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
+                                        urlPath === "/blog" && "border-2 border-current]"
+                                    }`}
+                                    href={"/blog"}
+                                >
                                     <NotebookPen />
                                 </Link>
                             </TooltipTrigger>
@@ -57,8 +69,13 @@ const Header = () => {
 
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
-                            <TooltipTrigger>
-                                <Link className="mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors" href={"/chatbot"}>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
+                                <Link
+                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
+                                        urlPath === "/chatbot" && "border-2 border-current]"
+                                    }`}
+                                    href={"/chatbot"}
+                                >
                                     <BotMessageSquare />
                                 </Link>
                             </TooltipTrigger>
@@ -69,9 +86,9 @@ const Header = () => {
                     </TooltipProvider>
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
-                            <TooltipTrigger>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 <Link
-                                    className="mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
+                                    className=" w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
                                     href={"/virtual-interview"}
                                 >
                                     <IconGroup2 />
@@ -82,15 +99,18 @@ const Header = () => {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <button onClick={toggleTheme} className="mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
+                    <button
+                        onClick={toggleTheme}
+                        className="mx-1 min-[420px]:mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
+                    >
                         <Settings />
                     </button>
 
                     <Separator orientation="vertical" />
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
-                            <TooltipTrigger>
-                                <Link className="mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors" href={"/user"}>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
+                                <Link className=" w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors" href={"/user"}>
                                     <CircleUser />
                                 </Link>
                             </TooltipTrigger>

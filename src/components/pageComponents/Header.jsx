@@ -88,7 +88,9 @@ const Header = () => {
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 <Link
-                                    className=" w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
+                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
+                                        urlPath === "/virtual-interview" && "border-2 border-current]"
+                                    }`}
                                     href={"/virtual-interview"}
                                 >
                                     <IconGroup2 />

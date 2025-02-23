@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useTheme } from "next-themes";
+import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
@@ -9,11 +9,13 @@ import { Marquee } from "@/components/magicui/marquee";
 import { Globe } from "@/components/magicui/globe";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
 import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
+import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
 
+import { House, NotebookPen, BotMessageSquare, Settings, CircleUser } from "lucide-react";
 import { ArrowRight } from "lucide-react";
+import IconGroup2 from "@/components/ui/IconGroup2";
 
 const LandingPage = () => {
-    const { theme } = useTheme();
     return (
         <div className="w-full min-[490px]:pt-32 pt-24  ">
             <div className="min-[490px]:hidden w-full flex items-center justify-center mb-6">
@@ -41,11 +43,82 @@ const LandingPage = () => {
                     text="Tìm việc phù hợp và phát triển kỹ năng!"
                 />
             </div>
-            <div className="w-full flex justify-center mt-12 relative z-10">
+            <div className="w-full flex justify-center mt-16 relative z-10">
                 <RainbowButton className="rounded-full">
                     <p className="mr-1"> Đăng nhập </p>
                     <ArrowRight />
                 </RainbowButton>
+            </div>
+            <div className="w-full flex flex-col px-5 justify-center items-center mt-14 ">
+                <div className="text-center mb-12">
+                    <p className="text-2xl font-bold"> Hoạt động như thế nào?</p>
+                    <p className="max-w-[600px] mt-5 opacity-75">
+                        Tìm kiếm việc làm từ nhiều nguồn tuyển dụng. Nhận đề xuất công việc phù hợp dựa trên CV và kỹ năng của bạn. Trải nghiệm phỏng vấn ảo và nhận đánh
+                        giá chi tiết.
+                    </p>
+                </div>
+                <div className="w-full flex flex-col  justify-center items-center min-[680px]:flex-row mb-4">
+                    <CardContainer className="inter-var mx-4 mb-5 min-[680px]:mb-0">
+                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
+                            <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white ">
+                                <div className="bg-[#7e7e7e37] rounded-full w-16 h-16 flex items-center justify-center">
+                                    <NotebookPen width={40} height={40} />
+                                </div>
+                            </CardItem>
+                            <CardItem as="p" translateZ="60" className="font-bold mt-2 ">
+                                Blog
+                            </CardItem>
+                            <CardItem translateZ="100" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
+                                Khám phá các bài viết hữu ích với những thông tin giá trị về việc làm và kỹ năng.
+                            </CardItem>
+                            <div className="flex justify-between items-center mt-5">
+                                <CardItem translateZ={20} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                    <Link href={"/blog"}>Xem thêm</Link>
+                                </CardItem>
+                            </div>
+                        </CardBody>
+                    </CardContainer>
+                    <CardContainer className="inter-var mx-4 mb-5 min-[680px]:mb-0">
+                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
+                            <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white ">
+                                <div className="bg-[#7e7e7e37] rounded-full w-16 h-16 flex items-center justify-center">
+                                    <BotMessageSquare width={40} height={40} />
+                                </div>
+                            </CardItem>
+                            <CardItem as="p" translateZ="60" className="font-bold mt-2 ">
+                                Chatbot AI
+                            </CardItem>
+                            <CardItem translateZ="100" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
+                                Trợ lý thông minh hỗ trợ bạn tìm kiếm việc làm, phân tích CV và đề xuất kỹ năng cần học.
+                            </CardItem>
+                            <div className="flex justify-between items-center mt-5">
+                                <CardItem translateZ={20} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                    <Link href={"/chatbot"}> Xem thêm</Link>
+                                </CardItem>
+                            </div>
+                        </CardBody>
+                    </CardContainer>
+                    <CardContainer className="inter-var mx-4 mb-5 min-[680px]:mb-0">
+                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
+                            <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white ">
+                                <div className="bg-[#7e7e7e37] rounded-full w-16 h-16 flex items-center justify-center">
+                                    <IconGroup2 width={40} height={40} />
+                                </div>
+                            </CardItem>
+                            <CardItem as="p" translateZ="60" className="font-bold mt-2 ">
+                                Phỏng Vấn Ảo
+                            </CardItem>
+                            <CardItem translateZ="100" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
+                                Trải nghiệm phỏng vấn thực tế với AI, đánh giá năng lực và nhận phản hồi chi tiết.
+                            </CardItem>
+                            <div className="flex justify-between items-center mt-5">
+                                <CardItem translateZ={20} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                    <Link href={"/virtual-interview"}> Xem thêm</Link>
+                                </CardItem>
+                            </div>
+                        </CardBody>
+                    </CardContainer>
+                </div>
             </div>
             <div className="w-full px-5 my-12">
                 <div className="relative w-full h-fit  overflow-hidden border border-[#65656542]  rounded-xl p-5">
@@ -84,7 +157,7 @@ const LandingPage = () => {
                     </div>
                     <div className="min-[1024px]:w-1/2 w-full mt-4 min-[1024px]:mt-0 min-[1024px]:px-4 ">
                         <p className="text-4xl font-semibold"> Tìm công việc mơ ước của bạn một cách nhanh chóng.</p>
-                        <ul className="mt-5 text-lg opacity-75">
+                        <ul className="mt-5 text-base opacity-75">
                             <li className="before:content-['•'] before:mr-2 flex items-start">Cá nhân hóa hồ sơ ứng tuyển để tạo ấn tượng tốt nhất với doanh nghiệp</li>
                             <li className="before:content-['•'] before:mr-2 flex items-start">Giải pháp tiếp thị số cho tương lai</li>
                             <li className="before:content-['•'] before:mr-2 flex items-start">Khám phá hàng ngàn cơ hội việc làm trên nền tảng tuyển dụng</li>

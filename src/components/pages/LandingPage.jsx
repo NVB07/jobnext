@@ -1,6 +1,9 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
+
+import { AuthContext } from "@/context/AuthContextProvider";
 
 import { cn } from "@/lib/utils";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
@@ -11,11 +14,16 @@ import { RainbowButton } from "@/components/magicui/rainbow-button";
 import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
 
-import { House, NotebookPen, BotMessageSquare, Settings, CircleUser } from "lucide-react";
+import { NotebookPen, BotMessageSquare } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import IconGroup2 from "@/components/ui/IconGroup2";
 
+import Login from "@/components/pageComponents/Login";
+
 const LandingPage = () => {
+    const { authUserData } = useContext(AuthContext);
+    console.log(authUserData);
+
     return (
         <div className="w-full min-[490px]:pt-32 pt-24  ">
             <div className="min-[490px]:hidden w-full flex items-center justify-center mb-6">
@@ -44,10 +52,14 @@ const LandingPage = () => {
                 />
             </div>
             <div className="w-full flex justify-center mt-16 relative z-10">
-                <RainbowButton className="rounded-full">
-                    <p className="mr-1"> Đăng nhập </p>
-                    <ArrowRight />
-                </RainbowButton>
+                {!authUserData && (
+                    <Login>
+                        <RainbowButton className="rounded-full">
+                            <p className="mr-1"> Đăng nhập </p>
+                            <ArrowRight />
+                        </RainbowButton>
+                    </Login>
+                )}
             </div>
             <div className="w-full flex flex-col px-5 justify-center items-center mt-14 ">
                 <div className="text-center mb-12">
@@ -68,11 +80,11 @@ const LandingPage = () => {
                             <CardItem as="p" translateZ="60" className="font-bold mt-2 ">
                                 Blog
                             </CardItem>
-                            <CardItem translateZ="100" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
+                            <CardItem translateZ="60" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
                                 Khám phá các bài viết hữu ích với những thông tin giá trị về việc làm và kỹ năng.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
-                                <CardItem translateZ={20} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
                                     <Link href={"/blog"}>Xem thêm</Link>
                                 </CardItem>
                             </div>
@@ -88,11 +100,11 @@ const LandingPage = () => {
                             <CardItem as="p" translateZ="60" className="font-bold mt-2 ">
                                 Chatbot AI
                             </CardItem>
-                            <CardItem translateZ="100" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
+                            <CardItem translateZ="60" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
                                 Trợ lý thông minh hỗ trợ bạn tìm kiếm việc làm, phân tích CV và đề xuất kỹ năng cần học.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
-                                <CardItem translateZ={20} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
                                     <Link href={"/chatbot"}> Xem thêm</Link>
                                 </CardItem>
                             </div>
@@ -108,11 +120,11 @@ const LandingPage = () => {
                             <CardItem as="p" translateZ="60" className="font-bold mt-2 ">
                                 Phỏng Vấn Ảo
                             </CardItem>
-                            <CardItem translateZ="100" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
+                            <CardItem translateZ="60" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
                                 Trải nghiệm phỏng vấn thực tế với AI, đánh giá năng lực và nhận phản hồi chi tiết.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
-                                <CardItem translateZ={20} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
                                     <Link href={"/virtual-interview"}> Xem thêm</Link>
                                 </CardItem>
                             </div>
@@ -124,7 +136,7 @@ const LandingPage = () => {
                 <div className="relative w-full h-fit  overflow-hidden border border-[#65656542]  rounded-xl p-5">
                     <div className="flex flex-col min-[760px]:flex-row ">
                         <div className="w-full min-[760px]:w-4/5">
-                            <p className="text-4xl font-semibold text-center min-[760px]:text-left ">Kết nối tài năng, chắc bước tương lai !</p>
+                            <p className="text-4xl font-semibold  min-[760px]:text-left ">Kết nối tài năng, chắc bước tương lai !</p>
                             <p className="opacity-60 mt-5">
                                 Với công nghệ phân tích dữ liệu từ AI, chúng tôi không chỉ mang đến những gợi ý công việc chính xác, phù hợp với kỹ năng và kinh nghiệm
                                 của bạn, mà còn hỗ trợ bạn xây dựng một lộ trình sự nghiệp vững chắc. Từ việc tối ưu CV, nâng cao kỹ năng phỏng vấn cho đến cập nhật xu

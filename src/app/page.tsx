@@ -1,9 +1,13 @@
 "use client";
 import LandingPage from "@/components/pages/LandingPage";
-// import { BackgroundBeams } from "@/components/ui/background-beams";
+import { DotPattern } from "@/components/magicui/dot-pattern";
+import { cn } from "@/lib/utils";
+
 export default function Home() {
     return (
         <main className="w-full min-h-screen ">
+            <DotPattern className={cn("[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]")} />
+
             <LandingPage />
         </main>
     );

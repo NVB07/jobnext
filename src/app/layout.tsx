@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
-import { DotPattern } from "@/components/magicui/dot-pattern";
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import { GridPattern } from "@/components/magicui/grid-pattern";
+
 import Header from "@/components/pageComponents/Header";
 import Footer from "@/components/pageComponents/Footer";
+import AuthContextProvider from "@/context/AuthContextProvider";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -34,11 +32,12 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    <Header />
-                    {children}
-                    <Footer />
+                    <AuthContextProvider>
+                        <Header />
+                        {children}
+                        <Footer />
+                    </AuthContextProvider>
                 </ThemeProvider>
-                <DotPattern className={cn("[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]")} />
             </body>
         </html>
     );

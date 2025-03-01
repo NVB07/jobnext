@@ -9,7 +9,7 @@ import { BorderBeam } from "@/components/magicui/border-beam";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 
-import { House, NotebookPen, BotMessageSquare, Settings, CircleUser } from "lucide-react";
+import { House, NotebookPen, BotMessageSquare, MoonStar, CircleUser, Sun } from "lucide-react";
 import IconGroup2 from "@/components/ui/IconGroup2";
 
 const Header = () => {
@@ -23,7 +23,7 @@ const Header = () => {
         }
     };
     return (
-        <div className="w-full flex justify-center  fixed top-0 min-[490px]:top-2 z-50">
+        <div className="w-full flex justify-center pt-0 fixed top-0 min-[490px]:pt-2 z-50 ">
             <div className="w-full max-w-[720px] min-[490px]:px-4 px-1 h-16 backdrop-blur-lg bg-[hsl(var(--background)/87%)] border border-[#65656542] min-[490px]:rounded-3xl rounded-none flex items-center min-[490px]:justify-between justify-center">
                 <Link href={"/"} className="hidden items-center justify-between min-[490px]:flex h-full">
                     <Image src={"/logo.png"} width={40} height={40} alt="logo" className="rounded-xl" />
@@ -54,7 +54,7 @@ const Header = () => {
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 <Link
                                     className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
-                                        urlPath === "/blog" && "border-2 border-current]"
+                                        urlPath.includes("/blog") && "border-2 border-current]"
                                     }`}
                                     href={"/blog"}
                                 >
@@ -102,10 +102,11 @@ const Header = () => {
                         </Tooltip>
                     </TooltipProvider>
                     <button
+                        title="Toggle mode"
                         onClick={toggleTheme}
                         className="mx-1 min-[420px]:mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
                     >
-                        <Settings />
+                        {theme === "light" ? <Sun /> : <MoonStar />}
                     </button>
 
                     <Separator orientation="vertical" />

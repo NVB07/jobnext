@@ -1,3 +1,5 @@
+import { Button } from "../ui/button";
+import Link from "next/link";
 import BlogItem from "@/components/pageComponents/BlogItem";
 const BlogPage = () => {
     return (
@@ -5,10 +7,13 @@ const BlogPage = () => {
             <div className="flex min-[820px]:flex-row flex-col mt-10 overflow-visible gap-4">
                 <div className="w-full min-[820px]:w-1/3 h-fit  bg-background min-[820px]:sticky top-[112px] z-10">
                     <p className="text-2xl font-bold ">Viết Blog</p>
-                    <div className="w-full border rounded-md h-24 min-[820px]:h-64 mt-2 p-3">hhhh</div>
+                    <div className="w-full mt-1 text-gray-500">Viết để ghi nhớ hoặc chia sẻ kinh nghiệm </div>
+                    <Link href={"#"} className="w-full hover:bg-accent block border rounded-md h-24 min-[820px]:h-64 mt-4 p-3 text-neutral-500 ">
+                        Nhấn để viết
+                    </Link>
                 </div>
                 <div className="w-full min-[820px]:w-2/3 min-[820px]:border-l min-h-screen min-[820px]:pl-4">
-                    <h1 className="text-2xl w-full  font-bold">Viết để nhớ - Đọc để khám phá</h1>
+                    <h1 className="text-2xl w-full  font-bold">Đọc để khám phá</h1>
                     <div className="w-full mt-1 text-gray-500">Các bài viết chia sẻ về kinh nghiệm và kiến thức</div>
                     <div className="w-full mt-4">
                         <BlogItem />

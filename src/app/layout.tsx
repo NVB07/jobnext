@@ -30,12 +30,14 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased w-full flex flex-col items-center`}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                     <AuthContextProvider>
-                        <Header />
-                        {children}
-                        <Footer />
+                        <div className="max-w-[2200px] w-full flex flex-col items-center">
+                            <Header />
+                            {children}
+                            <Footer />
+                        </div>
                     </AuthContextProvider>
                 </ThemeProvider>
             </body>

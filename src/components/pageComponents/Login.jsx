@@ -27,10 +27,6 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
                 <form className="space-y-5">
                     <div className="space-y-4">
                         <div className="*:not-first:mt-2">
-                            <Label htmlFor={`${id}-name`}>Tên</Label>
-                            <Input id={`${id}-name`} placeholder="Matt Welsh" type="text" required />
-                        </div>
-                        <div className="*:not-first:mt-2">
                             <Label htmlFor={`${id}-email`}>Email</Label>
                             <Input id={`${id}-email`} placeholder="hi@gmail.com" type="email" required />
                         </div>

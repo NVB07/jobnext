@@ -21,7 +21,7 @@ import IconGroup2 from "@/components/ui/IconGroup2";
 import Login from "@/components/pageComponents/Login";
 
 const LandingPage = () => {
-    const { authUserData } = useContext(AuthContext);
+    const { authUserData, firstLoading } = useContext(AuthContext);
     console.log(authUserData);
 
     return (
@@ -52,13 +52,18 @@ const LandingPage = () => {
                 />
             </div>
             <div className="w-full flex justify-center mt-16 relative z-10">
-                {!authUserData && (
+                {!authUserData ? (
                     <Login>
                         <RainbowButton className="rounded-full">
                             <p className="mr-1"> Đăng nhập </p>
                             <ArrowRight />
                         </RainbowButton>
                     </Login>
+                ) : (
+                    <RainbowButton className="rounded-full">
+                        <p className="mr-1"> Bắt đầu </p>
+                        <ArrowRight />
+                    </RainbowButton>
                 )}
             </div>
             <div className="w-full flex flex-col px-5 justify-center items-center mt-14 ">

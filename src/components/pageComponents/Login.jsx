@@ -6,10 +6,38 @@ import { Label } from "@/components/ui/label";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useId } from "react";
+import { useId, useContext } from "react";
+import { signInWithPopup, GoogleAuthProvider, sendEmailVerification, signInWithEmailAndPassword, signOut } from "firebase/auth";
+
+import { auth } from "@/lib/firebase/firebaseConfig";
+import { createData } from "@/services/services";
+
+import { AuthContext } from "@/context/AuthContextProvider";
 
 const Login = ({ children = <Button>Đăng nhập</Button> }) => {
     const id = useId();
+    const googleSignIn = async () => {
+        try {
+            const googleProvider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+
+            console.log("Signed in with Google:", user);
+
+            if (result._tokenResponse?.isNewUser) {
+                await createData("users", {
+                    _id: user.uid,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    email: user.email,
+                    emailVerified: user.emailVerified,
+                    uid: user.uid,
+                });
+            }
+        } catch (error) {
+            console.error("Error logging in with Google:", error);
+        }
+    };
     return (
         <Dialog>
             <DialogTrigger asChild>{children}</DialogTrigger>
@@ -44,7 +72,9 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
                     <span className="text-muted-foreground text-xs">Hoặc</span>
                 </div>
 
-                <Button variant="outline">Đăng nhập với Google</Button>
+                <Button variant="outline" onClick={googleSignIn}>
+                    Đăng nhập với Google
+                </Button>
 
                 <p className="text-muted-foreground text-center text-xs">
                     Hãy chắc chắn bạn đồng ý với

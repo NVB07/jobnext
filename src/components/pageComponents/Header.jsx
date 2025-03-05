@@ -124,25 +124,43 @@ const Header = () => {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <button
-                        title="Toggle mode"
-                        onClick={toggleTheme}
-                        className="mx-1 min-[420px]:mx-2 w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
-                    >
-                        {theme === "light" ? <Sun /> : <MoonStar />}
-                    </button>
+
+                    <TooltipProvider delayDuration={8} disableHoverableContent>
+                        <Tooltip>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
+                                <button
+                                    title="Toggle mode"
+                                    onClick={toggleTheme}
+                                    className="  w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
+                                >
+                                    {theme === "light" ? <Sun /> : <MoonStar />}
+                                </button>
+                            </TooltipTrigger>
+                            <TooltipContent sideOffset={8}>{theme === "light" ? <p>Light mode</p> : <p>Dark mode</p>}</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
 
                     <Separator orientation="vertical" />
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
-                                <Link className=" w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors" href={"/user"}>
-                                    <CircleUser />
-                                </Link>
+                                {authUserData ? (
+                                    <Link
+                                        href={`/user/${authUserData.uid}`}
+                                        className=" w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
+                                    >
+                                        {/* <CircleUser /> */}
+                                        <Image src={authUserData.photoURL} width={30} height={30} alt="user" className="rounded-full" />
+                                    </Link>
+                                ) : (
+                                    <Login>
+                                        <div className=" w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors" href={"/user"}>
+                                            <CircleUser />
+                                        </div>
+                                    </Login>
+                                )}
                             </TooltipTrigger>
-                            <TooltipContent sideOffset={8}>
-                                <p>User</p>
-                            </TooltipContent>
+                            <TooltipContent sideOffset={8}>{authUserData ? <p>{authUserData.displayName}</p> : <p>User</p>}</TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                     <Separator orientation="vertical" className="bg-transparent" />

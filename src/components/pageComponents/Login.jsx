@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -56,7 +56,7 @@ const AuthDialog = ({ children = <Button>Đăng nhập</Button> }) => {
         <Dialog
             onOpenChange={(isOpen) => {
                 setOpenDialog(isOpen);
-                isOpen === false && setIsRegister(false);
+                setIsRegister(false);
                 reset();
             }}
             open={openDialog}

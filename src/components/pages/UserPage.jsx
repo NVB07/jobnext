@@ -1,5 +1,5 @@
 "use client";
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/firebaseConfig";
@@ -7,7 +7,7 @@ import { auth } from "@/lib/firebase/firebaseConfig";
 import { AuthContext } from "@/context/AuthContextProvider";
 
 const UserPage = () => {
-    const { authUserData, firstLoading } = useContext(AuthContext);
+    const { authUserData } = useContext(AuthContext);
     return (
         <div>
             <div className="flex justify-center">

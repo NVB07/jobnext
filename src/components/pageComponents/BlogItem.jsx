@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -5,7 +7,7 @@ import { Bookmark, Ellipsis, Link2, Flag, Trash2 } from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";
-const BlogItem = ({ author, myBlog = false, title, content, createTime }) => {
+const BlogItem = ({ author = "", myBlog = false, title = "", content = "", createTime = "" }) => {
     return (
         <div className="w-full border rounded-xl  mb-4 p-3">
             <div className="w-full flex justify-between h-">

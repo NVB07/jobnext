@@ -21,7 +21,7 @@ import IconGroup2 from "@/components/ui/IconGroup2";
 import Login from "@/components/pageComponents/Login";
 
 const LandingPage = () => {
-    const { authUserData, firstLoading } = useContext(AuthContext);
+    const { authUserData } = useContext(AuthContext);
     console.log(authUserData);
 
     return (

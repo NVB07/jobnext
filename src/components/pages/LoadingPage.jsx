@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
+// import { Loader2 } from "lucide-react";
 const LoadingPage = () => {
     return (
         <div className="w-full h-screen flex flex-col justify-center items-center">

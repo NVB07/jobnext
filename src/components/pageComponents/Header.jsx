@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import { AuthContext } from "@/context/AuthContextProvider";
 
@@ -20,14 +20,12 @@ import Login from "@/components/pageComponents/Login";
 const Header = () => {
     const { authUserData } = useContext(AuthContext);
     const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
     const urlPath = usePathname();
-    const toggleTheme = () => {
-        if (theme === "light") {
-            setTheme("dark");
-        } else {
-            setTheme("light");
-        }
-    };
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     return (
         <div className="w-full flex justify-center pt-0 fixed top-0 min-[490px]:pt-2 z-50 max-w-[2200px] ">
             <div className="w-full max-w-[720px] min-[490px]:px-4 px-1 h-16 backdrop-blur-lg bg-[hsl(var(--background)/87%)] border border-[#65656542] min-[490px]:rounded-3xl rounded-none flex items-center min-[490px]:justify-between justify-center">
@@ -128,13 +126,18 @@ const Header = () => {
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
-                                <button
-                                    title="Toggle mode"
-                                    onClick={toggleTheme}
-                                    className="  w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
-                                >
-                                    {theme === "light" ? <Sun /> : <MoonStar />}
-                                </button>
+                                {mounted ? (
+                                    <div
+                                        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                                        className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
+                                    >
+                                        {theme === "light" ? <Sun /> : <MoonStar />}
+                                    </div>
+                                ) : (
+                                    <div className=" opacity-20  w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
+                                        <Sun />
+                                    </div>
+                                )}
                             </TooltipTrigger>
                             <TooltipContent sideOffset={8}>{theme === "light" ? <p>Light mode</p> : <p>Dark mode</p>}</TooltipContent>
                         </Tooltip>

@@ -53,12 +53,14 @@ const LandingPage = () => {
             </div>
             <div className="w-full flex justify-center mt-16 relative z-10">
                 {!authUserData ? (
-                    <Login>
-                        <RainbowButton className="rounded-full">
-                            <p className="mr-1"> Đăng nhập </p>
-                            <ArrowRight />
-                        </RainbowButton>
-                    </Login>
+                    <div>
+                        <Login>
+                            <RainbowButton className="rounded-full">
+                                <p className="mr-1"> Đăng nhập </p>
+                                <ArrowRight />
+                            </RainbowButton>
+                        </Login>
+                    </div>
                 ) : (
                     <RainbowButton className="rounded-full">
                         <p className="mr-1"> Bắt đầu </p>

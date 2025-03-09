@@ -31,7 +31,7 @@ const Header = () => {
             <div className="w-full max-w-[720px] min-[490px]:px-4 px-1 h-16 backdrop-blur-lg bg-[hsl(var(--background)/87%)] border border-[#65656542] min-[490px]:rounded-3xl rounded-none flex items-center min-[490px]:justify-between justify-center">
                 <Link href={"/"} className="hidden items-center justify-between min-[490px]:flex h-full">
                     <Image src={"/logo.png"} width={40} height={40} alt="logo" className="rounded-xl" />
-                    <p className=" min-[570px]:inline-block hidden ml-1.5 font-bold text-xl"> JobNext</p>
+                    <p className=" min-[570px]:inline-block hidden ml-1.5 font-bold text-xl ">JobNext</p>
                 </Link>
                 <div className="flex items-center  justify-center h-full py-2">
                     <TooltipProvider delayDuration={8} disableHoverableContent>

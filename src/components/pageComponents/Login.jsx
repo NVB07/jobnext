@@ -37,20 +37,22 @@ const AuthDialog = ({ children = <Button>Đăng nhập</Button> }) => {
             const user = result.user;
             // console.log("Google Sign-in Success:", user);
             // console.log("user2 :", auth.currentUser);
-            try {
-                await createData("users", {
-                    _id: user.uid,
-                    displayName: user.displayName,
-                    photoURL: user.photoURL,
-                    email: user.email,
-                    emailVerified: user.emailVerified,
-                    uid: user.uid,
-                });
-                console.log("User data created successfully in database");
-            } catch (dbError) {
-                console.error("Failed to create user data:", dbError);
-                await deleteUser(user);
-                throw new Error("Registration failed due to database error");
+            if (result._tokenResponse?.isNewUser) {
+                try {
+                    await createData("users", {
+                        _id: user.uid,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL,
+                        email: user.email,
+                        emailVerified: user.emailVerified,
+                        uid: user.uid,
+                    });
+                    console.log("User data created successfully in database");
+                } catch (dbError) {
+                    console.error("Failed to create user data:", dbError);
+                    await deleteUser(user);
+                    throw new Error("Registration failed due to database error");
+                }
             }
         } catch (error) {
             console.error("Google Sign-in Error:", error);

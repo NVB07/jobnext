@@ -15,7 +15,7 @@ const AuthContextProvider = ({ children }) => {
                 console.log(user);
                 const idToken = await user.getIdToken();
 
-                console.log("idToken", idToken);
+                // console.log("idToken", idToken);
                 setAuthUserData(user);
             } else {
                 setAuthUserData(null);

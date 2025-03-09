@@ -22,7 +22,7 @@ import Login from "@/components/pageComponents/Login";
 
 const LandingPage = () => {
     const { authUserData } = useContext(AuthContext);
-    console.log(authUserData);
+    // console.log(authUserData);
 
     return (
         <div className="w-full min-[490px]:pt-32 pt-24  ">

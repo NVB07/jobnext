@@ -1,7 +1,8 @@
 import BlogPage from "@/components/pages/BlogPage";
-const BlogHomePage = () => {
+
+const BlogHomePage = async () => {
     return (
-        <div>
+        <div className="w-full">
             <BlogPage />
         </div>
     );

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, deleteUser } from "firebase/auth";
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { createData } from "@/services/services";
 
@@ -35,13 +35,22 @@ const AuthDialog = ({ children = <Button>Đăng nhập</Button> }) => {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            if (result._tokenResponse?.isNewUser) {
+            // console.log("Google Sign-in Success:", user);
+            // console.log("user2 :", auth.currentUser);
+            try {
                 await createData("users", {
                     _id: user.uid,
                     displayName: user.displayName,
-                    email: user.email,
                     photoURL: user.photoURL,
+                    email: user.email,
+                    emailVerified: user.emailVerified,
+                    uid: user.uid,
                 });
+                console.log("User data created successfully in database");
+            } catch (dbError) {
+                console.error("Failed to create user data:", dbError);
+                await deleteUser(user);
+                throw new Error("Registration failed due to database error");
             }
         } catch (error) {
             console.error("Google Sign-in Error:", error);

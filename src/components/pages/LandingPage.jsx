@@ -39,17 +39,19 @@ const LandingPage = () => {
                     JobNext - AI
                 </span>
             </AnimatedGradientText>
-            <div className=" text-center mt-8 px-3 w-full overflow-hidden">
-                <SparklesText
-                    sparklesCount={20}
-                    className="text-4xl min-[490px]:text-5xl min-[760px]:text-6xl font-medium font-sans mb-5"
-                    text="Định hướng tư vấn nghề nghiệp với AI"
-                />
-                <SparklesText
-                    sparklesCount={20}
-                    className="text-4xl min-[490px]:text-5xl min-[760px]:text-6xl font-medium font-sans"
-                    text="Tìm việc phù hợp và phát triển kỹ năng!"
-                />
+            <div className=" text-center mt-8 px-3 w-full h-full pb-3  overflow-hidden">
+                <div className="w-full ">
+                    <SparklesText
+                        sparklesCount={20}
+                        className="text-4xl min-[490px]:text-5xl min-[760px]:text-6xl font-medium font-sans mb-5"
+                        text="Định hướng tư vấn nghề nghiệp với AI"
+                    />
+                    <SparklesText
+                        sparklesCount={20}
+                        className="text-4xl h-fit min-[490px]:text-5xl min-[760px]:text-6xl  font-medium font-sans"
+                        text="Tìm việc phù hợp và phát triển kỹ năng!"
+                    />
+                </div>
             </div>
             <div className="w-full flex justify-center mt-16 relative z-10">
                 {!authUserData ? (

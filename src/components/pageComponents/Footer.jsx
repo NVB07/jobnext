@@ -1,7 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 const Footer = () => {
+    const urlPath = usePathname();
+    if (urlPath === "/chatbot" || urlPath === "/virtual-interview") {
+        return null;
+    }
+
     return (
         <div className="w-full px-5 border-t py-5 mt-14">
             <footer>

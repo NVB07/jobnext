@@ -1,6 +1,6 @@
 const PrivacyPage = () => {
     return (
-        <div className="min-[880px]:px-20 px-5 pt-24">
+        <div className="min-[880px]:px-20 w-full px-5 pt-24">
             <div className="font-bold text-3xl ">CHÍNH SÁCH BẢO MẬT</div>
             <p className="text-sm w-full text-gray-500 pb-3 border-b mb-5">Ngày cập nhật: 01/02/2025</p>
             <h2 className="text-xl uppercase font-bold">1. Thu thập thông tin cá nhân</h2>

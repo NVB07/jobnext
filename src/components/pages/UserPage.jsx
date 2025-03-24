@@ -1,11 +1,12 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { deleteCookie } from "@/lib/auth/cookiesManager";
 
 import { AuthContext } from "@/context/AuthContextProvider";
+import { getData } from "@/services/services";
 
 const UserPage = () => {
     const { authUserData } = useContext(AuthContext);
@@ -15,6 +16,15 @@ const UserPage = () => {
         deleteCookie("accessToken");
         router.push("/");
     };
+    useEffect(() => {
+        if (authUserData) {
+            const fetchUserData = async () => {
+                const userData = await getData("users/" + authUserData.uid);
+                console.log(userData._id);
+            };
+            fetchUserData();
+        }
+    }, [authUserData]);
     return (
         <div>
             <div className="flex justify-center">

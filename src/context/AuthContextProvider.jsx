@@ -3,6 +3,7 @@ import { useState, createContext, useEffect } from "react";
 import { onAuthStateChanged, onIdTokenChanged } from "firebase/auth";
 import { updateAuthCookie, deleteCookie } from "@/lib/auth/cookiesManager";
 import { auth } from "@/lib/firebase/firebaseConfig";
+import { getData } from "@/services/services";
 
 export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
@@ -11,9 +12,10 @@ const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log(user);
+                const userDB = await getData(`users/${user.uid}`);
+                console.log(userDB);
                 updateAuthCookie("accessToken", user.auth.currentUser.stsTokenManager.accessToken, 360);
-                setAuthUserData(user);
+                setAuthUserData({ ...user, ...userDB });
             } else {
                 setAuthUserData(null);
             }

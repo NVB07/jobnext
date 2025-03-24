@@ -75,10 +75,7 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
                 try {
                     await createData("users", {
                         _id: user.uid,
-                        displayName: user.displayName,
-                        photoURL: user.photoURL,
-                        email: user.email,
-                        emailVerified: user.emailVerified,
+
                         uid: user.uid,
                     });
                     console.log("User data created successfully in database");
@@ -118,9 +115,7 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             // Tạo dữ liệu user trong database
             await createData("users", {
                 _id: user.uid,
-                displayName: data.username,
-                email: user.email,
-                emailVerified: false,
+
                 uid: user.uid,
             });
 

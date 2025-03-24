@@ -18,10 +18,12 @@ import { ArrowRight } from "lucide-react";
 import IconGroup2 from "@/components/ui/IconGroup2";
 
 import Login from "@/components/pageComponents/Login";
+import PersonalInfoUpload from "../pageComponents/personal-info-upload";
 import ResendVerificationToast from "@/components/pageComponents/ResendVerificationToast";
 
 const LandingPage = () => {
     const { authUserData } = useContext(AuthContext);
+    console.log(authUserData);
 
     return (
         <div className="w-full  pt-24  ">
@@ -36,7 +38,7 @@ const LandingPage = () => {
                         `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
                     )}
                 >
-                    JobNext - AI
+                    NLP - JobNext - AI
                 </span>
             </AnimatedGradientText>
             <div className=" text-center mt-8 px-3 w-full h-full pb-3  overflow-hidden">
@@ -44,7 +46,7 @@ const LandingPage = () => {
                     <SparklesText
                         sparklesCount={20}
                         className="text-4xl min-[490px]:text-5xl min-[760px]:text-6xl font-medium font-sans mb-5"
-                        text="Định hướng tư vấn nghề nghiệp với AI"
+                        text="Định hướng tư vấn nghề nghiệp với NLP và AI"
                     />
                     <SparklesText
                         sparklesCount={20}
@@ -63,12 +65,9 @@ const LandingPage = () => {
                             </RainbowButton>
                         </Login>
                     </div>
-                ) : (
-                    <RainbowButton className="rounded-full">
-                        <p className="mr-1"> Bắt đầu </p>
-                        <ArrowRight />
-                    </RainbowButton>
-                )}
+                ) : !authUserData?.userData ? (
+                    <PersonalInfoUpload uid={authUserData?.uid} />
+                ) : null}
             </div>
             <div className="w-full flex flex-col px-5 justify-center items-center mt-14 ">
                 <div className="text-center mb-12">

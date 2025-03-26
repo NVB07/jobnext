@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/pageComponents/Header";
 import Footer from "@/components/pageComponents/Footer";
 import AuthContextProvider from "@/context/AuthContextProvider";
+import ProgressBar from "@/lib/ProgressBar";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -27,16 +28,18 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased w-full flex flex-col items-center`}>
-                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    <AuthContextProvider>
-                        <div className="max-w-[2200px] w-full flex flex-col items-center">
-                            <Header />
-                            {children}
-                            <Footer />
-                        </div>
-                        <Toaster position="top-center" richColors closeButton />
-                    </AuthContextProvider>
-                </ThemeProvider>
+                <ProgressBar>
+                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                        <AuthContextProvider>
+                            <div className="max-w-[2200px] w-full flex flex-col items-center">
+                                <Header />
+                                {children}
+                                <Footer />
+                            </div>
+                            <Toaster position="top-center" richColors closeButton />
+                        </AuthContextProvider>
+                    </ThemeProvider>
+                </ProgressBar>
             </body>
         </html>
     );

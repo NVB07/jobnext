@@ -23,7 +23,7 @@ import ResendVerificationToast from "@/components/pageComponents/ResendVerificat
 
 const LandingPage = () => {
     const { authUserData } = useContext(AuthContext);
-    console.log(authUserData);
+    // console.log(authUserData);
 
     return (
         <div className="w-full  pt-24  ">
@@ -67,7 +67,14 @@ const LandingPage = () => {
                     </div>
                 ) : !authUserData?.userData ? (
                     <PersonalInfoUpload uid={authUserData?.uid} />
-                ) : null}
+                ) : (
+                    <Link className="" href={"/virtual-interview"}>
+                        <RainbowButton className="rounded-full">
+                            <p className="mr-1"> Bắt đầu ngay </p>
+                            <ArrowRight />
+                        </RainbowButton>
+                    </Link>
+                )}
             </div>
             <div className="w-full flex flex-col px-5 justify-center items-center mt-14 ">
                 <div className="text-center mb-12">
@@ -92,9 +99,12 @@ const LandingPage = () => {
                                 Khám phá các bài viết hữu ích với những thông tin giá trị về việc làm và kỹ năng.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
-                                <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
-                                    <Link href={"/blog"}>Xem thêm</Link>
-                                </CardItem>
+                                <Link href={"/blog"}>
+                                    {" "}
+                                    <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                        Xem thêm
+                                    </CardItem>
+                                </Link>
                             </div>
                         </CardBody>
                     </CardContainer>
@@ -112,9 +122,11 @@ const LandingPage = () => {
                                 Trợ lý thông minh hỗ trợ bạn tìm kiếm việc làm, phân tích CV và đề xuất kỹ năng cần học.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
-                                <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
-                                    <Link href={"/chatbot"}> Xem thêm</Link>
-                                </CardItem>
+                                <Link href={"/chatbot"}>
+                                    <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                        Xem thêm
+                                    </CardItem>
+                                </Link>
                             </div>
                         </CardBody>
                     </CardContainer>
@@ -132,9 +144,11 @@ const LandingPage = () => {
                                 Trải nghiệm phỏng vấn thực tế với AI, đánh giá năng lực và nhận phản hồi chi tiết.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
-                                <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
-                                    <Link href={"/virtual-interview"}> Xem thêm</Link>
-                                </CardItem>
+                                <Link href={"/virtual-interview"}>
+                                    <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
+                                        Xem thêm
+                                    </CardItem>
+                                </Link>
                             </div>
                         </CardBody>
                     </CardContainer>

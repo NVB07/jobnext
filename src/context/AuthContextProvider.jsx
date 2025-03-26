@@ -14,6 +14,14 @@ const AuthContextProvider = ({ children }) => {
             if (user) {
                 const userDB = await getData(`users/${user.uid}`);
                 console.log(userDB);
+                if (userDB) {
+                    const textData = userDB?.userData?.textData;
+                    if (textData) {
+                        const textDataObject = JSON.parse(textData);
+                        console.log(textDataObject);
+                        userDB.userData.textData = textDataObject;
+                    }
+                }
                 updateAuthCookie("accessToken", user.auth.currentUser.stsTokenManager.accessToken, 360);
                 setAuthUserData({ ...user, ...userDB });
             } else {

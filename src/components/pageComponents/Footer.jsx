@@ -4,12 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 const Footer = () => {
     const urlPath = usePathname();
-    if (urlPath === "/chatbot" || urlPath === "/virtual-interview") {
+    if (urlPath === "/chatbot") {
         return null;
     }
 
     return (
-        <div className="w-full px-5 border-t py-5 mt-14">
+        <div className="w-full px-5 border-t py-5 mt-14 bg-background">
             <footer>
                 <div className="flex flex-wrap min-[790px]:flex-row  justify-between items-start">
                     <div>

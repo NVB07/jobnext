@@ -9,7 +9,7 @@ const Footer = () => {
     }
 
     return (
-        <div className="w-full px-5 border-t py-5 mt-14 bg-background">
+        <div className="w-full px-5 border-t py-5 mt-14 relative bg-background">
             <footer>
                 <div className="flex flex-wrap min-[790px]:flex-row  justify-between items-start">
                     <div>

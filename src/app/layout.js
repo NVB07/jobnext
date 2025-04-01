@@ -7,7 +7,7 @@ import Header from "@/components/pageComponents/Header";
 import Footer from "@/components/pageComponents/Footer";
 import AuthContextProvider from "@/context/AuthContextProvider";
 import ProgressBar from "@/lib/ProgressBar";
-
+import { ScrollArea } from "@/components/ui/scroll-area";
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
     variable: "--font-geist-sans",
@@ -28,18 +28,20 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased w-full flex flex-col items-center`}>
-                <ProgressBar>
-                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                        <AuthContextProvider>
-                            <div className="max-w-[2200px] w-full flex flex-col items-center">
-                                <Header />
-                                {children}
-                                <Footer />
-                            </div>
-                            <Toaster position="top-center" richColors closeButton />
-                        </AuthContextProvider>
-                    </ThemeProvider>
-                </ProgressBar>
+                <ScrollArea type="auto" className="h-screen w-full  flex flex-col items-center">
+                    <ProgressBar>
+                        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                            <AuthContextProvider>
+                                <div className="max-w-[2200px] w-full flex flex-col items-center">
+                                    <Header />
+                                    {children}
+                                    <Footer />
+                                </div>
+                                <Toaster position="top-center" richColors closeButton />
+                            </AuthContextProvider>
+                        </ThemeProvider>
+                    </ProgressBar>{" "}
+                </ScrollArea>
             </body>
         </html>
     );

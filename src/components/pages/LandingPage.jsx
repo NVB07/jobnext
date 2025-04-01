@@ -28,7 +28,7 @@ const LandingPage = () => {
     return (
         <div className="w-full  pt-24  ">
             <div className="w-full flex justify-center pb-8">{authUserData && !authUserData?.emailVerified ? <ResendVerificationToast user={authUserData} /> : null}</div>
-            <div className="min-[490px]:hidden w-full flex items-center justify-center mb-6">
+            <div className="min-[490px]:hidden w-full relative flex items-center justify-center mb-6">
                 <Image src={"/logo.png"} width={80} height={80} alt="logo" className="rounded-xl" />
             </div>
             <AnimatedGradientText>
@@ -154,7 +154,7 @@ const LandingPage = () => {
                     </CardContainer>
                 </div>
             </div>
-            <div className="w-full px-5 my-12">
+            <div className="w-full px-5 my-12 relative bg-[hsl(var(--background)/70%)]">
                 <div className="relative w-full h-fit  overflow-hidden border border-[#65656542]  rounded-xl p-5">
                     <div className="flex flex-col min-[760px]:flex-row ">
                         <div className="w-full min-[760px]:w-4/5">
@@ -172,7 +172,7 @@ const LandingPage = () => {
                 </div>
             </div>
             <div className="w-full px-5">
-                <div className="mt-14 px-5 min-[490px]:px-5 relative flex flex-col min-[1024px]:flex-row border border-[#65656542] rounded-xl p-5 bg-[hsl(var(--background)/87%)] ">
+                <div className="mt-14 px-5 min-[490px]:px-5 relative flex flex-col min-[1024px]:flex-row border border-[#65656542] rounded-xl p-5 bg-[hsl(var(--background)/70%)] ">
                     <div className="min-[1024px]:w-1/2 w-full ">
                         <HeroVideoDialog
                             className="block dark:hidden "

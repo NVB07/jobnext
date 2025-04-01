@@ -12,13 +12,15 @@ const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
             if (user) {
+                console.log(user);
+
                 const userDB = await getData(`users/${user.uid}`);
                 console.log(userDB);
                 if (userDB) {
                     const textData = userDB?.userData?.textData;
                     if (textData) {
                         const textDataObject = JSON.parse(textData);
-                        console.log(textDataObject);
+                        console.log("textDataObject", textDataObject);
                         userDB.userData.textData = textDataObject;
                     }
                 }

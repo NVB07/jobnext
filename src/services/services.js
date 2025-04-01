@@ -12,9 +12,9 @@ const createData = async (urlPath, data = null, headers = { "Content-Type": "app
     }
 };
 
-const getData = async (urlPath, headers = { "Content-Type": "application/json" }) => {
+const getData = async (urlPath, body = {}, headers = { "Content-Type": "application/json" }) => {
     try {
-        const response = await axios.get(SeverLink + urlPath, { headers });
+        const response = await axios.get(SeverLink + urlPath, body, { headers });
         return response.data; // Trả về dữ liệu từ response
     } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error.response?.data || error.message);

@@ -1,12 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X } from "lucide-react";
 import { Menu, RefreshCw } from "lucide-react";
 import Recommend from "@/components/pageComponents/interviewTabs/Recommend";
 
+import { AuthContext } from "@/context/AuthContextProvider";
 const InterviewPage = () => {
+    const { authUserData } = useContext(AuthContext);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -35,14 +37,14 @@ const InterviewPage = () => {
                                 value="recommend"
                                 onClick={toggleSidebar}
                             >
-                                <span className="text-left block w-full text-base font-medium"> Việc làm phù hợp {"(TopCV)"}</span>
+                                <span className="text-left block w-full text-base font-medium"> Việc làm phù hợp </span>
                             </TabsTrigger>
                             <TabsTrigger
                                 className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
                                 value="searchjobs"
                                 onClick={toggleSidebar}
                             >
-                                <span className="text-left block w-full text-base font-medium">Tìm kiếm việc khác {"(TopCV)"}</span>
+                                <span className="text-left block w-full text-base font-medium">Tìm kiếm việc khác </span>
                             </TabsTrigger>
                             <TabsTrigger
                                 className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
@@ -80,7 +82,7 @@ const InterviewPage = () => {
                         </Button>
                     </div>
                     <TabsContent value="recommend" className="mt-0">
-                        <Recommend />
+                        <Recommend authUserData={authUserData} />
                     </TabsContent>
                     <TabsContent value="searchjobs">searchjobsrfg.</TabsContent>
                     <TabsContent value="history">history</TabsContent>

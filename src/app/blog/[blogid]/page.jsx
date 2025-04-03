@@ -1,11 +1,11 @@
 import BlogDetail from "@/components/pages/BlogDetail";
-import { getData } from "@/services/services";
+import { GET_METHOD } from "@/services/services";
 
 const BlogPage = async ({ params }) => {
     let data = null;
-    const blogData = await getData("blogs/" + params.blogid);
+    const blogData = await GET_METHOD("blogs/" + params.blogid);
     if (blogData) {
-        const authorData = await getData("users/" + blogData.authorUid);
+        const authorData = await GET_METHOD("users/" + blogData.authorUid);
         data = { blogData, authorData };
     }
 

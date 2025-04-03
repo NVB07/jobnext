@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { getData } from "@/services/services";
+import { GET_METHOD } from "@/services/services";
 
 const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, createTime }) => {
     const [authorData, setAuthorData] = useState();
@@ -24,7 +24,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, crea
 
     useEffect(() => {
         const getAuthor = async () => {
-            const response = await getData(`users/${authorUid}`);
+            const response = await GET_METHOD(`users/${authorUid}`);
             // console.log(response);
 
             setAuthorData(response);

@@ -1,8 +1,8 @@
-import { getData } from "@/services/services";
+import { GET_METHOD } from "@/services/services";
 
 export async function generateMetadata({ params }) {
     try {
-        const userData = await getData(`users/${params.userid}`);
+        const userData = await GET_METHOD(`users/${params.userid}`);
         if (userData) {
             return { title: "JobNext | " + userData.displayName };
         }

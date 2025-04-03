@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 import { AuthContext } from "@/context/AuthContextProvider";
-import { getData } from "@/services/services";
+import { GET_METHOD } from "@/services/services";
 
 const BlogPage = ({ blogs }) => {
     const [blogData, setBlogData] = useState({ data: [], pagination: {} });
@@ -32,8 +32,8 @@ const BlogPage = ({ blogs }) => {
 
     useEffect(() => {
         const fetchBlogs = async () => {
-            // const result = await getData("blogs", currentPage, perPage);
-            const result = await getData(`blogs?page=${currentPage}&perPage=${perPage}`);
+            // const result = await GET_METHOD("blogs", currentPage, perPage);
+            const result = await GET_METHOD(`blogs?page=${currentPage}&perPage=${perPage}`);
             if (result?.success) {
                 setBlogData(result);
             }

@@ -1,5 +1,5 @@
 "use client";
-// import { createData, deleteData } from "@/services/services";
+// import { POST_METHOD, DELETE_METHOD } from "@/services/services";
 // import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 import Image from "next/image";
@@ -10,7 +10,7 @@ const BlogDetail = ({ data }) => {
     // const writeBlog = async () => {
     //     // for (let i = 0; i < 100; i++) {
     //     //     try {
-    //     //         await createData("blogs", {
+    //     //         await POST_METHOD("blogs", {
     //     //             title: `Blog mới ${i}`,
     //     //             content: `Nội dung blog mới ${i}`,
     //     //             authorUid: "1zDzNJcsxDNUTctwizKV2jlU2rN2",
@@ -121,7 +121,7 @@ const BlogDetail = ({ data }) => {
     //         sit ipsum incidunt enim, placeat hic non totam. Sequi, voluptatum odio suscipit beatae hic, ullam non, at ad nostrum sunt quod possimus magnam eos optio
     //         consequatur quo facilis libero! Hic nemo amet eum ex ipsa odio laborum delectus excepturi harum modi cupiditate dolores quia recusandae quis rem at aspernatur
     //         fugiat facere, atque fuga perferendis tempore exercitationem minus quae? Eos nemo suscipit assumenda facere a?`;
-    //     await createData("blogs", {
+    //     await POST_METHOD("blogs", {
     //         title: `Blog mới nhat`,
     //         content: cont,
     //         authorUid: "1zDzNJcsxDNUTctwizKV2jlU2rN2",

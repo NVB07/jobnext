@@ -2,7 +2,7 @@ import axios from "axios";
 
 const SeverLink = process.env.NEXT_PUBLIC_SERVER_LINK;
 
-const createData = async (urlPath, data = null, headers = { "Content-Type": "application/json" }) => {
+const POST_METHOD = async (urlPath, data = null, headers = { "Content-Type": "application/json" }) => {
     try {
         const response = await axios.post(SeverLink + urlPath, data, { headers });
         return response.data;
@@ -12,7 +12,7 @@ const createData = async (urlPath, data = null, headers = { "Content-Type": "app
     }
 };
 
-const getData = async (urlPath, body = {}, headers = { "Content-Type": "application/json" }) => {
+const GET_METHOD = async (urlPath, body = {}, headers = { "Content-Type": "application/json" }) => {
     try {
         const response = await axios.get(SeverLink + urlPath, body, { headers });
         return response.data; // Trả về dữ liệu từ response
@@ -22,7 +22,7 @@ const getData = async (urlPath, body = {}, headers = { "Content-Type": "applicat
     }
 };
 
-const updateData = async (url, data, headers = { "Content-Type": "application/json" }) => {
+const PATCH_METHOD = async (url, data, headers = { "Content-Type": "application/json" }) => {
     try {
         const response = await axios.patch(SeverLink + url, data, { headers });
         return response.data; // Trả về dữ liệu từ response
@@ -32,7 +32,7 @@ const updateData = async (url, data, headers = { "Content-Type": "application/js
     }
 };
 
-const deleteData = async (url, headers = { "Content-Type": "application/json" }) => {
+const DELETE_METHOD = async (url, headers = { "Content-Type": "application/json" }) => {
     try {
         const response = await axios.delete(SeverLink + url, { headers });
         return response.data; // Trả về dữ liệu từ response (nếu có)
@@ -72,4 +72,4 @@ const uploadText = async (uid, text) => {
     }
 };
 
-export { createData, getData, updateData, deleteData, uploadCV, uploadText };
+export { POST_METHOD, GET_METHOD, PATCH_METHOD, DELETE_METHOD, uploadCV, uploadText };

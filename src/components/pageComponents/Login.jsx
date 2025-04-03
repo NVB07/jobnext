@@ -24,7 +24,7 @@ import {
 import { useRouter } from "next/navigation";
 
 import { auth } from "@/lib/firebase/firebaseConfig";
-import { createData } from "@/services/services";
+import { POST_METHOD } from "@/services/services";
 
 const loginSchema = yup.object().shape({
     email: yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
@@ -73,7 +73,7 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
 
             if (result._tokenResponse?.isNewUser) {
                 try {
-                    await createData("users", {
+                    await POST_METHOD("users", {
                         _id: user.uid,
 
                         uid: user.uid,
@@ -113,7 +113,7 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             await sendEmailVerification(user);
 
             // Tạo dữ liệu user trong database
-            await createData("users", {
+            await POST_METHOD("users", {
                 _id: user.uid,
 
                 uid: user.uid,

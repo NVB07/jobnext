@@ -18,7 +18,6 @@ export default function PersonalInfoUpload({ children = <RainbowButton className
     const [file, setFile] = useState(null);
     const [activeTab, setActiveTab] = useState("upload");
     const [isProcessing, setIsProcessing] = useState(false);
-    const [message, setMessage] = useState("");
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {

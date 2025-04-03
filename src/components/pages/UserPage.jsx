@@ -6,7 +6,7 @@ import { auth } from "@/lib/firebase/firebaseConfig";
 import { deleteCookie } from "@/lib/auth/cookiesManager";
 
 import { AuthContext } from "@/context/AuthContextProvider";
-import { getData } from "@/services/services";
+import { GET_METHOD } from "@/services/services";
 
 const UserPage = () => {
     const { authUserData } = useContext(AuthContext);
@@ -19,7 +19,7 @@ const UserPage = () => {
     useEffect(() => {
         if (authUserData) {
             const fetchUserData = async () => {
-                const userData = await getData("users/" + authUserData.uid);
+                const userData = await GET_METHOD("users/" + authUserData.uid);
                 console.log(userData._id);
             };
             fetchUserData();

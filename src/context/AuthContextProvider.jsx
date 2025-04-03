@@ -3,7 +3,7 @@ import { useState, createContext, useEffect } from "react";
 import { onAuthStateChanged, onIdTokenChanged } from "firebase/auth";
 import { updateAuthCookie, deleteCookie } from "@/lib/auth/cookiesManager";
 import { auth } from "@/lib/firebase/firebaseConfig";
-import { getData } from "@/services/services";
+import { GET_METHOD } from "@/services/services";
 
 export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
@@ -14,7 +14,7 @@ const AuthContextProvider = ({ children }) => {
             if (user) {
                 console.log(user);
 
-                const userDB = await getData(`users/${user.uid}`);
+                const userDB = await GET_METHOD(`users/${user.uid}`);
                 console.log(userDB);
                 if (userDB) {
                     const textData = userDB?.userData?.textData;

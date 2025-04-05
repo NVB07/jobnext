@@ -8,6 +8,7 @@ import { GET_METHOD } from "@/services/services";
 export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
     const [authUserData, setAuthUserData] = useState(null);
+    const [reload, setReload] = useState(null);
 
     useEffect(() => {
         const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
@@ -44,9 +45,9 @@ const AuthContextProvider = ({ children }) => {
             unsubscribeAuth();
             unsubscribeToken();
         };
-    }, [authUserData?.auth.currentUser.stsTokenManager.accessToken]);
+    }, [authUserData?.auth.currentUser.stsTokenManager.accessToken, reload]);
 
-    return <AuthContext.Provider value={{ authUserData, setAuthUserData }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ authUserData, setAuthUserData, setReload }}>{children}</AuthContext.Provider>;
 };
 
 export default AuthContextProvider;

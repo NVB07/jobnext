@@ -1,6 +1,9 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useRouter } from "next13-progressbar";
+
+import { JobContext } from "@/context/JobProvider";
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
@@ -8,11 +11,14 @@ import { PulsatingButton } from "@/components/magicui/pulsating-button";
 import { Button } from "@/components/ui/button";
 import { Bookmark, BookmarkCheck, Ellipsis, Link2, Flag, Trash2 } from "lucide-react";
 
-export default function JobCard({ job }) {
+export default function JobCard({ job, authUserData }) {
+    const { setJobData } = useContext(JobContext);
     const [showDetail, setShowDetail] = useState(false);
     const [loading, setLoading] = useState(false);
     const [jobDescription, setJobDescription] = useState(null);
     const [JobRequirements, searchJobRequirements] = useState(null);
+
+    const router = useRouter();
 
     const getDetail = async () => {
         const response = await fetch("/api/jobdetail", {
@@ -43,6 +49,27 @@ export default function JobCard({ job }) {
             setLoading(true);
             await getDetail();
             setLoading(false);
+        }
+    };
+
+    const handleInterview = () => {
+        if (JobRequirements) {
+            const paragraphs = JobRequirements.querySelectorAll("p");
+
+            let JobRequirementsHandle = "";
+            paragraphs.forEach((p) => {
+                JobRequirementsHandle += "\n" + p.textContent.trim() + "\n";
+            });
+
+            setJobData({
+                uid: authUserData?.uid,
+                jobId: job.jobId,
+                jobTitle: job.title,
+                skills: job.skills,
+                jobRequirements: JobRequirementsHandle,
+                candidateDescription: authUserData?.userData.textData.review,
+            });
+            router.push("/jobs/interview");
         }
     };
 
@@ -106,7 +133,10 @@ export default function JobCard({ job }) {
                                                 <Bookmark className="!w-5 !h-5" />
                                                 {/* <BookmarkCheck className="!w-5 !h-5" /> */}
                                             </Button>
-                                            <PulsatingButton variant="outline">Phỏng vấn</PulsatingButton>
+
+                                            <PulsatingButton disabled={JobRequirements ? false : true} onClick={handleInterview} variant="outline">
+                                                Phỏng vấn
+                                            </PulsatingButton>
                                         </div>
                                     </DialogFooter>
                                 </DialogContent>

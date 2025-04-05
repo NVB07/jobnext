@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export function middleware(request) {
     const currentUser = request.cookies.get("accessToken")?.value;
-    const protectedRoutes = ["/chatbot", "/virtual-interview", "/new-blog"];
+    const protectedRoutes = ["/chatbot", "/jobs", "/new-blog"];
     const url = request.nextUrl.clone();
 
     const isProtected = protectedRoutes.some((route) => url.pathname.startsWith(route));
@@ -21,5 +21,5 @@ export function middleware(request) {
 }
 
 export const config = {
-    matcher: ["/chatbot/:path*", "/virtual-interview/:path*", "/new-blog", "/login"],
+    matcher: ["/chatbot/:path*", "/jobs/:path*", "/new-blog", "/login"],
 };

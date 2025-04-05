@@ -3,7 +3,7 @@ import { AnimatedGradientText } from "@/components/magicui/animated-gradient-tex
 import { cn } from "@/lib/utils";
 import PersonalInfoUpload from "../pageComponents/personal-info-upload";
 
-const NoCVData = ({ uid = null }) => {
+const NoCVData = ({ uid = null, setReload }) => {
     return (
         <div className="w-full min-h-[calc(100vh-250px)] mt-20">
             <div className="flex flex-col items-center justify-center h-full  min-[780px]:flex-row ">
@@ -13,7 +13,7 @@ const NoCVData = ({ uid = null }) => {
                         <p className="text-3xl font-bold mb-2 text-center">Chưa có thông tin cá nhân</p>
                         <p className="text-center opacity-70">Hãy cung cấp thông tin cá nhân để tiếp tục sử dụng dịch vụ của chúng tôi!</p>
                     </div>
-                    <PersonalInfoUpload uid={uid}>
+                    <PersonalInfoUpload uid={uid} setReload={setReload}>
                         <div className="cursor-pointer">
                             <AnimatedGradientText>
                                 ✒️ <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />

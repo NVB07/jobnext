@@ -3,22 +3,22 @@ import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContextProvider";
 
 import NoCVData from "@/components/pages/NoCVData";
-import InterviewPage from "@/components/pages/InterviewPage";
-const VirtualInterviewPage = () => {
-    const { authUserData } = useContext(AuthContext);
+import JobsPage from "@/components/pages/JobsPage";
+const VirtualJobsPage = () => {
+    const { authUserData, setReload } = useContext(AuthContext);
     console.log(authUserData);
 
     return (
         <div className=" w-full min-h-screen">
             {authUserData && authUserData?.userData ? (
-                <InterviewPage authUserData={authUserData} />
+                <JobsPage authUserData={authUserData} />
             ) : (
                 <div className="mt-36">
-                    <NoCVData uid={authUserData?.uid} />
+                    <NoCVData uid={authUserData?.uid} setReload={setReload} />
                 </div>
             )}
         </div>
     );
 };
 
-export default VirtualInterviewPage;
+export default VirtualJobsPage;

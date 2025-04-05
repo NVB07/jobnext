@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 const Footer = () => {
     const urlPath = usePathname();
-    if (urlPath === "/chatbot") {
+    if (urlPath === "/chatbot" || urlPath.startsWith("/jobs/")) {
         return null;
     }
 

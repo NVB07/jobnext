@@ -22,7 +22,7 @@ import PersonalInfoUpload from "../pageComponents/personal-info-upload";
 import ResendVerificationToast from "@/components/pageComponents/ResendVerificationToast";
 
 const LandingPage = () => {
-    const { authUserData } = useContext(AuthContext);
+    const { authUserData, setReload } = useContext(AuthContext);
     // console.log(authUserData);
 
     return (
@@ -66,9 +66,9 @@ const LandingPage = () => {
                         </Login>
                     </div>
                 ) : !authUserData?.userData ? (
-                    <PersonalInfoUpload uid={authUserData?.uid} />
+                    <PersonalInfoUpload uid={authUserData?.uid} setReload={setReload} />
                 ) : (
-                    <Link className="" href={"/virtual-interview"}>
+                    <Link className="" href={"/jobs"}>
                         <RainbowButton className="rounded-full">
                             <p className="mr-1"> Bắt đầu ngay </p>
                             <ArrowRight />
@@ -144,7 +144,7 @@ const LandingPage = () => {
                                 Trải nghiệm phỏng vấn thực tế với AI, đánh giá năng lực và nhận phản hồi chi tiết.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
-                                <Link href={"/virtual-interview"}>
+                                <Link href={"/jobs"}>
                                     <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
                                         Xem thêm
                                     </CardItem>

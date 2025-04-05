@@ -12,7 +12,7 @@ import { BorderBeam } from "@/components/magicui/border-beam";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 
-import { House, NotebookPen, BotMessageSquare, MoonStar, CircleUser, Sun } from "lucide-react";
+import { House, NotebookPen, BotMessageSquare, MoonStar, CircleUser, Sun, BriefcaseBusiness } from "lucide-react";
 import IconGroup2 from "@/components/ui/IconGroup2";
 
 import Login from "@/components/pageComponents/Login";
@@ -103,22 +103,22 @@ const Header = () => {
                                 {authUserData ? (
                                     <Link
                                         className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
-                                            urlPath === "/virtual-interview" && "border-2 border-current]"
+                                            urlPath === "/jobs" && "border-2 border-current]"
                                         }`}
-                                        href={"/virtual-interview"}
+                                        href={"/jobs"}
                                     >
-                                        <IconGroup2 />
+                                        <BriefcaseBusiness />
                                     </Link>
                                 ) : (
                                     <Login>
                                         <div className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
-                                            <IconGroup2 />
+                                            <BriefcaseBusiness />
                                         </div>
                                     </Login>
                                 )}
                             </TooltipTrigger>
                             <TooltipContent sideOffset={8}>
-                                <p>Virtual interview</p>
+                                <p>Jobs</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>

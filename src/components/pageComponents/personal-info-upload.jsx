@@ -12,7 +12,7 @@ import { FileText, Upload } from "lucide-react";
 import { uploadCV, uploadText } from "@/services/services";
 import { toast } from "sonner";
 
-export default function PersonalInfoUpload({ children = <RainbowButton className="text-base">Tải lên thông tin cá nhân</RainbowButton>, uid }) {
+export default function PersonalInfoUpload({ children = <RainbowButton className="text-base">Tải lên thông tin cá nhân</RainbowButton>, uid, setReload }) {
     const [open, setOpen] = useState(false);
     const [personalInfo, setPersonalInfo] = useState("");
     const [file, setFile] = useState(null);
@@ -73,9 +73,11 @@ export default function PersonalInfoUpload({ children = <RainbowButton className
             if (activeTab === "input" && personalInfo) {
                 const result = await uploadText(uid, personalInfo);
                 toast.success(result?.message || "Cập nhật thông tin văn bản thành công!");
+                setReload((prev) => !prev);
             } else if (activeTab === "upload" && file) {
                 const result = await uploadCV(uid, file);
                 toast.success(result?.message || "Cập nhật thông tin PDF thành công!");
+                setReload((prev) => !prev);
             } else {
                 toast.warning("Vui lòng nhập thông tin hoặc tải lên tệp PDF!");
                 return;

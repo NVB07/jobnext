@@ -46,23 +46,6 @@ export default function PersonalInfoUpload({ children = <RainbowButton className
         }
     };
 
-    // const handleSubmit = () => {
-    //     if (activeTab === "input" && personalInfo) {
-    //         console.log("Thông tin cá nhân đã nhập:", personalInfo);
-    //         alert("Đã gửi thông tin cá nhân thành công!");
-    //     } else if (activeTab === "upload" && file) {
-    //         console.log("Tệp PDF đã tải lên:", file.name);
-    //         alert(`Đã tải lên tệp ${file.name} thành công!`);
-    //     } else {
-    //         alert("Vui lòng nhập thông tin hoặc tải lên tệp PDF");
-    //         return;
-    //     }
-
-    //     setOpen(false);
-    //     setPersonalInfo("");
-    //     setFile(null);
-    // };
-
     const handleSubmit = async () => {
         if (!uid) {
             toast.error("Vui lòng đăng nhập để tiếp tục!");

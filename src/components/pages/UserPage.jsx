@@ -20,7 +20,6 @@ const UserPage = () => {
         if (authUserData) {
             const fetchUserData = async () => {
                 const userData = await GET_METHOD("users/" + authUserData.uid);
-                console.log(userData._id);
             };
             fetchUserData();
         }

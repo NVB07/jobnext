@@ -12,13 +12,31 @@ const POST_METHOD = async (urlPath, data = null, headers = { "Content-Type": "ap
     }
 };
 
-const GET_METHOD = async (urlPath, body = {}, headers = { "Content-Type": "application/json" }) => {
+// const GET_METHOD = async (urlPath, body = {}, headers = { "Content-Type": "application/json" }) => {
+//     try {
+//         const response = await axios.get(SeverLink + urlPath, body, { headers });
+//         return response.data; // Trả về dữ liệu từ response
+//     } catch (error) {
+//         console.error("Lỗi khi lấy dữ liệu:", error.response?.data || error.message);
+//         return null; // Ném lỗi để xử lý bên ngoài (nếu cần)
+//     }
+// };
+
+const GET_METHOD = async (urlPath, params = {}, headers = {}) => {
     try {
-        const response = await axios.get(SeverLink + urlPath, body, { headers });
-        return response.data; // Trả về dữ liệu từ response
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                ...headers, // Merge headers truyền vào với headers mặc định
+            },
+            params, // Truyền params đúng cách cho GET request
+        };
+
+        const response = await axios.get(SeverLink + urlPath, config);
+        return response.data;
     } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error.response?.data || error.message);
-        return null; // Ném lỗi để xử lý bên ngoài (nếu cần)
+        return null;
     }
 };
 
@@ -32,13 +50,27 @@ const PATCH_METHOD = async (url, data, headers = { "Content-Type": "application/
     }
 };
 
-const DELETE_METHOD = async (url, headers = { "Content-Type": "application/json" }) => {
+// const DELETE_METHOD = async (url, headers = { "Content-Type": "application/json" }) => {
+//     try {
+//         const response = await axios.delete(SeverLink + url, { headers });
+//         return response.data; // Trả về dữ liệu từ response (nếu có)
+//     } catch (error) {
+//         console.error("Lỗi khi xóa dữ liệu:", error.response?.data || error.message);
+//         return null; // Ném lỗi để xử lý bên ngoài
+//     }
+// };
+const DELETE_METHOD = async (url, token, headers = { "Content-Type": "application/json" }) => {
     try {
-        const response = await axios.delete(SeverLink + url, { headers });
-        return response.data; // Trả về dữ liệu từ response (nếu có)
+        const authHeaders = {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.delete(SeverLink + url, { headers: authHeaders });
+        return response.data;
     } catch (error) {
         console.error("Lỗi khi xóa dữ liệu:", error.response?.data || error.message);
-        return null; // Ném lỗi để xử lý bên ngoài
+        return null;
     }
 };
 

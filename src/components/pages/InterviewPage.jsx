@@ -1,22 +1,26 @@
 "use client";
 
 import { useState, useRef, useEffect, useContext } from "react";
+
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Trash2 } from "lucide-react";
 
-import { POST_METHOD } from "@/services/services";
+import { POST_METHOD, GET_METHOD } from "@/services/services";
+import { auth } from "@/firebase/firebaseConfig";
 import { JobContext } from "@/context/JobProvider";
-
+import { useSilentUrlChange } from "@/hooks/useSilentUrlChange";
 export default function InterviewPage() {
     const { jobData } = useContext(JobContext);
-
-    const [chatName, setChatName] = useState("tên đoạn chat");
+    const pathname = usePathname();
     const [messages, setMessages] = useState([]);
+    const [chatData, setChatData] = useState(null);
     const [inputValue, setInputValue] = useState("");
     const textareaRef = useRef(null);
     const messagesEndRef = useRef(null);
+    const changeUrlSilently = useSilentUrlChange();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -40,21 +44,54 @@ export default function InterviewPage() {
         }
     }, [inputValue]);
 
+    useEffect(() => {
+        const getInterview = async () => {
+            const path = pathname.slice(16);
+            const user = auth.currentUser;
+            if (user) {
+                const token = await user.getIdToken();
+                const result = await GET_METHOD(`interviews`, { interviewId: path }, { Authorization: `Bearer ${token}` });
+                if (result) {
+                    setChatData(result.result);
+                    console.log(result.result);
+
+                    const newArr = result.result.chatHistory.slice(1);
+                    const resultChat = newArr.map((item, index) => {
+                        if (index % 2 !== 0) {
+                            return {
+                                id: index,
+                                role: "user",
+                                message: item.parts[0].text,
+                                state: true,
+                            };
+                        } else {
+                            const message = item.parts[0].text.replace(/```json|```/g, "").trim();
+                            return JSON.parse(message);
+                        }
+                    });
+                    setMessages(resultChat);
+                }
+            }
+        };
+        getInterview();
+    }, []);
+
     const createInterview = async (answer = "") => {
+        const user = auth.currentUser;
+        const token = await user.getIdToken();
+
         const bodyReq = {
-            jobRequirement: jobData.jobRequirements,
-            candidateDescription: jobData.candidateDescription,
-            jobId: jobData.jobId,
-            skills: jobData.skills,
-            jobTitle: jobData.jobTitle,
-            uid: jobData.uid,
+            jobRequirement: chatData.jobRequirement,
+            jobId: chatData.jobId,
+            skills: chatData.skills,
+            jobTitle: chatData.jobTitle,
             answer: answer,
         };
-
-        const result = await POST_METHOD("interviews", bodyReq);
-        console.log("result", result);
-        const messageObj = JSON.parse(result.result.replace(/```json|```/g, "").trim());
-        setMessages((prevMessages) => [...prevMessages, messageObj]);
+        const result = await POST_METHOD("interviews", bodyReq, { Authorization: `Bearer ${token}` });
+        if (result) {
+            const messageObj = JSON.parse(result.result.replace(/```json|```/g, "").trim());
+            setMessages((prevMessages) => [...prevMessages, messageObj]);
+        }
     };
 
     const handleSendMessage = async () => {
@@ -87,35 +124,29 @@ export default function InterviewPage() {
     return (
         <div className="flex flex-col w-full max-w-4xl pt-[75px] h-screen">
             {/* Header */}
-            <div className="flex justify-between items-center  border-b ">
-                <h1 className="text-lg font-medium">{chatName}</h1>
-                <Button onClick={() => console.log(messages)} variant="icon" className="text-red-500 hover:bg-foreground/5">
+            <div className="flex justify-between items-center   ">
+                <h1 className="text-lg font-bold text-wrap  truncate line-clamp-2">{chatData ? chatData.jobTitle : ""}</h1>
+                <Button onClick={() => console.log(pathname)} variant="icon" className="text-red-500 hover:bg-foreground/5">
                     <Trash2 />
                 </Button>
             </div>
 
             <ScrollArea className="flex-1 overflow-y-auto ">
                 <div className="flex-1 overflow-y-auto p-4 flex flex-col space-y-4">
-                    {messages.length === 0 ? (
-                        <div className="flex-auto  flex items-center justify-center">
-                            <Button onClick={() => createInterview()} className="w-fit ">
-                                <p className="text-base ">Bắt đầu phỏng vấn</p>
-                            </Button>
-                        </div>
-                    ) : (
+                    {messages.length > 0 &&
                         messages.map((message, index) => (
-                            <div key={index} className={`mb-6 flex w-full text-right ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                            <div key={index} className={`mb-6 flex w-full text-right ${message.role !== "model" ? "justify-end" : "justify-start"}`}>
                                 <div
                                     style={{ wordBreak: "break-word" }}
-                                    className={`inline-block break-words  text-base max-w-[85%] text-left sm:max-w-[80%] md:max-w-[70%] p-3 rounded-lg whitespace-pre-line ${
-                                        message.role === "user" ? "bg-muted text-foreground" : "bg-transparent"
-                                    }`}
+                                    className={`inline-block break-words  text-base ${
+                                        message.role !== "model" ? "max-w-[85%]  sm:max-w-[80%] md:max-w-[80%] " : "max-w-full"
+                                    } text-left p-3 rounded-lg whitespace-pre-line ${message.role !== "model" ? "bg-muted text-foreground" : "bg-transparent"}`}
                                 >
                                     {message.message}
                                 </div>
                             </div>
-                        ))
-                    )}
+                        ))}
+
                     <div ref={messagesEndRef} />
                 </div>
             </ScrollArea>
@@ -126,7 +157,7 @@ export default function InterviewPage() {
                         disabled={!messages[messages.length - 1]?.state}
                         ref={textareaRef}
                         placeholder="Trả lời phỏng vấn"
-                        className="flex-1  border-none focus-visible:ring-0 shadow-none focus-visible:ring-offset-0  resize-none min-h-[36px] max-h-[150px] py-2 px-3 overflow-y-auto no-scrollbar"
+                        className="flex-1 text-base  border-none focus-visible:ring-0 shadow-none focus-visible:ring-offset-0  resize-none min-h-[36px] max-h-[150px] py-2 px-3 overflow-y-auto no-scrollbar"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={handleKeyDown}

@@ -10,5 +10,7 @@ const updateAuthCookie = (key, value, time) => {
 const deleteCookie = (key) => {
     Cookies.remove(key);
 };
-
-export { updateAuthCookie, deleteCookie };
+const getCookie = (key) => {
+    return Cookies.get(key); // 👉 Trả về undefined nếu không có
+};
+export { updateAuthCookie, deleteCookie, getCookie };

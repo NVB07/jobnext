@@ -25,7 +25,6 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, crea
     useEffect(() => {
         const getAuthor = async () => {
             const response = await GET_METHOD(`users/${authorUid}`);
-            // console.log(response);
 
             setAuthorData(response);
         };

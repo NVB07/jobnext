@@ -69,7 +69,6 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            console.log(user);
 
             if (result._tokenResponse?.isNewUser) {
                 try {

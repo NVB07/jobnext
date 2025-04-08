@@ -6,7 +6,6 @@ import NoCVData from "@/components/pages/NoCVData";
 import JobsPage from "@/components/pages/JobsPage";
 const VirtualJobsPage = () => {
     const { authUserData, setReload } = useContext(AuthContext);
-    console.log(authUserData);
 
     return (
         <div className=" w-full min-h-screen">

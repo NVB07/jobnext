@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ScrollArea } from "../ui/scroll-area";
 import { PulsatingButton } from "@/components/magicui/pulsating-button";
 import { Button } from "@/components/ui/button";
-import { Bookmark, BookmarkCheck, Ellipsis, Link2, Flag, Trash2 } from "lucide-react";
+import { Bookmark, BookmarkCheck, Ellipsis, Link2, Flag, Loader2 } from "lucide-react";
 
 export default function JobCard({ job, authUserData }) {
     const { setJobData } = useContext(JobContext);
@@ -49,6 +49,9 @@ export default function JobCard({ job, authUserData }) {
             setLoading(true);
             await getDetail();
             setLoading(false);
+        } else {
+            setJobDescription(null);
+            searchJobRequirements(null);
         }
     };
 
@@ -67,6 +70,7 @@ export default function JobCard({ job, authUserData }) {
                 jobTitle: job.title,
                 skills: job.skills,
                 jobRequirements: JobRequirementsHandle,
+                jobRequirementsElement: JobRequirements,
                 candidateDescription: authUserData?.userData.textData.review,
             });
             router.push("/jobs/interview");
@@ -125,8 +129,12 @@ export default function JobCard({ job, authUserData }) {
                                         )}
                                     </ScrollArea>
                                     <DialogFooter className={"flex flex-row justify-between items-end px-3 pb-3"}>
-                                        <a href="#" className="text-sm text-blue-600 underline">
-                                            Truy cập job
+                                        <a
+                                            href={job.url || "#"}
+                                            target="_blank"
+                                            className="bg-green-600 text-white inline-block px-2 py-1 rounded-full text-sm  hover:bg-green-500 "
+                                        >
+                                            Truy cập job {">>"}
                                         </a>
                                         <div className="flex-1 flex justify-end items-center">
                                             <Button variant="outline" size="sm" className="h-8 w-8 mr-8 rounded-full border-none flex items-center justify-center">
@@ -134,8 +142,13 @@ export default function JobCard({ job, authUserData }) {
                                                 {/* <BookmarkCheck className="!w-5 !h-5" /> */}
                                             </Button>
 
-                                            <PulsatingButton disabled={JobRequirements ? false : true} onClick={handleInterview} variant="outline">
-                                                Phỏng vấn
+                                            <PulsatingButton
+                                                disabled={JobRequirements ? false : true}
+                                                onClick={handleInterview}
+                                                variant="outline"
+                                                className="font-bold min-w-28"
+                                            >
+                                                {JobRequirements ? " Phỏng vấn" : <Loader2 className="animate-spin" />}
                                             </PulsatingButton>
                                         </div>
                                     </DialogFooter>

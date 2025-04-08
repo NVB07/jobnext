@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased w-full flex flex-col items-center`}>
-                <ScrollArea type="auto" className="h-screen w-full  flex flex-col items-center">
+                <ScrollArea type="auto" className="h-screen w-full  flex flex-col justify-center items-center">
                     <ProgressBar>
                         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                             <AuthContextProvider>

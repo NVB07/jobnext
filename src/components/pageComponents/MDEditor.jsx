@@ -15,7 +15,7 @@ const mdParser = new MarkdownIt({ breaks: true });
 
 const MDEditor = ({ value, onChange }) => {
     const handleEditorChange = ({ html, text }) => {
-        console.log("HTML:", html, "Text:", text);
+        // console.log("HTML:", html, "Text:", text);
         if (onChange) onChange(text); // Truyền giá trị text lên parent component nếu cần
     };
 

@@ -23,7 +23,6 @@ import ResendVerificationToast from "@/components/pageComponents/ResendVerificat
 
 const LandingPage = () => {
     const { authUserData, setReload } = useContext(AuthContext);
-    // console.log(authUserData);
 
     return (
         <div className="w-full  pt-24  ">

@@ -26,8 +26,6 @@ const Recommend = ({ authUserData }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const topRef = useRef(null);
 
-    console.log("authUserData", authUserData);
-
     const {
         data: matchingJobs,
         isLoading,

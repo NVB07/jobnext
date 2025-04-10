@@ -24,6 +24,7 @@ const AuthContextProvider = ({ children }) => {
                 }
                 updateAuthCookie("accessToken", user.auth.currentUser.stsTokenManager.accessToken, 360);
                 setAuthUserData({ ...user, ...userDB });
+                console.log({ ...user, ...userDB });
             } else {
                 setAuthUserData(null);
             }

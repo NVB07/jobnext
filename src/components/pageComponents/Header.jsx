@@ -27,7 +27,7 @@ const Header = () => {
     }, []);
 
     return (
-        <div className="w-full flex justify-center pt-0 fixed top-0 min-[490px]:pt-2 z-50 max-w-4xl ">
+        <div className="w-full flex justify-center pt-0 fixed top-0 min-[490px]:pt-2 z-[55] max-w-4xl ">
             <div className="w-full max-w-4xl min-[490px]:px-4 px-1 h-16 backdrop-blur-lg bg-[hsl(var(--background)/87%)] border border-[#65656542] min-[490px]:rounded-3xl rounded-none flex items-center min-[490px]:justify-between justify-center">
                 <Link href={"/"} className="hidden items-center justify-between min-[490px]:flex h-full">
                     <Image src={"/logo.png"} width={40} height={40} alt="logo" className="rounded-xl" />

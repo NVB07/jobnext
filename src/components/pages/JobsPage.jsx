@@ -1,5 +1,5 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +9,7 @@ import { Menu } from "lucide-react";
 import Recommend from "@/components/pageComponents/interviewTabs/Recommend";
 import InterviewHistory from "../pageComponents/interviewTabs/InterviewHistory";
 import CustomInterview from "../pageComponents/interviewTabs/CustomInterview";
+import SearchMore from "../pageComponents/interviewTabs/SearchMore";
 
 import { AuthContext } from "@/context/AuthContextProvider";
 const JobsPage = () => {
@@ -33,6 +34,13 @@ const JobsPage = () => {
             return "recommend";
         }
     });
+    useEffect(() => {
+        const tabParam = searchParams.get("tab");
+
+        if (tabParam && tabParam !== tab) {
+            setTab(tabParam);
+        }
+    }, [searchParams]);
     const toggleSidebar = (tabValue) => {
         setSidebarOpen(!sidebarOpen);
         if (tabValue) {
@@ -44,13 +52,13 @@ const JobsPage = () => {
     return (
         <div className="w-full min-h-screen pt-16 min-[490px]:pt-[72px] md:pt-24 px-5 flex justify-center relative ">
             <Tabs activationMode="manual" value={tab} defaultValue="recommend" className="w-full h-full flex">
-                <TabsList className="  flex-col h-full items-start md:sticky top-24 z-10 bg-background pr-0">
+                <TabsList className="  flex-col h-full items-start md:sticky  top-24 z-10 bg-background pr-0">
                     <div
                         className={`${
                             sidebarOpen ? "translate-x-0" : "-translate-x-full"
                         } transition-all duration-300 fixed inset-0 z-30 w-full h-full  md:translate-x-0 md:w-72 md:relative md:z-0 `}
                     >
-                        <div className="md:hidden flex items-center justify-between p-8  border-b  md:mt-0 mt-16 bg-background ">
+                        <div className="md:hidden flex items-center justify-between p-8 min-[490px]:p-9  border-b  md:mt-0 mt-16 bg-background ">
                             {/* <Button variant="ghost" size="icon" onClick={() => toggleSidebar()} className="ml-auto">
                                 <X className="h-5 w-5 " />
                             </Button> */}
@@ -58,7 +66,7 @@ const JobsPage = () => {
                         <div className="hidden md:block md:mb-3">
                             <h1 className="text-xl font-bold text-foreground">Danh mục</h1>
                         </div>
-                        <div className="w-full h-full bg-background pt-4 md:pt-0 ">
+                        <div className="w-full h-full bg-background pt-4  md:pt-0 ">
                             <TabsTrigger
                                 className="w-full bg-background mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
                                 value="recommend"
@@ -99,7 +107,7 @@ const JobsPage = () => {
                 </TabsList>
 
                 <div className="  w-full min-h-screen md:border-l border-border md:pl-5">
-                    <div className="md:hidden sticky top-[64px] min-[490px]:top-[72px] pt-4 bg-background z-10 flex w-full items-center justify-between ">
+                    <div className="md:hidden sticky top-[64px] min-[490px]:top-[72px] pt-4 pb-3 bg-background z-10 flex w-full items-center justify-between ">
                         <Button variant="ghost" size="icon" onClick={() => toggleSidebar()}>
                             <Menu className="h-5 w-5" />
                         </Button>
@@ -111,7 +119,9 @@ const JobsPage = () => {
                     <TabsContent value="recommend" className="mt-0">
                         <Recommend authUserData={authUserData} />
                     </TabsContent>
-                    <TabsContent value="searchjobs">searchjobsrfg.</TabsContent>
+                    <TabsContent value="searchjobs">
+                        <SearchMore authUserData={authUserData} />
+                    </TabsContent>
                     <TabsContent value="history">
                         <InterviewHistory authUserData={authUserData} />
                     </TabsContent>

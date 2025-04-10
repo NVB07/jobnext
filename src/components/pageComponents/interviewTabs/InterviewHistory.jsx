@@ -66,6 +66,7 @@ const InterviewHistory = ({ authUserData }) => {
 
     return (
         <div className="w-full">
+            <h1 className="text-xl font-bold mb-3">Những công việc đã phỏng vấn</h1>
             <div>
                 {interviews?.data.length > 0
                     ? interviews.data.map((item) => {
@@ -168,7 +169,7 @@ const HistoryItem = ({ interview, setReload }) => {
             <p className={`text-sm border px-2 py-1 rounded-full w-fit ${scoreObj.pass ? "text-green-500 border-green-500 " : "border-orange-500 text-orange-500"} `}>
                 {scoreObj.pass ? "Pass " + scoreObj.pass + "%" : "Chưa hoàn thành"}
             </p>
-            <span className="text-gray-500 text-sm">Thời gian phỏng vấn: {convertDate(interview.createdAt)}</span>
+            <span className="text-gray-500 text-sm">Thời gian tạo: {convertDate(interview.createdAt)}</span>
         </div>
     );
 };

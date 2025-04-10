@@ -13,8 +13,8 @@ const fetchJobs = async ({ queryKey }) => {
     const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, {
         skill: authUserData?.userData.textData.cvLabel.Skills,
         groupJobFunctionV3Name: authUserData?.userData.textData.cvLabel.Industry,
-        // jobLevel: authUserData?.userData.textData.cvLabel.Rank,
-        // location: "HA noi",
+        jobLevel: authUserData?.userData.textData.cvLabel.Rank,
+        location: authUserData?.userData.textData.cvLabel.Address,
         review: authUserData?.userData.textData.review,
     });
 
@@ -34,7 +34,7 @@ const Recommend = ({ authUserData }) => {
         queryKey: ["matchingJobs", currentPage, authUserData],
         queryFn: fetchJobs,
         keepPreviousData: true, // Giữ dữ liệu trang trước trong khi tải trang mới
-        staleTime: 1000 * 60 * 5, // Cache dữ liệu trong 5 phút
+        staleTime: 1000 * 60 * 15, // Cache dữ liệu trong 15 phút
     });
 
     const getPageRange = () => {

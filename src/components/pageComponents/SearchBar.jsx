@@ -44,7 +44,7 @@ export default function SearchBar({ authUserData }) {
 
     useEffect(() => {
         const fetchBlogs = async () => {
-            const result = await POST_METHOD(`jobs/search-no-match?page=${currentPage}&perPage=${perPage}`, {});
+            const result = await POST_METHOD(`jobs/search-no-match?page=${currentPage}&perPage=${perPage}`, { uid: authUserData.uid });
             if (result?.success) {
                 setAllJobs(result);
             }
@@ -84,6 +84,7 @@ export default function SearchBar({ authUserData }) {
                 location: location,
                 category: jobCategory,
                 jobLevel: experienceLevel,
+                uid: authUserData.uid,
             });
             if (result?.success) {
                 setAllJobs(result);
@@ -270,7 +271,7 @@ export default function SearchBar({ authUserData }) {
                     ? allJobs.data.map((job) => <JobCard key={job.jobId} job={job} authUserData={authUserData} />)
                     : !loading && <p>Không có job</p>}
             </div>
-            {allJobs?.data?.length > 0 && (
+            {allJobs?.pagination?.totalPages > 1 && (
                 <div>
                     <Pagination>
                         <PaginationContent>

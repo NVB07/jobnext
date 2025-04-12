@@ -4,23 +4,23 @@ import { useState, useRef, useEffect, useContext } from "react";
 
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Trash2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { ScrollArea } from "../ui/scroll-area";
+import { Send, Ellipsis, RefreshCcw, Info } from "lucide-react";
 
 import { POST_METHOD, GET_METHOD } from "@/services/services";
 import { auth } from "@/firebase/firebaseConfig";
-import { JobContext } from "@/context/JobProvider";
-import { useSilentUrlChange } from "@/hooks/useSilentUrlChange";
+import { AuthContext } from "@/context/AuthContextProvider";
 export default function InterviewPage() {
-    const { jobData } = useContext(JobContext);
+    const { authUserData } = useContext(AuthContext);
     const pathname = usePathname();
     const [messages, setMessages] = useState([]);
     const [chatData, setChatData] = useState(null);
     const [inputValue, setInputValue] = useState("");
     const textareaRef = useRef(null);
     const messagesEndRef = useRef(null);
-    const changeUrlSilently = useSilentUrlChange();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,13 +47,14 @@ export default function InterviewPage() {
     useEffect(() => {
         const getInterview = async () => {
             const path = pathname.slice(16);
+
             const user = auth.currentUser;
+
             if (user) {
                 const token = await user.getIdToken();
                 const result = await GET_METHOD(`interviews`, { interviewId: path }, { Authorization: `Bearer ${token}` });
                 if (result) {
                     setChatData(result.result);
-                    console.log(result.result);
 
                     const newArr = result.result.chatHistory.slice(1);
                     const resultChat = newArr.map((item, index) => {
@@ -65,8 +66,26 @@ export default function InterviewPage() {
                                 state: true,
                             };
                         } else {
-                            const message = item.parts[0].text.replace(/```json|```/g, "").trim();
-                            return JSON.parse(message);
+                            let message = {};
+                            try {
+                                const raw = item.parts[0].text.replace(/```json|```/g, "").trim();
+
+                                message = JSON.parse(raw);
+                            } catch (error) {
+                                const raw = item.parts[0].text;
+                                const messageMatch = raw.match(/"message"\s*:\s*"([^"]+)"/);
+                                const passMatch = raw.match(/"pass"\s*:\s*(\d+|null)/);
+                                const stateMatch = raw.match(/"state"\s*:\s*(true|false)/);
+
+                                message = {
+                                    message: messageMatch ? messageMatch[1] : "",
+                                    role: "model",
+                                    pass: passMatch ? (passMatch[1] === "null" ? null : parseInt(passMatch[1])) : null,
+                                    state: stateMatch ? stateMatch[1] === "true" : null,
+                                };
+                            }
+
+                            return message;
                         }
                     });
                     setMessages(resultChat);
@@ -74,8 +93,25 @@ export default function InterviewPage() {
             }
         };
         getInterview();
-    }, []);
+    }, [authUserData]);
 
+    // const createInterview = async (answer = "") => {
+    //     const user = auth.currentUser;
+    //     const token = await user.getIdToken();
+
+    //     const bodyReq = {
+    //         jobRequirement: chatData.jobRequirement,
+    //         jobId: chatData.jobId,
+    //         skills: chatData.skills,
+    //         jobTitle: chatData.jobTitle,
+    //         answer: answer,
+    //     };
+    //     const result = await POST_METHOD("interviews", bodyReq, { Authorization: `Bearer ${token}` });
+    //     if (result) {
+    //         const messageObj = JSON.parse(result.result.replace(/```json|```/g, "").trim());
+    //         setMessages((prevMessages) => [...prevMessages, messageObj]);
+    //     }
+    // };
     const createInterview = async (answer = "") => {
         const user = auth.currentUser;
         const token = await user.getIdToken();
@@ -87,9 +123,29 @@ export default function InterviewPage() {
             jobTitle: chatData.jobTitle,
             answer: answer,
         };
+
         const result = await POST_METHOD("interviews", bodyReq, { Authorization: `Bearer ${token}` });
+
         if (result) {
-            const messageObj = JSON.parse(result.result.replace(/```json|```/g, "").trim());
+            let messageObj = {};
+
+            try {
+                const raw = result.result.replace(/```json|```/g, "").trim();
+                messageObj = JSON.parse(raw);
+            } catch (error) {
+                const raw = result.result;
+                const messageMatch = raw.match(/"message"\s*:\s*"([^"]+)"/);
+                const passMatch = raw.match(/"pass"\s*:\s*(\d+|null)/);
+                const stateMatch = raw.match(/"state"\s*:\s*(true|false)/);
+
+                messageObj = {
+                    message: messageMatch ? messageMatch[1] : "",
+                    role: "model",
+                    pass: passMatch ? (passMatch[1] === "null" ? null : parseInt(passMatch[1])) : null,
+                    state: stateMatch ? stateMatch[1] === "true" : null,
+                };
+            }
+
             setMessages((prevMessages) => [...prevMessages, messageObj]);
         }
     };
@@ -125,10 +181,53 @@ export default function InterviewPage() {
         <div className="flex flex-col w-full max-w-4xl pt-[75px] h-screen">
             {/* Header */}
             <div className="flex justify-between items-center   ">
-                <h1 className="text-lg font-bold text-wrap  truncate line-clamp-2">{chatData ? chatData.jobTitle : ""}</h1>
-                <Button onClick={() => console.log(pathname)} variant="icon" className="text-red-500 hover:bg-foreground/5">
-                    <Trash2 />
-                </Button>
+                <h1 className="text-lg font-bold text-wrap  truncate line-clamp-2 px-2">{chatData ? chatData.jobTitle : ""}</h1>
+
+                <Popover>
+                    <PopoverTrigger>
+                        <div className="w-8 h-8 rounded-full border border-foreground/10 hover:bg-foreground/5 flex items-center justify-center">
+                            <Ellipsis className="w-6 h-6 text-foreground/80" />
+                        </div>
+                    </PopoverTrigger>
+                    <PopoverContent align="end" className="w-fit">
+                        <div className="flex flex-col items-start w-fit gap-1">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="ghost">
+                                        <Info />
+                                        Xem thông tin
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-[95%] md:max-w-[80%] max-h-[90%] p-0 flex flex-col gap-0">
+                                    <DialogHeader className={"px-3 pt-4"}>
+                                        <DialogTitle className="text-left">{chatData?.jobTitle}</DialogTitle>
+                                        <DialogDescription className="hidden"></DialogDescription>
+                                    </DialogHeader>
+                                    <ScrollArea className="h-screen overflow-auto px-4 py-3">
+                                        <div className="w-full h-fit">
+                                            <div className="w-full">
+                                                <div
+                                                    className="text-sm text-foreground/80  mt-2 [&_h2]:font-semibold [&_h2]:text-base [&_h2]:text-foreground text-left"
+                                                    dangerouslySetInnerHTML={{ __html: chatData?.jobRequirementsElement }}
+                                                ></div>
+                                                <div className="w-full mt-2 text-sm text-foreground/80 text-left">
+                                                    <span className="text-foreground/90 font-semibold">Yêu cầu kỹ năng :</span> {chatData?.skills}
+                                                </div>
+                                            </div>
+                                            <div className="w-full mt-3 border-t pt-2 text-left">
+                                                <p className="font-semibold block text-base text-foreground">Thông tin của bạn</p>
+                                                <p className="text-foreground/80 text-sm">{chatData?.candidateDescription}</p>
+                                            </div>
+                                        </div>
+                                    </ScrollArea>
+                                </DialogContent>
+                            </Dialog>
+                            <Button variant="ghost">
+                                <RefreshCcw /> Phỏng vấn lại
+                            </Button>
+                        </div>
+                    </PopoverContent>
+                </Popover>
             </div>
 
             <ScrollArea className="flex-1 overflow-y-auto ">
@@ -139,8 +238,8 @@ export default function InterviewPage() {
                                 <div
                                     style={{ wordBreak: "break-word" }}
                                     className={`inline-block break-words  text-base ${
-                                        message.role !== "model" ? "max-w-[85%]  sm:max-w-[80%] md:max-w-[80%] " : "max-w-full"
-                                    } text-left p-3 rounded-lg whitespace-pre-line ${message.role !== "model" ? "bg-muted text-foreground" : "bg-transparent"}`}
+                                        message.role !== "model" ? "max-w-[85%]  sm:max-w-[80%] md:max-w-[80%] " : "max-w-[80%]"
+                                    } text-left p-2 rounded-lg whitespace-pre-line ${message.role !== "model" ? "bg-primary text-background" : "bg-foreground/10 "}`}
                                 >
                                     {message.message}
                                 </div>

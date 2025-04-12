@@ -69,7 +69,7 @@ const Recommend = ({ authUserData }) => {
                 ? matchingJobs.data.map((job) => <JobCard key={job.jobId} job={job} authUserData={authUserData} />)
                 : !isLoading && <p>Không có job</p>}
 
-            {matchingJobs?.data?.length > 0 && (
+            {matchingJobs?.pagination?.totalPages > 1 && (
                 <div>
                     <Pagination>
                         <PaginationContent>

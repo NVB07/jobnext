@@ -10,6 +10,7 @@ import Recommend from "@/components/pageComponents/interviewTabs/Recommend";
 import InterviewHistory from "../pageComponents/interviewTabs/InterviewHistory";
 import CustomInterview from "../pageComponents/interviewTabs/CustomInterview";
 import SearchMore from "../pageComponents/interviewTabs/SearchMore";
+import SavedJob from "../pageComponents/interviewTabs/SavedJob";
 
 import { AuthContext } from "@/context/AuthContextProvider";
 const JobsPage = () => {
@@ -31,7 +32,7 @@ const JobsPage = () => {
         } else if (tab === "custom") {
             return "custom";
         } else {
-            return "recommend";
+            return "searchjobs";
         }
     });
     useEffect(() => {
@@ -68,25 +69,18 @@ const JobsPage = () => {
                         </div>
                         <div className="w-full h-full bg-background pt-4  md:pt-0 ">
                             <TabsTrigger
+                                className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
+                                value="searchjobs"
+                                onClick={() => toggleSidebar("searchjobs")}
+                            >
+                                <span className="text-left block w-full text-base font-medium">Tìm kiếm việc làm </span>
+                            </TabsTrigger>
+                            <TabsTrigger
                                 className="w-full bg-background mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
                                 value="recommend"
                                 onClick={() => toggleSidebar("recommend")}
                             >
                                 <span className="text-left block w-full text-base font-medium"> Việc làm phù hợp </span>
-                            </TabsTrigger>
-                            <TabsTrigger
-                                className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
-                                value="searchjobs"
-                                onClick={() => toggleSidebar("searchjobs")}
-                            >
-                                <span className="text-left block w-full text-base font-medium">Tìm kiếm việc khác </span>
-                            </TabsTrigger>
-                            <TabsTrigger
-                                className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
-                                value="history"
-                                onClick={() => toggleSidebar("history")}
-                            >
-                                <span className="text-left block w-full text-base font-medium">Lịch sử phỏng vấn</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
@@ -102,6 +96,13 @@ const JobsPage = () => {
                             >
                                 <span className="text-left block w-full text-base font-medium">Tạo phỏng vấn tùy chỉnh</span>
                             </TabsTrigger>
+                            <TabsTrigger
+                                className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
+                                value="history"
+                                onClick={() => toggleSidebar("history")}
+                            >
+                                <span className="text-left block w-full text-base font-medium">Lịch sử phỏng vấn</span>
+                            </TabsTrigger>
                         </div>
                     </div>
                 </TabsList>
@@ -111,21 +112,19 @@ const JobsPage = () => {
                         <Button variant="ghost" size="icon" onClick={() => toggleSidebar()}>
                             <Menu className="h-5 w-5" />
                         </Button>
-
-                        {/* <Button variant="ghost" size="icon">
-                            <RefreshCw className="h-5 w-5" />
-                        </Button> */}
                     </div>
-                    <TabsContent value="recommend" className="mt-0">
-                        <Recommend authUserData={authUserData} />
-                    </TabsContent>
                     <TabsContent value="searchjobs">
                         <SearchMore authUserData={authUserData} />
+                    </TabsContent>
+                    <TabsContent value="recommend" className="mt-0">
+                        <Recommend authUserData={authUserData} />
                     </TabsContent>
                     <TabsContent value="history">
                         <InterviewHistory authUserData={authUserData} />
                     </TabsContent>
-                    <TabsContent value="savedjobs">savedjobs</TabsContent>
+                    <TabsContent value="savedjobs">
+                        <SavedJob authUserData={authUserData} />
+                    </TabsContent>
                     <TabsContent value="custom">
                         <CustomInterview authUserData={authUserData} />
                     </TabsContent>

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { auth } from "@/firebase/firebaseConfig";
-
+import NoData from "@/components/pages/NoData";
 import { GET_METHOD, DELETE_METHOD } from "@/services/services";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -68,11 +68,13 @@ const InterviewHistory = ({ authUserData }) => {
         <div className="w-full">
             <h1 className="text-xl font-bold mb-3">Những công việc đã phỏng vấn</h1>
             <div>
-                {interviews?.data.length > 0
-                    ? interviews.data.map((item) => {
-                          return <HistoryItem key={item._id} interview={item} setReload={setReload} />;
-                      })
-                    : null}
+                {interviews?.data.length > 0 ? (
+                    interviews.data.map((item) => {
+                        return <HistoryItem key={item._id} interview={item} setReload={setReload} />;
+                    })
+                ) : (
+                    <NoData title="Bạn chưa phỏng vấn công việc nào" subTitle="Lịch sử phỏng vấn sẽ được hiển thị ở đây" />
+                )}
             </div>
             {interviews?.data.length > 0 && (
                 <Pagination>
@@ -111,8 +113,24 @@ const InterviewHistory = ({ authUserData }) => {
 export default InterviewHistory;
 
 const HistoryItem = ({ interview, setReload }) => {
-    const score = interview.chatHistory[interview.chatHistory.length - 1].parts[0].text.replace(/```json|```/g, "").trim();
-    const scoreObj = JSON.parse(score);
+    let scoreObj = {};
+    try {
+        const raw = interview.chatHistory[interview.chatHistory.length - 1].parts[0].text.replace(/```json|```/g, "").trim();
+        scoreObj = JSON.parse(raw);
+    } catch (error) {
+        const raw = interview.chatHistory[interview.chatHistory.length - 1].parts[0].text;
+
+        // Lấy chuỗi JSON gốc (dù có thể lỗi format)
+        const messageMatch = raw.match(/"message"\s*:\s*"([^"]+)"/);
+        const passMatch = raw.match(/"pass"\s*:\s*(\d+|null)/);
+        const stateMatch = raw.match(/"state"\s*:\s*(true|false)/);
+
+        scoreObj = {
+            message: messageMatch ? messageMatch[1] : "",
+            pass: passMatch ? (passMatch[1] === "null" ? null : parseInt(passMatch[1])) : null,
+            state: stateMatch ? stateMatch[1] === "true" : null,
+        };
+    }
     const convertDate = (dateString) => {
         const date = new Date(dateString);
 
@@ -140,7 +158,7 @@ const HistoryItem = ({ interview, setReload }) => {
     return (
         <div className="flex flex-col gap-2 w-full mb-4 p-4  rounded-lg border">
             <div className="flex justify-between items-center mb-2">
-                <Link href={`/jobs/interview/${interview._id}`} className="text-lg font-semibold text-wrap truncate line-clamp-1">
+                <Link href={`/jobs/interview/${interview._id}`} className="text-lg font-semibold text-wrap truncate line-clamp-1 ">
                     {interview.jobTitle}
                 </Link>
                 <AlertDialog>

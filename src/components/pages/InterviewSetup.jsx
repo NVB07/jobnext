@@ -31,6 +31,7 @@ const InterviewSetup = () => {
                 } else {
                     const bodyReq = {
                         jobRequirement: jobData.jobRequirements,
+                        jobRequirementsElement: jobData.jobRequirementsElement,
                         candidateDescription: jobData.candidateDescription,
                         jobId: jobData.jobId,
                         skills: jobData.skills,
@@ -80,7 +81,7 @@ const InterviewSetup = () => {
                         {jobData.jobRequirementsElement ? (
                             <div
                                 className="text-sm text-foreground/80 border-foreground/50   mt-2"
-                                dangerouslySetInnerHTML={{ __html: jobData?.jobRequirementsElement?.innerHTML }}
+                                dangerouslySetInnerHTML={{ __html: jobData?.jobRequirementsElement }}
                             ></div>
                         ) : (
                             <div className="text-sm text-foreground/80 border-foreground/50   mt-2"> {jobData.jobRequirements}</div>

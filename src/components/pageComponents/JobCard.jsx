@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState, useContext } from "react";
 import { useRouter } from "next13-progressbar";
+import { toast } from "sonner";
 
 import { JobContext } from "@/context/JobProvider";
 
@@ -9,14 +10,17 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ScrollArea } from "../ui/scroll-area";
 import { PulsatingButton } from "@/components/magicui/pulsating-button";
 import { Button } from "@/components/ui/button";
-import { Bookmark, BookmarkCheck, Ellipsis, Link2, Flag, Loader2 } from "lucide-react";
+import { Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
+
+import { POST_METHOD } from "@/services/services";
 
 export default function JobCard({ job, authUserData }) {
     const { setJobData } = useContext(JobContext);
     const [showDetail, setShowDetail] = useState(false);
     const [loading, setLoading] = useState(false);
     const [jobDescription, setJobDescription] = useState(null);
-    const [JobRequirements, searchJobRequirements] = useState(null);
+    const [JobRequirements, setJobRequirements] = useState(null);
+    const [saved, setSaved] = useState(job.isSaved);
 
     const router = useRouter();
 
@@ -37,9 +41,9 @@ export default function JobCard({ job, authUserData }) {
             const title = doc.querySelectorAll(".sc-1671001a-4.gDSEwb");
             const [jobDes, jobReq] = title;
             // setJobDescription(jobDes.innerText.trim().replaceAll("•	", " "));
-            // searchJobRequirements(jobReq.innerText.trim().replaceAll("•	", " "));
+            // setJobRequirements(jobReq.innerText.trim().replaceAll("•	", " "));
             setJobDescription(jobDes);
-            searchJobRequirements(jobReq);
+            setJobRequirements(jobReq);
         }
     };
 
@@ -51,7 +55,7 @@ export default function JobCard({ job, authUserData }) {
             setLoading(false);
         } else {
             setJobDescription(null);
-            searchJobRequirements(null);
+            setJobRequirements(null);
         }
     };
 
@@ -70,10 +74,30 @@ export default function JobCard({ job, authUserData }) {
                 jobTitle: job.title,
                 skills: job.skills,
                 jobRequirements: JobRequirementsHandle,
-                jobRequirementsElement: JobRequirements,
+                jobRequirementsElement: JobRequirements.innerHTML,
                 candidateDescription: authUserData?.userData.textData.review,
             });
             router.push("/jobs/interview");
+        }
+    };
+
+    const handleSavedJob = async () => {
+        try {
+            if (saved) {
+                const result = await POST_METHOD("users/unsave-job", { userId: authUserData.uid, jobId: job._id });
+                if (result?.success) {
+                    setSaved(false);
+                    toast.success("Đã xóa công việc khỏi danh sách");
+                }
+            } else {
+                const result = await POST_METHOD("users/save-job", { userId: authUserData.uid, jobId: job._id });
+                if (result?.success) {
+                    setSaved(true);
+                    toast.success("Đã lưu công việc vào danh sách");
+                }
+            }
+        } catch (error) {
+            toast.error("Có lỗi xảy ra");
         }
     };
 
@@ -139,9 +163,13 @@ export default function JobCard({ job, authUserData }) {
                                                 Truy cập job {">>"}
                                             </a>
                                             <div className="flex-1 flex justify-end items-center">
-                                                <Button variant="outline" size="sm" className="h-8 w-8 mr-8 rounded-full border-none flex items-center justify-center">
-                                                    <Bookmark className="!w-5 !h-5" />
-                                                    {/* <BookmarkCheck className="!w-5 !h-5" /> */}
+                                                <Button
+                                                    onClick={handleSavedJob}
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-8 w-8 mr-8 rounded-full border-none flex items-center justify-center"
+                                                >
+                                                    {!saved ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
                                                 </Button>
 
                                                 <PulsatingButton
@@ -159,9 +187,8 @@ export default function JobCard({ job, authUserData }) {
 
                                 <p className="text-sm text-foreground/80 text-wrap  truncate line-clamp-2">{job.company}</p>
                             </div>
-                            <Button variant="outline" size="sm" className="h-8 w-8 rounded-full border-none flex items-center justify-center">
-                                <Bookmark className="!w-5 !h-5" />
-                                {/* <BookmarkCheck className="!w-5 !h-5" /> */}
+                            <Button onClick={handleSavedJob} variant="outline" size="sm" className="h-8 w-8 rounded-full border-none flex items-center justify-center">
+                                {!saved ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
                             </Button>
                         </div>
                         <div className="flex flex-col w-full mt-2">

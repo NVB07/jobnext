@@ -21,9 +21,9 @@ const JobsPage = () => {
 
     const [tab, setTab] = useState(() => {
         const tab = searchParams.get("tab");
-        if (tab === "recommend" || tab === null) {
+        if (tab === "recommend") {
             return "recommend";
-        } else if (tab === "searchjobs") {
+        } else if (tab === "searchjobs" || tab === null) {
             return "searchjobs";
         } else if (tab === "history") {
             return "history";
@@ -52,7 +52,7 @@ const JobsPage = () => {
 
     return (
         <div className="w-full min-h-screen pt-16 min-[490px]:pt-[72px] md:pt-24 px-5 flex justify-center relative ">
-            <Tabs activationMode="manual" value={tab} defaultValue="recommend" className="w-full h-full flex">
+            <Tabs activationMode="manual" value={tab} defaultValue="searchjobs" className="w-full h-full flex">
                 <TabsList className="  flex-col h-full items-start md:sticky  top-24 z-10 bg-background pr-0">
                     <div
                         className={`${
@@ -108,7 +108,7 @@ const JobsPage = () => {
                 </TabsList>
 
                 <div className="  w-full min-h-screen md:border-l border-border md:pl-5">
-                    <div className="md:hidden sticky top-[64px] min-[490px]:top-[72px] pt-4 pb-3 bg-background z-10 flex w-full items-center justify-between ">
+                    <div className="md:hidden sticky top-[63px] min-[490px]:top-[72px] pt-4 pb-3 bg-background z-10 flex w-full items-center justify-between ">
                         <Button variant="ghost" size="icon" onClick={() => toggleSidebar()}>
                             <Menu className="h-5 w-5" />
                         </Button>

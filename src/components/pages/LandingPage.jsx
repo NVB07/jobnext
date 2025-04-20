@@ -85,7 +85,7 @@ const LandingPage = () => {
                 </div>
                 <div className="w-full flex flex-col  justify-center items-center min-[680px]:flex-row mb-4">
                     <CardContainer className="inter-var mx-4 mb-5 min-[680px]:mb-0">
-                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
+                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-background dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
                             <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white ">
                                 <div className="bg-[#7e7e7e37] rounded-full w-16 h-16 flex items-center justify-center">
                                     <NotebookPen width={40} height={40} />
@@ -99,7 +99,6 @@ const LandingPage = () => {
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
                                 <Link href={"/blog"}>
-                                    {" "}
                                     <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
                                         Xem thêm
                                     </CardItem>
@@ -108,7 +107,7 @@ const LandingPage = () => {
                         </CardBody>
                     </CardContainer>
                     <CardContainer className="inter-var mx-4 mb-5 min-[680px]:mb-0">
-                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
+                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-background dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
                             <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white ">
                                 <div className="bg-[#7e7e7e37] rounded-full w-16 h-16 flex items-center justify-center">
                                     <BotMessageSquare width={40} height={40} />
@@ -130,7 +129,7 @@ const LandingPage = () => {
                         </CardBody>
                     </CardContainer>
                     <CardContainer className="inter-var mx-4 mb-5 min-[680px]:mb-0">
-                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
+                        <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-background dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
                             <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white ">
                                 <div className="bg-[#7e7e7e37] rounded-full w-16 h-16 flex items-center justify-center">
                                     <IconGroup2 width={40} height={40} />

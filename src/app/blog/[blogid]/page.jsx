@@ -6,11 +6,11 @@ const BlogPage = async ({ params }) => {
     const blogData = await GET_METHOD("blogs/" + params.blogid);
     if (blogData) {
         const authorData = await GET_METHOD("users/" + blogData.authorUid);
-        data = { blogData, authorData };
+        if (authorData?.success) data = { blogData, authorData: authorData.userRecord };
     }
 
     return (
-        <div className="mt-32 min-h-screen w-full">
+        <div className="mt-32  w-full">
             <BlogDetail data={data} />
         </div>
     );

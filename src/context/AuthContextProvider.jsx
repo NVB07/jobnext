@@ -15,16 +15,16 @@ const AuthContextProvider = ({ children }) => {
             if (user) {
                 const userDB = await GET_METHOD(`users/${user.uid}`);
 
-                if (userDB) {
-                    const textData = userDB?.userData?.textData;
+                if (userDB?.success) {
+                    const textData = userDB?.user.userData?.textData;
                     if (textData) {
                         const textDataObject = JSON.parse(textData);
-                        userDB.userData.textData = textDataObject;
+                        userDB.user.userData.textData = textDataObject;
                     }
                 }
                 updateAuthCookie("accessToken", user.auth.currentUser.stsTokenManager.accessToken, 360);
-                setAuthUserData({ ...user, ...userDB });
-                console.log({ ...user, ...userDB });
+                setAuthUserData({ ...userDB.user, ...user });
+                console.log({ ...userDB.user, ...user });
             } else {
                 setAuthUserData(null);
             }

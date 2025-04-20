@@ -8,10 +8,11 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 
 import { AuthContext } from "@/context/AuthContextProvider";
 import { GET_METHOD } from "@/services/services";
-
-const BlogPage = ({ blogs }) => {
+import withPopstateRerender from "../pageComponents/WithPopstateRerender";
+const BlogPage = () => {
     const [blogData, setBlogData] = useState({ data: [], pagination: {} });
     const [currentPage, setCurrentPage] = useState(1);
+    const [blogsChange, setBlogChange] = useState(false);
     const perPage = 10;
     const maxVisiblePages = 5;
     const { authUserData } = useContext(AuthContext);
@@ -39,7 +40,7 @@ const BlogPage = ({ blogs }) => {
             }
         };
         fetchBlogs();
-    }, [currentPage]);
+    }, [currentPage, blogsChange]);
 
     // Hàm chuyển trang
     const handlePageChange = (page) => {
@@ -69,12 +70,14 @@ const BlogPage = ({ blogs }) => {
                                     key={blog._id}
                                     blogId={blog._id}
                                     tag={blog.tags}
-                                    savedBy={blog.savedBy}
+                                    save={authUserData ? blog.savedBy.includes(authUserData?.uid) : false}
                                     authorUid={blog.authorUid}
                                     content={blog.content + blog.content + blog.content + blog.content + blog.content + blog.content + blog.content + blog.content}
                                     createTime={blog.createdAt}
                                     title={blog.title}
                                     myBlog={blog.authorUid === authUserData?.uid}
+                                    setBlogChange={setBlogChange}
+                                    authUserData={authUserData}
                                 />
                             ))
                         ) : (
@@ -123,43 +126,47 @@ const BlogPage = ({ blogs }) => {
                             </>
                         )}
                     </div>
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                    className={currentPage === 1 ? "pointer-events-none opacity-50 " : "cursor-pointer"}
-                                />
-                            </PaginationItem>
-                            {getPageRange().map((page) => (
-                                <PaginationItem key={page}>
-                                    <PaginationLink onClick={() => handlePageChange(page)} isActive={page === currentPage} className="cursor-pointer">
-                                        {page}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            ))}
-                            {blogData.pagination.totalPages > getPageRange()[getPageRange().length - 1] && (
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                            )}
-                            <PaginationItem>
-                                <PaginationNext
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                    className={currentPage === blogData.pagination.totalPages ? "pointer-events-none opacity-50 " : "cursor-pointer"}
-                                />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                    <p className="w-full mt-3 text-center text-gray-500 text-sm">
-                        {"("}
-                        {currentPage}/{blogData?.pagination.totalPages}
-                        {")"}
-                    </p>
+                    {blogData.pagination.totalPages > 1 && (
+                        <div className="w-full">
+                            <Pagination>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious
+                                            onClick={() => handlePageChange(currentPage - 1)}
+                                            className={currentPage === 1 ? "pointer-events-none opacity-50 " : "cursor-pointer"}
+                                        />
+                                    </PaginationItem>
+                                    {getPageRange().map((page) => (
+                                        <PaginationItem key={page}>
+                                            <PaginationLink onClick={() => handlePageChange(page)} isActive={page === currentPage} className="cursor-pointer">
+                                                {page}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    ))}
+                                    {blogData.pagination.totalPages > getPageRange()[getPageRange().length - 1] && (
+                                        <PaginationItem>
+                                            <PaginationEllipsis />
+                                        </PaginationItem>
+                                    )}
+                                    <PaginationItem>
+                                        <PaginationNext
+                                            onClick={() => handlePageChange(currentPage + 1)}
+                                            className={currentPage === blogData.pagination.totalPages ? "pointer-events-none opacity-50 " : "cursor-pointer"}
+                                        />
+                                    </PaginationItem>
+                                </PaginationContent>
+                            </Pagination>
+                            <p className="w-full mt-3 text-center text-gray-500 text-sm">
+                                {"("}
+                                {currentPage}/{blogData?.pagination.totalPages}
+                                {")"}
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
     );
 };
 
-export default BlogPage;
+export default withPopstateRerender(BlogPage);

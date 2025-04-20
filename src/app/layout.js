@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
                                         <Footer />
                                     </div>
                                 </QueryProvider>
-                                <Toaster position="top-center" richColors closeButton />
+                                <Toaster position="bottom-right" richColors closeButton />
                             </AuthContextProvider>
                         </ThemeProvider>
                     </ProgressBar>

@@ -200,22 +200,25 @@ export default function InterviewPage() {
                                 </DialogTrigger>
                                 <DialogContent className="max-w-[95%] md:max-w-[80%] max-h-[90%] p-0 flex flex-col gap-0">
                                     <DialogHeader className={"px-3 pt-4"}>
-                                        <DialogTitle className="text-left">{chatData?.jobTitle}</DialogTitle>
+                                        <DialogTitle className="text-left">Phỏng vấn: {chatData?.jobTitle}</DialogTitle>
                                         <DialogDescription className="hidden"></DialogDescription>
                                     </DialogHeader>
                                     <ScrollArea className="h-screen overflow-auto px-4 py-3">
                                         <div className="w-full h-fit">
                                             <div className="w-full">
+                                                <p className="font-semibold block text-base text-foreground">Thông tin công việc:</p>
                                                 <div
-                                                    className="text-sm text-foreground/80  mt-2 [&_h2]:font-semibold [&_h2]:text-base [&_h2]:text-foreground text-left"
-                                                    dangerouslySetInnerHTML={{ __html: chatData?.jobRequirementsElement }}
+                                                    className="text-sm text-foreground/80  mt-2 [&_h2]:text-base [&_h2]:text-foreground text-left"
+                                                    dangerouslySetInnerHTML={{ __html: chatData?.jobRequirementsElement.replace(/\n{2,}/g, "<br>") }}
                                                 ></div>
-                                                <div className="w-full mt-2 text-sm text-foreground/80 text-left">
-                                                    <span className="text-foreground/90 font-semibold">Yêu cầu kỹ năng :</span> {chatData?.skills}
-                                                </div>
+                                                {chatData?.skills && (
+                                                    <div className="w-full mt-2 text-sm text-foreground/80 text-left">
+                                                        <span className="text-foreground/90 font-semibold">Yêu cầu kỹ năng :</span> {chatData?.skills}
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="w-full mt-3 border-t pt-2 text-left">
-                                                <p className="font-semibold block text-base text-foreground">Thông tin của bạn</p>
+                                                <p className="font-semibold block text-base text-foreground">Thông tin của bạn:</p>
                                                 <p className="text-foreground/80 text-sm">{chatData?.candidateDescription}</p>
                                             </div>
                                         </div>

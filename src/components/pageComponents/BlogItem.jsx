@@ -3,16 +3,44 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { Bookmark, Ellipsis, Link2, Flag, Trash2 } from "lucide-react";
-
+import { Bookmark, Ellipsis, Link2, Flag, Trash2, BookmarkCheck } from "lucide-react";
+import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Login from "./Login";
 
-import { GET_METHOD } from "@/services/services";
+import { GET_METHOD, DELETE_METHOD, POST_METHOD } from "@/services/services";
 
-const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, createTime }) => {
+const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content, createTime, setBlogChange, authUserData }) => {
     const [authorData, setAuthorData] = useState();
+    const [openOption, setOpenOption] = useState(false);
+
+    const handleSavedJob = async () => {
+        try {
+            if (save) {
+                const result = await POST_METHOD("blogs/unsave-blog", {
+                    blogId: blogId,
+                    userId: authUserData.uid,
+                });
+                if (result?.success) {
+                    setBlogChange((prev) => !prev); // Thêm dòng này
+                    toast.success("Đã xóa blog khỏi danh sách");
+                }
+            } else {
+                const result = await POST_METHOD("blogs/save-blog", {
+                    blogId: blogId,
+                    userId: authUserData.uid,
+                });
+                if (result?.success) {
+                    setBlogChange((prev) => !prev); // Thêm dòng này
+                    toast.success("Đã lưu blog vào danh sách");
+                }
+            }
+        } catch (error) {
+            toast.error("Có lỗi xảy ra");
+        }
+    };
 
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);
@@ -21,16 +49,38 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, crea
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
-
+    const handleCopyLink = () => {
+        const currentUrl = new URL(window.location.href);
+        const baseUrl = currentUrl.origin;
+        navigator.clipboard
+            .writeText(baseUrl + "/blog/" + blogId)
+            .then(() => {
+                toast.success("Đã sao chép liên kết bài viết");
+                setOpenOption(false);
+            })
+            .catch((err) => {
+                toast.error("Lỗi khi sao chép liên kết");
+            });
+    };
     useEffect(() => {
         const getAuthor = async () => {
             const response = await GET_METHOD(`users/${authorUid}`);
 
-            setAuthorData(response);
+            if (response?.success) {
+                setAuthorData(response.userRecord);
+            }
         };
         getAuthor();
     }, []);
-
+    const deleteBlog = async () => {
+        const result = await DELETE_METHOD(`blogs/${blogId}`);
+        if (result?.success) {
+            toast.success("Xóa blog thành công");
+            setBlogChange((pre) => !pre);
+        } else {
+            toast.error("Lỗi khi xóa blog");
+        }
+    };
     return (
         <div className="w-full border rounded-xl  mb-4 p-3">
             <div className="w-full flex justify-between h-">
@@ -38,7 +88,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, crea
                     {authorData ? (
                         <Image
                             className="w-6 h-6 rounded-full -mr-1 overflow-hidden"
-                            src={authorData?.photoURL}
+                            src={authorData?.photoURL || "/avatar-default.jpg"}
                             alt="Profile image"
                             width={24}
                             height={24}
@@ -50,26 +100,34 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, crea
                     <p className="font-semibold ml-2 text-sm  ">{authorData?.displayName}</p>
                 </Link>
                 <div className="flex items-start">
-                    <Button size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
-                        <Bookmark className="!w-5 !h-5" />
-                    </Button>
+                    {authUserData ? (
+                        <Button onClick={handleSavedJob} size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
+                            {!save ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
+                        </Button>
+                    ) : (
+                        <Login>
+                            <Button size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
+                                <Bookmark className="!w-5 !h-5" />
+                            </Button>
+                        </Login>
+                    )}
 
-                    <Popover modal={false}>
+                    <Popover modal={true} open={openOption} onOpenChange={() => setOpenOption((prev) => !prev)}>
                         <PopoverTrigger className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-accent">
                             <Ellipsis className="!w-5 !h-5" />
                         </PopoverTrigger>
                         <PopoverContent className="w-48 p-1" align="end">
-                            <Button variant="ghost" className="w-full flex justify-start h-8">
+                            <Button onClick={handleCopyLink} variant="ghost" className="w-full flex justify-start h-8">
                                 <Link2 />
                                 <p className="text-sm">Sao chép liên kết</p>
                             </Button>
-                            <Button variant="ghost" className="w-full flex justify-start h-8">
+                            {/* <Button variant="ghost" className="w-full flex justify-start h-8">
                                 <Flag />
                                 <p className="text-sm">Báo cáo</p>
-                            </Button>
+                            </Button> */}
                             {/* my Blog */}
                             {myBlog && (
-                                <Button variant="ghost" className="w-full flex justify-start h-8">
+                                <Button onClick={deleteBlog} variant="ghost" className="w-full flex justify-start h-8">
                                     <Trash2 color="#ef4444" />
                                     <p className="text-sm text-red-500">Xóa</p>
                                 </Button>
@@ -80,10 +138,12 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, title, tag, content, crea
             </div>
             <Link href={`/blog/${blogId}`} className="w-full cursor-pointer">
                 <div className="w-full">
-                    <h1 className="text-xl font-bold">{title.length > 85 ? title.slice(0, 85) + "..." : title}</h1>
+                    <h1 className="text-base md:text-xl font-bold">{title.length > 85 ? title.slice(0, 85) + "..." : title}</h1>
                 </div>
                 <div className="w-full">
-                    <p className="text-gray-500 block w-full text-sm">{content.length > 230 ? content.slice(0, 230) + "..." : content}</p>
+                    <p className="text-gray-500 block w-full text-sm">
+                        {content.length > 230 ? content.slice(0, 230).replaceAll("*", "").replaceAll("#", "").replaceAll("`", "").replaceAll("+", "") + "..." : content}
+                    </p>
                 </div>
             </Link>
             <div className="w-full flex justify-between items-center mt-2">

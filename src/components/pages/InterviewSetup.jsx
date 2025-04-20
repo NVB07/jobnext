@@ -1,18 +1,34 @@
 "use client";
 import { useState, useContext } from "react";
 import { JobContext } from "@/context/JobProvider";
+import { AuthContext } from "@/context/AuthContextProvider";
 import Image from "next/image";
 import { useRouter } from "next13-progressbar";
 import Link from "next/link";
 
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
 import { PulsatingButton } from "@/components/magicui/pulsating-button";
 import { auth } from "@/firebase/firebaseConfig";
 import { POST_METHOD, GET_METHOD } from "@/services/services";
 const InterviewSetup = () => {
+    const { authUserData } = useContext(AuthContext);
     const { jobData } = useContext(JobContext);
-
+    const [checkbox, setCheckbox] = useState(true);
+    const [candidate, setCandidate] = useState(null);
     const [loading, setLoading] = useState(false);
-    console.log("jobData", jobData);
+
+    const changeChecked = () => {
+        setCheckbox((prev) => {
+            if (prev) {
+                setCandidate(authUserData?.userData.textData.review);
+                return false;
+            } else {
+                return true;
+            }
+        });
+    };
     const router = useRouter();
 
     const handleInterview = async () => {
@@ -31,8 +47,8 @@ const InterviewSetup = () => {
                 } else {
                     const bodyReq = {
                         jobRequirement: jobData.jobRequirements,
-                        jobRequirementsElement: jobData.jobRequirementsElement,
-                        candidateDescription: jobData.candidateDescription,
+                        jobRequirementsElement: jobData.jobRequirementsElement || jobData.jobRequirements,
+                        candidateDescription: candidate || authUserData?.userData.textData.review,
                         jobId: jobData.jobId,
                         skills: jobData.skills,
                         jobTitle: jobData.jobTitle,
@@ -63,20 +79,44 @@ const InterviewSetup = () => {
                             <li> Chuẩn bị kiến thức chuyên môn liên quan đến vị trí ứng tuyển.</li>
                             <li>Trả lời các câu hỏi một cách trung thực, đúng với năng lực và kinh nghiệm thật sự của bạn.</li>
                         </ul>
-                        <p className="text-foreground/80 mt-1"> Chúc bạn có buổi phỏng vấn hiệu quả!</p>
+                        <p className="font-bold text-sm mt-1">⚠️ Đây chỉ là cuộc phỏng vấn giả tưởng, người phỏng vấn không đại diện cho bất cứ doanh nghiệp nào.</p>
+                        <p className="text-foreground/80 "> Chúc bạn có buổi phỏng vấn hiệu quả!</p>
                     </div>
-                    <div className="flex flex-col gap-4">
-                        {!loading ? (
-                            <PulsatingButton disabled={loading} onClick={handleInterview} pulseColor="#22c55e" className="bg-green-500 font-bold ">
-                                Bắt đầu phỏng vấn
-                            </PulsatingButton>
-                        ) : (
-                            <PulsatingButton pulseColor="" className="bg-green-500 font-bold  cursor-default">
-                                Đang tạo phỏng vấn ...
-                            </PulsatingButton>
+
+                    <div className="mb-4">
+                        <div className="flex flex-col gap-4">
+                            {!loading ? (
+                                <PulsatingButton disabled={loading} onClick={handleInterview} pulseColor="#22c55e" className="bg-green-500 font-bold ">
+                                    Bắt đầu phỏng vấn
+                                </PulsatingButton>
+                            ) : (
+                                <PulsatingButton pulseColor="" className="bg-green-500 font-bold  cursor-default">
+                                    Đang tạo phỏng vấn ...
+                                </PulsatingButton>
+                            )}
+                        </div>
+                        <div className="font-bold  mt-3">
+                            <span className="text-red-500">*</span> Thông tin của bạn
+                        </div>
+                        <div className="flex mt-2 mb-1 items-center">
+                            <Checkbox checked={checkbox} onCheckedChange={() => changeChecked()} id="useMyData" />
+                            <Label htmlFor="useMyData" className="ml-1 cursor-pointer">
+                                Dùng thông tin đã tải lên
+                            </Label>
+                        </div>
+                        {!checkbox && (
+                            <>
+                                <Textarea
+                                    value={candidate}
+                                    onChange={(e) => setCandidate(e.target.value)}
+                                    placeholder="Mô tả về kiến thức, kĩ năng, kinh nghiệm"
+                                    className="w-full !text-base min-h-56"
+                                />
+                            </>
                         )}
                     </div>
-                    <div className="w-full mt-3">
+
+                    <div className="w-full">
                         <div className="font-bold">Yêu cầu công việc :</div>
                         {jobData.jobRequirementsElement ? (
                             <div

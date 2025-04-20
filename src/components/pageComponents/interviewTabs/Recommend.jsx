@@ -4,37 +4,96 @@ import { useQuery } from "@tanstack/react-query";
 import { POST_METHOD } from "@/services/services";
 import JobCard from "../JobCard";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import NoData from "@/components/pages/NoData";
 
 const perPage = 20;
 const maxVisiblePages = 5;
 
+// const fetchJobs = async ({ queryKey }) => {
+//     const [, page, authUserData] = queryKey;
+//     const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, {
+//         skill: authUserData?.userData.textData.cvLabel.Skills,
+//         groupJobFunctionV3Name: authUserData?.userData.textData.cvLabel.Industry,
+//         jobLevel: authUserData?.userData.textData.cvLabel.Rank,
+//         location: authUserData?.userData.textData.cvLabel.Address,
+//         review: authUserData?.userData.textData.review,
+//     });
+
+//     if (!result?.success) throw new Error("Lỗi khi tải dữ liệu");
+//     return result;
+// };
 const fetchJobs = async ({ queryKey }) => {
-    const [, page, authUserData] = queryKey;
-    const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, {
-        skill: authUserData?.userData.textData.cvLabel.Skills,
-        groupJobFunctionV3Name: authUserData?.userData.textData.cvLabel.Industry,
-        jobLevel: authUserData?.userData.textData.cvLabel.Rank,
-        location: authUserData?.userData.textData.cvLabel.Address,
-        review: authUserData?.userData.textData.review,
-    });
+    const [, page, authUserData, filters] = queryKey;
+    const { address, rank, skills } = filters;
+
+    const body = {};
+
+    if (skills) body.skill = authUserData?.userData.textData.cvLabel.Skills;
+    // if (industry) body.groupJobFunctionV3Name = authUserData?.userData.textData.cvLabel.Industry;
+    if (rank) body.jobLevel = authUserData?.userData.textData.cvLabel.Rank;
+    if (address) body.location = authUserData?.userData.textData.cvLabel.Address;
+    body.groupJobFunctionV3Name = authUserData?.userData.textData.cvLabel.Industry;
+    body.review = authUserData?.userData.textData.review;
+
+    const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, body);
 
     if (!result?.success) throw new Error("Lỗi khi tải dữ liệu");
     return result;
 };
 
 const Recommend = ({ authUserData }) => {
+    const [checkbox, setCheckbox] = useState(true);
+    const [adddressCheckbox, setAdddressCheckbox] = useState(true);
+    const [rankCheckbox, setRankCheckbox] = useState(true);
+    const [industryCheckbox, setIndustryCheckbox] = useState(true);
+    const [skillsCheckbox, setSkillsCheckbox] = useState(true);
+
     const [currentPage, setCurrentPage] = useState(1);
     const topRef = useRef(null);
 
+    const changeChecked = (item) => {
+        if (item === "address") {
+            setAdddressCheckbox((prev) => !prev);
+        } else if (item === "rank") {
+            setRankCheckbox((prev) => !prev);
+        } else if (item === "industry") {
+            setIndustryCheckbox((prev) => !prev);
+        } else if (item === "skills") {
+            setSkillsCheckbox((prev) => !prev);
+        }
+    };
+
+    // const {
+    //     data: matchingJobs,
+    //     isLoading,
+    //     error,
+    // } = useQuery({
+    //     queryKey: ["matchingJobs", currentPage, authUserData],
+    //     queryFn: fetchJobs,
+    //     keepPreviousData: true, // Giữ dữ liệu trang trước trong khi tải trang mới
+    //     staleTime: 1000 * 60 * 15, // Cache dữ liệu trong 15 phút
+    // });
     const {
         data: matchingJobs,
         isLoading,
         error,
     } = useQuery({
-        queryKey: ["matchingJobs", currentPage, authUserData],
+        queryKey: [
+            "matchingJobs",
+            currentPage,
+            authUserData,
+            {
+                address: adddressCheckbox,
+                rank: rankCheckbox,
+
+                skills: skillsCheckbox,
+            },
+        ],
         queryFn: fetchJobs,
-        keepPreviousData: true, // Giữ dữ liệu trang trước trong khi tải trang mới
-        staleTime: 1000 * 60 * 15, // Cache dữ liệu trong 15 phút
+        keepPreviousData: true,
+        staleTime: 1000 * 60 * 15,
     });
 
     const getPageRange = () => {
@@ -60,14 +119,53 @@ const Recommend = ({ authUserData }) => {
     return (
         <div className="w-full">
             <div ref={topRef} className="absolute top-0" />
-            <h1 className="text-xl font-bold mb-3">Công việc phù hợp với kĩ năng của bạn</h1>
-
+            <h1 className="text-xl font-bold mb-3">Công việc phù hợp với bạn</h1>
+            <div className="flex flex-col xl:flex-row gap-3">
+                <div className="flex  gap-3">
+                    {authUserData?.userData.textData.cvLabel.Address && (
+                        <div className="flex items-center mb-4">
+                            <Checkbox checked={adddressCheckbox} onCheckedChange={() => changeChecked("address")} id="adddressCheckbox" />
+                            <Label htmlFor="adddressCheckbox" className="ml-1 cursor-pointer">
+                                {authUserData?.userData.textData.cvLabel.Address}
+                            </Label>
+                        </div>
+                    )}
+                    {authUserData?.userData.textData.cvLabel.Rank && (
+                        <div className="flex items-center mb-4">
+                            <Checkbox checked={rankCheckbox} onCheckedChange={() => changeChecked("rank")} id="rankCheckbox" />
+                            <Label htmlFor="rankCheckbox" className="ml-1 cursor-pointer">
+                                {authUserData?.userData.textData.cvLabel.Rank}
+                            </Label>
+                        </div>
+                    )}
+                </div>
+                {/* {authUserData?.userData.textData.cvLabel.Industry && (
+                    <div className="flex items-center mb-4">
+                        <Checkbox checked={industryCheckbox} onCheckedChange={() => changeChecked("industry")} id="industryCheckbox" />
+                        <Label htmlFor="industryCheckbox" className="ml-1 cursor-pointer">
+                            {authUserData?.userData.textData.cvLabel.Industry.length > 40
+                                ? `${authUserData?.userData.textData.cvLabel.Industry.slice(0, 40)}...`
+                                : authUserData?.userData.textData.cvLabel.Industry}
+                        </Label>
+                    </div>
+                )} */}
+                {authUserData?.userData.textData.cvLabel.Skills && (
+                    <div className="flex items-center mb-4">
+                        <Checkbox checked={skillsCheckbox} onCheckedChange={() => changeChecked("skills")} id="skillsCheckbox" />
+                        <Label htmlFor="skillsCheckbox" title={authUserData?.userData.textData.cvLabel.Skills} className="ml-1 cursor-pointer">
+                            {authUserData?.userData.textData.cvLabel.Skills.length > 50
+                                ? `${authUserData?.userData.textData.cvLabel.Skills.slice(0, 50)}...`
+                                : authUserData?.userData.textData.cvLabel.Skills}
+                        </Label>
+                    </div>
+                )}
+            </div>
             {isLoading && <p>Đang tải...</p>}
             {error && <p className="text-red-500">Lỗi tải dữ liệu</p>}
 
             {matchingJobs?.data?.length > 0
                 ? matchingJobs.data.map((job) => <JobCard key={job.jobId} job={job} authUserData={authUserData} />)
-                : !isLoading && <p>Không có job</p>}
+                : !isLoading && <NoData title="Không tìm thấy công việc nào" subTitle="Có thể tìm thấy việc làm nếu bỏ chọn bộ lọc" />}
 
             {matchingJobs?.pagination?.totalPages > 1 && (
                 <div>

@@ -57,15 +57,14 @@
 /* Thẻ đoạn văn và nội dung */
 .custom-html-style p {
     display: block;
+    margin: 3px 0;
 }
 
-.custom-html-style pre {
-    display: block;
+.light .custom-html-style pre {
+    background-color: #e2fefd;
+    font-size: 14px;
     border-radius: 8px !important;
-    font-family: monospace;
-    white-space: pre;
-    background-color: #f7f9fa;
-    color: black;
+    overflow-x: auto;
 }
 .dark .custom-html-style pre {
     display: block;
@@ -75,15 +74,17 @@
     background-color: #494949;
 }
 
-.custom-html-style blockquote {
+.light .custom-html-style blockquote {
     border-radius: 8px !important;
     display: block;
-    margin-left: 40px;
-    background-color: #f7f9fa;
+    padding: 5px 8px 5px 20px;
+    background-color: #e2fefd;
 }
 
 .dark .custom-html-style blockquote {
     display: block;
+    border-radius: 8px !important;
+    padding: 5px 8px 5px 20px;
     background-color: #494949;
     color: white;
 }
@@ -92,18 +93,23 @@
     display: block;
     font-style: italic;
 }
-
+.custom-html-style ol,
+.custom-html-style ul {
+    font-size: 14px;
+    line-height: 28px;
+    padding-left: 10px !important;
+}
 /* Thẻ danh sách */
 .custom-html-style ul {
     display: block;
     list-style-type: disc;
-    margin-left: 40px;
+    margin-left: 20px;
 }
 
 .custom-html-style ol {
     display: block;
     list-style-type: decimal;
-    margin-left: 40px;
+    margin-left: 20px;
 }
 
 .custom-html-style li {
@@ -155,11 +161,23 @@
 .dark .custom-html-style th {
     background-color: #494949;
     color: white;
+    border: 1px solid #9b9b9b;
+}
+.light .custom-html-style th {
+    background-color: #e2fefd;
+    border: 1px solid #9b9b9b;
 }
 
-.custom-html-style td {
+.light .custom-html-style td {
     display: table-cell;
     text-align: left;
+    border: 1px solid #9b9b9b;
+}
+
+.dark .custom-html-style td {
+    display: table-cell;
+    text-align: left;
+    border: 1px solid #505050;
 }
 
 .custom-html-style caption {
@@ -171,7 +189,6 @@
 .custom-html-style a {
     display: inline;
     color: #5757eb;
-    text-decoration: underline;
 }
 
 .dark .custom-html-style a {
@@ -222,16 +239,20 @@
 }
 
 .dark .custom-html-style code {
+    padding: 0 2px;
+    border-radius: 2px;
     display: inline;
     font-family: monospace;
     background-color: #494949;
     color: #ffffff;
 }
 
-.custom-html-style code {
+.light .custom-html-style code {
+    border-radius: 2px;
+    padding: 0 2px;
     display: inline;
     font-family: monospace;
-    background-color: #f7f9fa;
+    background-color: #e2fefd;
     color: #000;
 }
 
@@ -259,13 +280,18 @@
     display: inline;
 }
 
-.custom-html-style hr {
+.light .custom-html-style hr {
     display: block;
-    border-top: 1px solid #000;
+    border-top: 1px solid #dadada;
+}
+.dark .custom-html-style hr {
+    display: block;
+    border-top: 1px solid #323232;
 }
 
 /* Thẻ hình ảnh và media */
 .custom-html-style img {
+    margin: 5px 0;
     display: inline;
     vertical-align: middle;
     max-height: 500px;

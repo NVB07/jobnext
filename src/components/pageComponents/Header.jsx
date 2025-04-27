@@ -12,7 +12,7 @@ import { BorderBeam } from "@/components/magicui/border-beam";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 
-import { House, NotebookPen, BotMessageSquare, MoonStar, CircleUser, Sun, BriefcaseBusiness } from "lucide-react";
+import { House, NotebookPen, BotMessageSquare, MoonStar, CircleUser, Sun, BriefcaseBusiness, FileUser } from "lucide-react";
 import IconGroup2 from "@/components/ui/IconGroup2";
 
 import Login from "@/components/pageComponents/Login";
@@ -38,8 +38,8 @@ const Header = () => {
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 <Link
-                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
-                                        urlPath === "/" && "border border-current] "
+                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:border-2 transition-colors ${
+                                        urlPath === "/" && "border-2  bg-[#7e7e7e37]"
                                     } `}
                                     href={"/"}
                                 >
@@ -57,8 +57,8 @@ const Header = () => {
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 <Link
-                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
-                                        urlPath.includes("/blog") && "border-2 border-current]"
+                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:border-2 transition-colors ${
+                                        urlPath.includes("/blog") && "border-2  bg-[#7e7e7e37]"
                                     }`}
                                     href={"/blog"}
                                 >
@@ -75,24 +75,26 @@ const Header = () => {
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 {authUserData ? (
-                                    <Link
-                                        className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
-                                            urlPath === "/chatbot" && "border-2 border-current]"
-                                        }`}
-                                        href={"/chatbot"}
-                                    >
-                                        <BotMessageSquare />
-                                    </Link>
+                                    <>
+                                        <Link
+                                            className={` w-12 h-12 flex flex-col items-center justify-center rounded-full hover:border-2 transition-colors ${
+                                                urlPath === "/CV-analysis" && "border-2  bg-[#7e7e7e37]"
+                                            }`}
+                                            href={"/CV-analysis"}
+                                        >
+                                            <FileUser />
+                                        </Link>
+                                    </>
                                 ) : (
                                     <Login>
-                                        <div className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
-                                            <BotMessageSquare />
+                                        <div className="w-12 h-12 flex flex-col items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
+                                            <FileUser />
                                         </div>
                                     </Login>
                                 )}
                             </TooltipTrigger>
                             <TooltipContent sideOffset={8}>
-                                <p>AI chatbot</p>
+                                <p>CV analysis</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -102,8 +104,8 @@ const Header = () => {
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 {authUserData ? (
                                     <Link
-                                        className={` w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors ${
-                                            urlPath === "/jobs" && "border-2 border-current]"
+                                        className={` w-12 h-12 flex items-center justify-center rounded-full hover:border-2 transition-colors ${
+                                            urlPath === "/jobs" && "border-2  bg-[#7e7e7e37]"
                                         }`}
                                         href={"/jobs"}
                                     >
@@ -150,7 +152,7 @@ const Header = () => {
                                 {authUserData ? (
                                     <Link
                                         href={`/user/${authUserData.uid}`}
-                                        className=" w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
+                                        className=" w-12 h-12 flex items-center justify-center rounded-full hover:border-2 transition-colors"
                                     >
                                         {/* <CircleUser /> */}
                                         {authUserData?.photoURL ? (

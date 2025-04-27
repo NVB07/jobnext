@@ -2,7 +2,8 @@
 import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { POST_METHOD } from "@/services/services";
-import JobCard from "../JobCard";
+// import JobCard from "../JobCard";
+import JobCard from "../JobCard2";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -36,6 +37,7 @@ const fetchJobs = async ({ queryKey }) => {
     if (address) body.location = authUserData?.userData.textData.cvLabel.Address;
     body.groupJobFunctionV3Name = authUserData?.userData.textData.cvLabel.Industry;
     body.review = authUserData?.userData.textData.review;
+    body.uid = authUserData?.uid;
 
     const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, body);
 

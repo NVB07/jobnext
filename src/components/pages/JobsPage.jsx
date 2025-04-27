@@ -73,14 +73,14 @@ const JobsPage = () => {
                                 value="searchjobs"
                                 onClick={() => toggleSidebar("searchjobs")}
                             >
-                                <span className="text-left block w-full text-base font-medium">Tìm kiếm việc làm </span>
+                                <span className="text-left block w-full text-base font-medium">Tìm kiếm việc làm {`(vietnamworks)`} </span>
                             </TabsTrigger>
                             <TabsTrigger
                                 className="w-full bg-background mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
                                 value="recommend"
                                 onClick={() => toggleSidebar("recommend")}
                             >
-                                <span className="text-left block w-full text-base font-medium"> Việc làm phù hợp </span>
+                                <span className="text-left block w-full text-base font-medium"> Việc làm phù hợp {`(vietnamworks)`} </span>
                             </TabsTrigger>
                             <TabsTrigger
                                 className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"

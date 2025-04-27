@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { GET_METHOD } from "@/services/services";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import JobCard from "../JobCard";
+// import JobCard from "../JobCard";
+import JobCard from "../JobCard2";
 import NoData from "@/components/pages/NoData";
 
 const SavedJob = ({ authUserData }) => {
@@ -12,6 +13,8 @@ const SavedJob = ({ authUserData }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 10;
     const maxVisiblePages = 5;
+
+    const topRef = useRef(null);
 
     const getPageRange = () => {
         const totalPages = savedJobs.pagination.totalPages;
@@ -29,7 +32,7 @@ const SavedJob = ({ authUserData }) => {
     const handlePageChange = (page) => {
         if (page >= 1 && page <= savedJobs.pagination.totalPages) {
             setCurrentPage(page);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            topRef.current?.scrollIntoView();
         }
     };
     useEffect(() => {
@@ -44,6 +47,7 @@ const SavedJob = ({ authUserData }) => {
 
     return (
         <div className="w-full">
+            <div ref={topRef} className="absolute top-0" />
             <h1 className="text-xl font-bold mb-3">Những công việc đã lưu</h1>
             <div>
                 {savedJobs?.data.length > 0 ? (
@@ -55,7 +59,7 @@ const SavedJob = ({ authUserData }) => {
                     <NoData title="Bạn chưa lưu công việc nào" />
                 )}
             </div>
-            {savedJobs?.data.length > 0 && (
+            {savedJobs?.pagination.totalPages > 1 && (
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>

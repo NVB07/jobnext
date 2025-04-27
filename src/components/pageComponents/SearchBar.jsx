@@ -3,7 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { POST_METHOD } from "@/services/services";
-import JobCard from "./JobCard";
+// import JobCard from "./JobCard";
+import JobCard from "./JobCard2";
 
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Search, SlidersHorizontal, X } from "lucide-react";
@@ -371,6 +372,8 @@ const vietnameseProvinces = [
     "Vĩnh Long",
     "Vĩnh Phúc",
     "Yên Bái",
+    "International",
+    "Other",
 ];
 
 const jobCategoriesMap = {
@@ -409,7 +412,7 @@ const jobCategoriesMap = {
 const experienceLevelsMap = {
     "Intern/Student": "Thực tập sinh/Sinh viên",
     "Fresher/Entry level": "Mới tốt nghiệp/Mới vào nghề",
-    "Experienced (non-manager)": "Có kinh nghiệm (không phải quản lý)",
+    "Experienced \\(non-manager\\)": "Có kinh nghiệm (không phải quản lý)",
     Manager: "Quản lý",
     "Director and above": "Giám đốc trở lên",
 };

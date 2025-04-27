@@ -9,6 +9,8 @@ import AuthContextProvider from "@/context/AuthContextProvider";
 import ProgressBar from "@/lib/ProgressBar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import QueryProvider from "@/context/QueryProvider";
+import { JobProvider } from "@/context/JobProvider";
+
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
     variable: "--font-geist-sans",
@@ -33,13 +35,15 @@ export default function RootLayout({ children }) {
                     <ProgressBar>
                         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                             <AuthContextProvider>
-                                <QueryProvider>
-                                    <div className="max-w-[2200px] w-full flex flex-col items-center">
-                                        <Header />
-                                        {children}
-                                        <Footer />
-                                    </div>
-                                </QueryProvider>
+                                <JobProvider>
+                                    <QueryProvider>
+                                        <div className="max-w-[2200px] w-full flex flex-col items-center">
+                                            <Header />
+                                            {children}
+                                            <Footer />
+                                        </div>
+                                    </QueryProvider>
+                                </JobProvider>
                                 <Toaster position="bottom-right" richColors closeButton />
                             </AuthContextProvider>
                         </ThemeProvider>

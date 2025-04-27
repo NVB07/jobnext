@@ -1,4 +1,5 @@
 "use client";
+import { jsonrepair } from "jsonrepair";
 import { useState, createContext, useEffect } from "react";
 import { onAuthStateChanged, onIdTokenChanged } from "firebase/auth";
 import { updateAuthCookie, deleteCookie } from "@/lib/auth/cookiesManager";
@@ -18,8 +19,18 @@ const AuthContextProvider = ({ children }) => {
                 if (userDB?.success) {
                     const textData = userDB?.user.userData?.textData;
                     if (textData) {
-                        const textDataObject = JSON.parse(textData);
-                        userDB.user.userData.textData = textDataObject;
+                        // const textDataObject = JSON.parse(textData);
+                        // userDB.user.userData.textData = textDataObject;
+                        if (textData) {
+                            try {
+                                const fixedText = jsonrepair(textData);
+                                const textDataObject = JSON.parse(fixedText);
+                                userDB.user.userData.textData = textDataObject;
+                            } catch (error) {
+                                console.error("Không parse được textData:", error);
+                                userDB.user.userData.textData = {}; // fallback tránh crash app
+                            }
+                        }
                     }
                 }
                 updateAuthCookie("accessToken", user.auth.currentUser.stsTokenManager.accessToken, 360);

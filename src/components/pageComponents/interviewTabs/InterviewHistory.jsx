@@ -19,6 +19,9 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, BadgeCheck, FolderRoot } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 const InterviewHistory = ({ authUserData }) => {
     const [interviews, setInterviews] = useState({ data: [], pagination: {} });
@@ -76,7 +79,7 @@ const InterviewHistory = ({ authUserData }) => {
                     <NoData title="Bạn chưa phỏng vấn công việc nào" subTitle="Lịch sử phỏng vấn sẽ được hiển thị ở đây" />
                 )}
             </div>
-            {interviews?.data.length > 0 && (
+            {interviews?.pagination.totalPages > 1 && (
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
@@ -112,7 +115,7 @@ const InterviewHistory = ({ authUserData }) => {
 
 export default InterviewHistory;
 
-const HistoryItem = ({ interview, setReload }) => {
+function HistoryItem({ interview, setReload }) {
     let scoreObj = {};
     try {
         const raw = interview.chatHistory[interview.chatHistory.length - 1].parts[0].text.replace(/```json|```/g, "").trim();
@@ -155,39 +158,104 @@ const HistoryItem = ({ interview, setReload }) => {
             console.log("Delete failed");
         }
     };
+
     return (
-        <div className="flex flex-col gap-2 w-full mb-4 p-4  rounded-lg border">
-            <div className="flex justify-between items-center mb-2">
-                <Link href={`/jobs/interview/${interview._id}`} className="text-lg font-semibold text-wrap truncate line-clamp-1 ">
-                    {interview.jobTitle}
-                </Link>
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="icon" className="text-red-500 rounded-full w-9 h9 hover:bg-foreground/5">
-                            <Trash2 />
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Bạn có chắc muốn xóa cuộc phỏng vấn?</AlertDialogTitle>
-                            <AlertDialogDescription className="text-foreground/80 text-base">{interview.jobTitle}</AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Hủy</AlertDialogCancel>
-                            <AlertDialogAction onClick={deleteInterview} className="bg-red-500 hover:bg-red-400 text-white">
-                                Xóa
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+        <div className="w-full rounded-2xl border  hover:shadow-lg transition-all duration-300 overflow-hidden my-3">
+            <div className="relative">
+                <div className="p-6">
+                    <div className="flex flex-row items-start">
+                        <div className="flex-grow">
+                            <div className="flex items-start gap-4">
+                                <div>
+                                    <h3 className="text-xl font-bold  md:line-clamp-2">{interview.jobTitle}</h3>
+                                    <div className="flex items-center mt-2 text-sm ">
+                                        <FolderRoot className={`w-4 h-4 mr-1 shrink-0 ${interview.jobId ? "text-blue-500" : "text-green-500"}`} />
+                                        <span className={` ${interview.jobId ? "text-blue-500" : "text-green-500"}`}>{interview.jobId ? "vietnamworks" : "custom "}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {interview.skills && (
+                                <div className="mt-5">
+                                    <div className="font-medium text-sm  mb-2">Kỹ năng yêu cầu:</div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {interview.skills.split(",").map((skill, index) => {
+                                            const gradientClass = ["from-purple-500 to-indigo-500", "from-pink-500 to-purple-500", "from-orange-500 to-pink-500"][
+                                                index % 3
+                                            ];
+
+                                            return (
+                                                <Badge key={index} className={`bg-gradient-to-r ${gradientClass} text-white border-0 shadow-sm`}>
+                                                    {skill}
+                                                </Badge>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+                            <div className="mt-5">
+                                <div className="font-medium text-sm">Trạng thái:</div>
+                                <div className="mt-1">
+                                    {!scoreObj.state && scoreObj.pass === null && (
+                                        <div className="font-medium text-sm flex items-center text-red-500">Phỏng vấn bị hủy</div>
+                                    )}
+
+                                    {!scoreObj.state && scoreObj.pass !== null && <div className="font-medium text-sm flex items-center text-green-500">Hoàn thành</div>}
+
+                                    {scoreObj.state && scoreObj.pass === null && (
+                                        <div className="font-medium text-sm flex items-center text-orange-500">Chưa hoàn thành phỏng vấn</div>
+                                    )}
+                                </div>
+                            </div>
+                            {scoreObj.pass && (
+                                <div className="w-full lg:w-2/3 mt-4">
+                                    <div className="font-medium text-sm flex items-center mb-1">Tỉ lệ đạt:</div>
+                                    <div className="flex items-center">
+                                        <span className="mr-2 text-base font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-600 bg-clip-text text-transparent">
+                                            {scoreObj.pass}%
+                                        </span>
+                                        <Progress className="h-3" value={scoreObj.pass} />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className=" mt-0 ml-6 flex flex-col items-center justify-start">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="icon" className="text-red-500 rounded-full w-9 h9 hover:bg-foreground/5">
+                                        <Trash2 />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Bạn có chắc muốn xóa cuộc phỏng vấn?</AlertDialogTitle>
+                                        <AlertDialogDescription className="text-foreground/80 text-base">{interview.jobTitle}</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                                        <AlertDialogAction onClick={deleteInterview} className="bg-red-500 hover:bg-red-400 text-white">
+                                            Xóa
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-between mt-6">
+                        <div className="font-medium text-sm flex items-end text-foreground/70 ">Thời gian tạo: {convertDate(interview.createdAt)}</div>
+
+                        <Link
+                            href={`/jobs/interview/${interview._id}`}
+                            className="rounded-full flex items-center px-3 py-2 text-sm bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
+                        >
+                            <span className="mr-2">Xem phỏng vấn</span>
+                            <ExternalLinkIcon className="w-4 h-4" />
+                        </Link>
+                    </div>
+                </div>
             </div>
-            {interview.skills && (
-                <p className="text-sm border border-foreground/50 px-2 py-1 rounded-full w-fit text-wrap text-foreground/70 truncate line-clamp-1">{interview.skills}</p>
-            )}
-            <p className={`text-sm border px-2 py-1 rounded-full w-fit ${scoreObj.pass ? "text-green-500 border-green-500 " : "border-orange-500 text-orange-500"} `}>
-                {scoreObj.pass ? "Pass " + scoreObj.pass + "%" : "Chưa hoàn thành"}
-            </p>
-            <span className="text-gray-500 text-sm">Thời gian tạo: {convertDate(interview.createdAt)}</span>
         </div>
     );
-};
+}

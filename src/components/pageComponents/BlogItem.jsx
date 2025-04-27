@@ -117,7 +117,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
                             <Ellipsis className="!w-5 !h-5" />
                         </PopoverTrigger>
                         <PopoverContent className="w-48 p-1" align="end">
-                            <Button onClick={handleCopyLink} variant="ghost" className="w-full flex justify-start h-8">
+                            <Button onClick={handleCopyLink} variant="ghost" className="w-full hover:bg-foreground/5 flex justify-start h-8">
                                 <Link2 />
                                 <p className="text-sm">Sao chép liên kết</p>
                             </Button>
@@ -127,7 +127,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
                             </Button> */}
                             {/* my Blog */}
                             {myBlog && (
-                                <Button onClick={deleteBlog} variant="ghost" className="w-full flex justify-start h-8">
+                                <Button onClick={deleteBlog} variant="ghost" className="w-full hover:bg-foreground/5 flex justify-start h-8">
                                     <Trash2 color="#ef4444" />
                                     <p className="text-sm text-red-500">Xóa</p>
                                 </Button>

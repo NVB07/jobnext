@@ -1,10 +1,10 @@
 "use client";
-import { use, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Bookmark, Ellipsis, Link2, Flag, Trash2, BookmarkCheck } from "lucide-react";
+import { Bookmark, Ellipsis, Link2, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import MDView from "../pageComponents/MDView";
 import Image from "next/image";
@@ -13,7 +13,6 @@ import { POST_METHOD, GET_METHOD } from "@/services/services";
 import { AuthContext } from "@/context/AuthContextProvider";
 import withPopstateRerender from "../pageComponents/WithPopstateRerender";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const BlogDetail = ({ data }) => {
     const [blogData, setBlogData] = useState(data);

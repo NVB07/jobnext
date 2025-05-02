@@ -12,31 +12,17 @@ import NoData from "@/components/pages/NoData";
 const perPage = 20;
 const maxVisiblePages = 5;
 
-// const fetchJobs = async ({ queryKey }) => {
-//     const [, page, authUserData] = queryKey;
-//     const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, {
-//         skill: authUserData?.userData.textData.cvLabel.Skills,
-//         groupJobFunctionV3Name: authUserData?.userData.textData.cvLabel.Industry,
-//         jobLevel: authUserData?.userData.textData.cvLabel.Rank,
-//         location: authUserData?.userData.textData.cvLabel.Address,
-//         review: authUserData?.userData.textData.review,
-//     });
-
-//     if (!result?.success) throw new Error("Lỗi khi tải dữ liệu");
-//     return result;
-// };
 const fetchJobs = async ({ queryKey }) => {
     const [, page, authUserData, filters] = queryKey;
     const { address, rank, skills } = filters;
 
     const body = {};
 
-    if (skills) body.skill = authUserData?.userData.textData.cvLabel.Skills;
-    // if (industry) body.groupJobFunctionV3Name = authUserData?.userData.textData.cvLabel.Industry;
-    if (rank) body.jobLevel = authUserData?.userData.textData.cvLabel.Rank;
-    if (address) body.location = authUserData?.userData.textData.cvLabel.Address;
-    body.groupJobFunctionV3Name = authUserData?.userData.textData.cvLabel.Industry;
-    body.review = authUserData?.userData.textData.review;
+    if (skills) body.skill = authUserData?.userData.profile.Skills;
+    if (rank) body.jobLevel = authUserData?.userData.profile.Rank;
+    if (address) body.location = authUserData?.userData.profile.Address;
+    body.groupJobFunctionV3Name = authUserData?.userData.profile.Industry;
+    body.review = authUserData?.userData.review;
     body.uid = authUserData?.uid;
 
     const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, body);
@@ -124,40 +110,40 @@ const Recommend = ({ authUserData }) => {
             <h1 className="text-xl font-bold mb-3">Công việc phù hợp với bạn</h1>
             <div className="flex flex-col xl:flex-row gap-3">
                 <div className="flex  gap-3">
-                    {authUserData?.userData.textData.cvLabel.Address && (
+                    {authUserData?.userData.profile.Address && (
                         <div className="flex items-center mb-4">
                             <Checkbox checked={adddressCheckbox} onCheckedChange={() => changeChecked("address")} id="adddressCheckbox" />
                             <Label htmlFor="adddressCheckbox" className="ml-1 cursor-pointer">
-                                {authUserData?.userData.textData.cvLabel.Address}
+                                {authUserData?.userData.profile.Address}
                             </Label>
                         </div>
                     )}
-                    {authUserData?.userData.textData.cvLabel.Rank && (
+                    {authUserData?.userData.profile.Rank && (
                         <div className="flex items-center mb-4">
                             <Checkbox checked={rankCheckbox} onCheckedChange={() => changeChecked("rank")} id="rankCheckbox" />
                             <Label htmlFor="rankCheckbox" className="ml-1 cursor-pointer">
-                                {authUserData?.userData.textData.cvLabel.Rank}
+                                {authUserData?.userData.profile.Rank}
                             </Label>
                         </div>
                     )}
                 </div>
-                {/* {authUserData?.userData.textData.cvLabel.Industry && (
+                {/* {authUserData?.userData.profile.Industry && (
                     <div className="flex items-center mb-4">
                         <Checkbox checked={industryCheckbox} onCheckedChange={() => changeChecked("industry")} id="industryCheckbox" />
                         <Label htmlFor="industryCheckbox" className="ml-1 cursor-pointer">
-                            {authUserData?.userData.textData.cvLabel.Industry.length > 40
-                                ? `${authUserData?.userData.textData.cvLabel.Industry.slice(0, 40)}...`
-                                : authUserData?.userData.textData.cvLabel.Industry}
+                            {authUserData?.userData.profile.Industry.length > 40
+                                ? `${authUserData?.userData.profile.Industry.slice(0, 40)}...`
+                                : authUserData?.userData.profile.Industry}
                         </Label>
                     </div>
                 )} */}
-                {authUserData?.userData.textData.cvLabel.Skills && (
+                {authUserData?.userData.profile.Skills && (
                     <div className="flex items-center mb-4">
                         <Checkbox checked={skillsCheckbox} onCheckedChange={() => changeChecked("skills")} id="skillsCheckbox" />
-                        <Label htmlFor="skillsCheckbox" title={authUserData?.userData.textData.cvLabel.Skills} className="ml-1 cursor-pointer">
-                            {authUserData?.userData.textData.cvLabel.Skills.length > 50
-                                ? `${authUserData?.userData.textData.cvLabel.Skills.slice(0, 50)}...`
-                                : authUserData?.userData.textData.cvLabel.Skills}
+                        <Label htmlFor="skillsCheckbox" title={authUserData?.userData.profile.Skills} className="ml-1 cursor-pointer">
+                            {authUserData?.userData.profile.Skills.length > 50
+                                ? `${authUserData?.userData.profile.Skills.slice(0, 50)}...`
+                                : authUserData?.userData.profile.Skills}
                         </Label>
                     </div>
                 )}

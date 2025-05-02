@@ -41,7 +41,7 @@ const CustomInterview = ({ authUserData }) => {
                 uid: authUserData?.uid,
                 jobTitle: jobTitle.trim(),
                 jobRequirements: jobDes.trim(),
-                candidateDescription: authUserData?.userData.textData.review,
+                candidateDescription: authUserData?.userData.review,
             });
             router.push("/jobs/interview");
         }

@@ -6,11 +6,11 @@ import { RainbowButton } from "@/components/magicui/rainbow-button";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { FileText, Upload } from "lucide-react";
 import { uploadCV, uploadText } from "@/services/services";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function PersonalInfoUpload({ children = <RainbowButton className="text-base">Tải lên thông tin cá nhân</RainbowButton>, uid, setReload }) {
     const [open, setOpen] = useState(false);
@@ -89,38 +89,38 @@ export default function PersonalInfoUpload({ children = <RainbowButton className
                     <DialogTitle>Tải lên thông tin cá nhân</DialogTitle>
                     <DialogDescription>Vui lòng nhập thông tin cá nhân hoặc tải lên tệp PDF chứa thông tin của bạn.</DialogDescription>
                 </DialogHeader>
-
-                <Tabs defaultValue="upload" className="w-full" onValueChange={setActiveTab}>
+                <div
+                    className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById("pdf-upload")?.click()}
+                >
+                    <Upload className="h-10 w-10 text-muted-foreground" />
+                    <div className="text-center">
+                        <p className="text-sm font-medium">Kéo và thả tệp PDF vào đây hoặc nhấp để chọn tệp</p>
+                        <p className="text-xs text-muted-foreground mt-1">Chỉ chấp nhận tệp PDF</p>
+                    </div>
+                    <Input id="pdf-upload" type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} disabled={isProcessing} />
+                    {file && (
+                        <div className="flex items-center gap-2 text-sm mt-2">
+                            <FileText className="h-4 w-4" />
+                            <span>{file.name}</span>
+                        </div>
+                    )}
+                </div>
+                {isProcessing && (
+                    <div className="absolute inset-0 bg-black/80 flex items-center justify-center text-white z-50 w-full h-full p-2">
+                        <div className="text-lg font-semibold">Đang xử lý...</div>
+                    </div>
+                )}
+                {/* <Tabs defaultValue="upload" className="w-full" onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="upload">Tải lên CV (PDF)</TabsTrigger>
                         <TabsTrigger value="input">Nhập thông tin</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="upload" className="mt-4">
-                        <div
-                            className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors"
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                            onClick={() => document.getElementById("pdf-upload")?.click()}
-                        >
-                            <Upload className="h-10 w-10 text-muted-foreground" />
-                            <div className="text-center">
-                                <p className="text-sm font-medium">Kéo và thả tệp PDF vào đây hoặc nhấp để chọn tệp</p>
-                                <p className="text-xs text-muted-foreground mt-1">Chỉ chấp nhận tệp PDF</p>
-                            </div>
-                            <Input id="pdf-upload" type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} disabled={isProcessing} />
-                            {file && (
-                                <div className="flex items-center gap-2 text-sm mt-2">
-                                    <FileText className="h-4 w-4" />
-                                    <span>{file.name}</span>
-                                </div>
-                            )}
-                        </div>
-                        {isProcessing && (
-                            <div className="absolute inset-0 bg-black/80 flex items-center justify-center text-white z-50 w-full h-full p-2">
-                                <div className="text-lg font-semibold">Đang xử lý...</div>
-                            </div>
-                        )}
+                       
                     </TabsContent>
                     <TabsContent value="input" className="mt-4">
                         <div className="grid gap-4 py-4">
@@ -137,12 +137,17 @@ export default function PersonalInfoUpload({ children = <RainbowButton className
                             </div>
                         </div>
                     </TabsContent>
-                </Tabs>
+                </Tabs> */}
 
                 <DialogFooter>
-                    <Button type="submit" onClick={handleSubmit} disabled={isProcessing}>
-                        {isProcessing ? "Đang xử lý..." : "Gửi"}
-                    </Button>
+                    <div className="w-full gap-2 sm:flex-row flex flex-col justify-between">
+                        <Link className="h-9 flex items-center justify-center px-2 bg-foreground/10 hover:bg-foreground/15 rounded-lg" href={`/user/${uid}/update`}>
+                            Nhập thông tin thủ công
+                        </Link>
+                        <Button type="submit" onClick={handleSubmit} disabled={isProcessing}>
+                            {isProcessing ? "Đang xử lý..." : "Tải lên"}
+                        </Button>
+                    </div>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

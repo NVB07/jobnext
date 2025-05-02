@@ -17,25 +17,10 @@ const AuthContextProvider = ({ children }) => {
                 const userDB = await GET_METHOD(`users/${user.uid}`);
 
                 if (userDB?.success) {
-                    const textData = userDB?.user.userData?.textData;
-                    if (textData) {
-                        // const textDataObject = JSON.parse(textData);
-                        // userDB.user.userData.textData = textDataObject;
-                        if (textData) {
-                            try {
-                                const fixedText = jsonrepair(textData);
-                                const textDataObject = JSON.parse(fixedText);
-                                userDB.user.userData.textData = textDataObject;
-                            } catch (error) {
-                                console.error("Không parse được textData:", error);
-                                userDB.user.userData.textData = {}; // fallback tránh crash app
-                            }
-                        }
-                    }
+                    setAuthUserData({ ...userDB.user, ...user });
+                    console.log({ ...userDB.user, ...user });
                 }
                 updateAuthCookie("accessToken", user.auth.currentUser.stsTokenManager.accessToken, 360);
-                setAuthUserData({ ...userDB.user, ...user });
-                console.log({ ...userDB.user, ...user });
             } else {
                 setAuthUserData(null);
             }

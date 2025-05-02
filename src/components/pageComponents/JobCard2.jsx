@@ -78,7 +78,7 @@ export default function JobCard({ job, authUserData }) {
                 skills: job.skills,
                 jobRequirements: JobRequirementsHandle,
                 jobRequirementsElement: JobRequirements.innerHTML,
-                candidateDescription: authUserData?.userData.textData.review,
+                candidateDescription: authUserData?.userData.review,
             });
             router.push("/jobs/interview");
         }

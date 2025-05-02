@@ -22,7 +22,7 @@ const InterviewSetup = () => {
     const changeChecked = () => {
         setCheckbox((prev) => {
             if (prev) {
-                setCandidate(authUserData?.userData.textData.review);
+                setCandidate(authUserData?.userData.review);
                 return false;
             } else {
                 return true;
@@ -48,7 +48,7 @@ const InterviewSetup = () => {
                     const bodyReq = {
                         jobRequirement: jobData.jobRequirements,
                         jobRequirementsElement: jobData.jobRequirementsElement || jobData.jobRequirements,
-                        candidateDescription: candidate || authUserData?.userData.textData.review,
+                        candidateDescription: candidate || authUserData?.userData.review,
                         jobId: jobData.jobId,
                         skills: jobData.skills,
                         jobTitle: jobData.jobTitle,

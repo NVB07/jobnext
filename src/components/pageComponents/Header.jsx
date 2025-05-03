@@ -52,53 +52,6 @@ const Header = () => {
                         </Tooltip>
                     </TooltipProvider>
                     <Separator orientation="vertical" />
-
-                    <TooltipProvider delayDuration={8} disableHoverableContent>
-                        <Tooltip>
-                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
-                                <Link
-                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:border-2 transition-colors ${
-                                        urlPath.includes("/blog") && "border-2  bg-[#7e7e7e37]"
-                                    }`}
-                                    href={"/blog"}
-                                >
-                                    <NotebookPen />
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent sideOffset={8}>
-                                <p>Blog</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-
-                    <TooltipProvider delayDuration={8} disableHoverableContent>
-                        <Tooltip>
-                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
-                                {authUserData ? (
-                                    <>
-                                        <Link
-                                            className={` w-12 h-12 flex flex-col items-center justify-center rounded-full hover:border-2 transition-colors ${
-                                                urlPath === "/CV-analysis" && "border-2  bg-[#7e7e7e37]"
-                                            }`}
-                                            href={"/CV-analysis"}
-                                        >
-                                            <FileUser />
-                                        </Link>
-                                    </>
-                                ) : (
-                                    <Login>
-                                        <div className="w-12 h-12 flex flex-col items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
-                                            <FileUser />
-                                        </div>
-                                    </Login>
-                                )}
-                            </TooltipTrigger>
-                            <TooltipContent sideOffset={8}>
-                                <p>CV analysis</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
@@ -124,7 +77,53 @@ const Header = () => {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
+                    <TooltipProvider delayDuration={8} disableHoverableContent>
+                        <Tooltip>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
+                                {authUserData ? (
+                                    <>
+                                        <Link
+                                            className={` w-12 h-12 flex flex-col items-center justify-center rounded-full hover:border-2 transition-colors ${
+                                                urlPath === "/CV-analysis" && "border-2  bg-[#7e7e7e37]"
+                                            }`}
+                                            href={"/CV-analysis"}
+                                        >
+                                            <FileUser />
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <Login>
+                                        <div className="w-12 h-12 flex flex-col items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
+                                            <FileUser />
+                                        </div>
+                                    </Login>
+                                )}
+                            </TooltipTrigger>
+                            <TooltipContent sideOffset={8}>
+                                <p>CV</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
 
+                    <TooltipProvider delayDuration={8} disableHoverableContent>
+                        <Tooltip>
+                            <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
+                                <Link
+                                    className={` w-12 h-12 flex items-center justify-center rounded-full hover:border-2 transition-colors ${
+                                        urlPath.includes("/blog") && "border-2  bg-[#7e7e7e37]"
+                                    }`}
+                                    href={"/blog"}
+                                >
+                                    <NotebookPen />
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent sideOffset={8}>
+                                <p>Blog</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+
+                    <Separator orientation="vertical" />
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
@@ -133,7 +132,7 @@ const Header = () => {
                                         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
                                         className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors"
                                     >
-                                        {theme === "light" ? <Sun /> : <MoonStar />}
+                                        {theme !== "light" ? <Sun /> : <MoonStar />}
                                     </div>
                                 ) : (
                                     <div className=" opacity-20  w-12 h-12 flex items-center justify-center rounded-full hover:bg-[#7e7e7e37] transition-colors">
@@ -141,11 +140,11 @@ const Header = () => {
                                     </div>
                                 )}
                             </TooltipTrigger>
-                            <TooltipContent sideOffset={8}>{theme === "light" ? <p>Light mode</p> : <p>Dark mode</p>}</TooltipContent>
+                            <TooltipContent sideOffset={8}>{theme !== "light" ? <p>Light mode</p> : <p>Dark mode</p>}</TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-
                     <Separator orientation="vertical" />
+
                     <TooltipProvider delayDuration={8} disableHoverableContent>
                         <Tooltip>
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">

@@ -13,8 +13,6 @@ export async function generateMetadata({ params }) {
     }
 }
 
-export default function RootLayout({ children, params }) {
-    console.log(params);
-
+export default function RootLayout({ children }) {
     return <>{children}</>;
 }

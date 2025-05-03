@@ -1,8 +1,8 @@
 import UserProfile from "@/components/pages/UserPage";
-const UserPageHome = () => {
+const UserPageHome = ({ params }) => {
     return (
         <div className="mt-">
-            <UserProfile />
+            <UserProfile uid={params.userid} />
         </div>
     );
 };

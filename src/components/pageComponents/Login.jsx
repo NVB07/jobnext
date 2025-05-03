@@ -120,7 +120,7 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
 
             updateAuthCookie("accessToken", user.stsTokenManager.accessToken, 360);
             setOpenDialog(false);
-            router.push(next || "/");
+            location.href = next || "/";
             reset();
         } catch (error) {
             console.error("Lỗi đăng ký:", error);

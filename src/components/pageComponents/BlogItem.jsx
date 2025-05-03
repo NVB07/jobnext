@@ -12,7 +12,7 @@ import Login from "./Login";
 
 import { GET_METHOD, DELETE_METHOD, POST_METHOD } from "@/services/services";
 
-const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content, createTime, setBlogChange, authUserData }) => {
+const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content, createTime, setBlogChange, authUserData, inUserPage = false }) => {
     const [authorData, setAuthorData] = useState();
     const [openOption, setOpenOption] = useState(false);
 
@@ -63,14 +63,19 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
             });
     };
     useEffect(() => {
-        const getAuthor = async () => {
-            const response = await GET_METHOD(`users/${authorUid}`);
+        if (!inUserPage) {
+            const getAuthor = async () => {
+                const response = await GET_METHOD(`users/${authorUid}`);
 
-            if (response?.success) {
-                setAuthorData(response.userRecord);
-            }
-        };
-        getAuthor();
+                if (response?.success) {
+                    setAuthorData(response.userRecord);
+                }
+            };
+
+            getAuthor();
+        } else {
+            setAuthorData(authUserData);
+        }
     }, []);
     const deleteBlog = async () => {
         const result = await DELETE_METHOD(`blogs/${blogId}`);
@@ -84,7 +89,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
     return (
         <div className="w-full border rounded-xl  mb-4 p-3">
             <div className="w-full flex justify-between h-">
-                <Link href={`user/${authorUid}`} variant="ghost" className="p-0 flex items-center  hover:opacity-80 h-[30px] hover:bg-transparent rounded-full  mb-5">
+                <Link href={`/user/${authorUid}`} variant="ghost" className="p-0 flex items-center  hover:opacity-80 h-[30px] hover:bg-transparent rounded-full  mb-5">
                     {authorData ? (
                         <Image
                             className="w-6 h-6 rounded-full -mr-1 overflow-hidden"

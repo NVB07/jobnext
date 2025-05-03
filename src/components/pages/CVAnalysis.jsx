@@ -13,7 +13,7 @@ const CVAnalysis = () => {
     const { authUserData } = useContext(AuthContext);
 
     return (
-        <div className=" min-[490px]:pt-[72px] pt-16 px-5 h-full bg-background">
+        <div className=" min-[490px]:pt-[72px] pt-16 px-5 w-full h-full bg-background">
             <h2 className="text-2xl font-bold mt-10 mb-2">Phân tích - gợi ý chỉnh sửa - tạo CV</h2>
 
             <div className="w-full flex flex-col gap-4 mt-5 border-b pb-3">

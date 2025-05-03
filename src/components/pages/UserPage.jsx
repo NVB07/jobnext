@@ -1,86 +1,42 @@
-// "use client";
-// import { useContext, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { signOut } from "firebase/auth";
-// import { auth } from "@/lib/firebase/firebaseConfig";
-// import { deleteCookie } from "@/lib/auth/cookiesManager";
-
-// import { AuthContext } from "@/context/AuthContextProvider";
-// import { GET_METHOD } from "@/services/services";
-
-// const UserPage = () => {
-//     const { authUserData } = useContext(AuthContext);
-//     const router = useRouter();
-//     const handleSignOut = () => {
-//         signOut(auth);
-//         deleteCookie("accessToken");
-//         router.push("/");
-//     };
-//     useEffect(() => {
-//         if (authUserData) {
-//             const fetchUserData = async () => {
-//                 const userData = await GET_METHOD("users/" + authUserData.uid);
-//             };
-//             fetchUserData();
-//         }
-//     }, [authUserData]);
-//     return (
-//         <div>
-//             <div className="flex justify-center">
-//                 {authUserData ? (
-//                     <div>
-//                         <div>{authUserData.displayName}</div>
-//                         <div>{authUserData.email}</div>
-//                         <div>{authUserData.uid}</div>
-//                         <div>{authUserData.photoURL}</div>
-
-//                         <button onClick={handleSignOut}>Sign out</button>
-//                     </div>
-//                 ) : (
-//                     <div>Chưa đăng nhập</div>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default UserPage;
-
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
+import { useRouter } from "next13-progressbar";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Pencil, Bookmark, Clock, FileText, User, Calendar, Briefcase, MapPin, GraduationCap } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-import { useRouter } from "next/navigation";
+import { Pencil, Bookmark, Clock, FileText, Calendar, Briefcase, MapPin, GraduationCap } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { deleteCookie } from "@/lib/auth/cookiesManager";
 
 import { AuthContext } from "@/context/AuthContextProvider";
-import { GET_METHOD } from "@/services/services";
 import SavedJob from "../pageComponents/interviewTabs/SavedJob";
 import InterviewHistory from "../pageComponents/interviewTabs/InterviewHistory";
+import SavedBlogTab from "../pageComponents/userTabs/SavedBlogTab";
 
-export default function UserProfile() {
+export default function UserProfile({ uid }) {
     const { authUserData } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("blogs");
     const router = useRouter();
     const handleSignOut = () => {
         signOut(auth);
         deleteCookie("accessToken");
-        router.push("/");
+        location.href = "/";
     };
+
+    const handleNextPae = () => {
+        router.push(`/user/${authUserData?.uid}/update`);
+    };
+    if (uid !== authUserData?.uid) {
+        return <div className="mt-24">Trang cua nguoi khac</div>;
+    }
 
     return (
         <div className=" w-full  relative z-0">
@@ -92,53 +48,54 @@ export default function UserProfile() {
                             <CardHeader className="pb-2">
                                 <div className="flex justify-between items-start">
                                     <Avatar className="h-20 w-20">
-                                        <AvatarImage src="/avatar-default.jpg" alt="Avatar" />
-                                        <AvatarFallback className="bg-gradient-to-r from-orange-400 to-pink-500  text-xl">NN</AvatarFallback>
+                                        <AvatarImage src={authUserData?.photoURL || "/avatar-default.jpg"} alt="Avatar" />
+                                        <AvatarFallback className="bg-gradient-to-r from-orange-400 to-pink-500  text-xl">Jobnext</AvatarFallback>
                                     </Avatar>
-                                    <Button variant="ghost" size="icon" className="rounded-full">
+                                    <Button onClick={handleNextPae} variant="ghost" size="icon" className="rounded-full">
                                         <Pencil className="h-4 w-4" />
                                     </Button>
                                 </div>
-                                <CardTitle className="mt-4 text-xl">Nguyễn Văn A</CardTitle>
-                                <CardDescription className="text-zinc-400">Frontend Developer</CardDescription>
+                                <CardTitle className="mt-4 text-xl">{authUserData?.displayName}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="flex items-center gap-2 text-zinc-400">
-                                    <MapPin className="h-4 w-4" />
-                                    <span className="text-sm">Hà Nội, Việt Nam</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-zinc-400">
-                                    <Briefcase className="h-4 w-4" />
-                                    <span className="text-sm">3 năm kinh nghiệm</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-zinc-400">
-                                    <GraduationCap className="h-4 w-4" />
-                                    <span className="text-sm">Đại học Bách Khoa Hà Nội</span>
-                                </div>
+                                {authUserData?.userData?.profile?.Address && (
+                                    <div className="flex items-center gap-2 text-foreground/70">
+                                        <MapPin className="h-4 w-4" />
+                                        <span className="text-sm">{authUserData?.userData?.profile?.Address}</span>
+                                    </div>
+                                )}
+                                {authUserData?.userData?.profile?.Years_of_experience && (
+                                    <div className="flex items-center gap-2 text-foreground/70">
+                                        <Briefcase className="h-4 w-4" />
+                                        <span className="text-sm">{authUserData?.userData?.profile?.Years_of_experience}</span>
+                                    </div>
+                                )}
+                                {authUserData?.userData?.profile?.University && (
+                                    <div className="flex items-center gap-2 text-foreground/70">
+                                        <GraduationCap className="h-4 w-4" />
+                                        <span className="text-sm">{authUserData?.userData?.profile?.University}</span>
+                                    </div>
+                                )}
 
-                                <Separator className="" />
+                                <Separator />
 
                                 <div className="space-y-2">
                                     <h4 className="text-sm font-medium">Kỹ năng</h4>
                                     <div className="flex flex-wrap gap-2">
-                                        <Badge variant="secondary" className=" hover:bg-zinc-700">
-                                            React
-                                        </Badge>
-                                        <Badge variant="secondary" className=" hover:bg-zinc-700">
-                                            TypeScript
-                                        </Badge>
-                                        <Badge variant="secondary" className=" hover:bg-zinc-700">
-                                            Next.js
-                                        </Badge>
-                                        <Badge variant="secondary" className=" hover:bg-zinc-700">
-                                            Tailwind CSS
-                                        </Badge>
-                                        <Badge variant="secondary" className=" hover:bg-zinc-700">
-                                            UI/UX
-                                        </Badge>
+                                        {authUserData?.userData?.profile?.Skills &&
+                                            authUserData?.userData?.profile?.Skills.split(",").map((skill, index) => {
+                                                return (
+                                                    <Badge key={index} className={`bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-sm`}>
+                                                        {skill}
+                                                    </Badge>
+                                                );
+                                            })}
                                     </div>
                                 </div>
-                                <button onClick={handleSignOut}>Sign out</button>
+                                <Separator />
+                                <Button variant="destructive" onClick={handleSignOut}>
+                                    Đăng xuất
+                                </Button>
                             </CardContent>
                         </Card>
                     </div>
@@ -147,7 +104,7 @@ export default function UserProfile() {
                     <div className="md:col-span-2 w-full min-h-screen">
                         <Tabs defaultValue="blogs" value={activeTab} onValueChange={setActiveTab} className="w-full">
                             <div className="bg-background pt-20  md:pt-24 sticky top-0 z-10 ">
-                                <TabsList className="grid grid-cols-4 border  rounded-lg   ">
+                                <TabsList className="grid grid-cols-3   ">
                                     <TabsTrigger value="blogs" className="data-[state=active]:">
                                         <FileText className="h-4 w-4 mr-2" />
                                         <span className="hidden sm:inline">Bài viết</span>
@@ -160,10 +117,6 @@ export default function UserProfile() {
                                         <Clock className="h-4 w-4 mr-2" />
                                         <span className="hidden sm:inline">Phỏng vấn</span>
                                     </TabsTrigger>
-                                    <TabsTrigger value="edit-profile" className="data-[state=active]:">
-                                        <User className="h-4 w-4 mr-2" />
-                                        <span className="hidden sm:inline">Hồ sơ</span>
-                                    </TabsTrigger>
                                 </TabsList>
                                 {activeTab === "blogs" && <h2 className="text-xl font-bold my-2">Quản lý bài viết</h2>}
                                 {activeTab === "saved-jobs" && <h2 className="text-xl font-bold my-2">Công việc đã lưu</h2>}
@@ -172,11 +125,7 @@ export default function UserProfile() {
 
                             {/* Blog Management */}
                             <TabsContent value="blogs" className="space-y-4 w-full">
-                                <div className="space-y-4 pr-4">
-                                    {[1, 2, 3, 4, 5].map((item) => (
-                                        <BlogCard key={item} />
-                                    ))}
-                                </div>
+                                <SavedBlogTab authUserData={authUserData} />
                             </TabsContent>
 
                             {/* Saved Jobs */}
@@ -190,83 +139,6 @@ export default function UserProfile() {
                             </TabsContent>
 
                             {/* Edit Profile */}
-                            <TabsContent value="edit-profile" className="space-y-6">
-                                <Card className=" border-zinc-800">
-                                    <CardHeader>
-                                        <CardTitle>Thông tin cá nhân</CardTitle>
-                                        <CardDescription>Cập nhật thông tin cá nhân của bạn</CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="flex flex-col sm:flex-row gap-4 items-start">
-                                            <div className="relative">
-                                                <Avatar className="h-24 w-24">
-                                                    <AvatarImage src="/avatar-default.jpg" alt="Avatar" />
-                                                    <AvatarFallback className="bg-gradient-to-r from-orange-400 to-pink-500  text-2xl">NN</AvatarFallback>
-                                                </Avatar>
-                                                <Button size="sm" variant="secondary" className="absolute -bottom-2 -right-2 rounded-full h-8 w-8 p-0">
-                                                    <Pencil className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                            <div className="grid gap-4 flex-1">
-                                                <div className="grid gap-2">
-                                                    <Label htmlFor="name">Họ và tên</Label>
-                                                    <Input id="name" defaultValue="Nguyễn Văn A" className=" border-zinc-700" />
-                                                </div>
-                                                <div className="grid gap-2">
-                                                    <Label htmlFor="email">Email</Label>
-                                                    <Input id="email" type="email" defaultValue="example@gmail.com" className=" border-zinc-700" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="title">Chức danh</Label>
-                                            <Input id="title" defaultValue="Frontend Developer" className=" border-zinc-700" />
-                                        </div>
-
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="location">Địa điểm</Label>
-                                            <Input id="location" defaultValue="Hà Nội, Việt Nam" className=" border-zinc-700" />
-                                        </div>
-
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="experience">Kinh nghiệm</Label>
-                                            <Select defaultValue="3">
-                                                <SelectTrigger className=" border-zinc-700">
-                                                    <SelectValue placeholder="Chọn số năm kinh nghiệm" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="1">1 năm</SelectItem>
-                                                    <SelectItem value="2">2 năm</SelectItem>
-                                                    <SelectItem value="3">3 năm</SelectItem>
-                                                    <SelectItem value="4">4 năm</SelectItem>
-                                                    <SelectItem value="5">5+ năm</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="education">Học vấn</Label>
-                                            <Input id="education" defaultValue="Đại học Bách Khoa Hà Nội" className=" border-zinc-700" />
-                                        </div>
-
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="bio">Giới thiệu bản thân</Label>
-                                            <Textarea
-                                                id="bio"
-                                                placeholder="Viết một vài dòng về bản thân bạn"
-                                                className="min-h-[100px]  border-zinc-700"
-                                                defaultValue="Frontend Developer với 3 năm kinh nghiệm làm việc với React, TypeScript và Next.js. Tôi đam mê xây dựng giao diện người dùng đẹp mắt và trải nghiệm người dùng tuyệt vời."
-                                            />
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter>
-                                        <Button className="ml-auto bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600">
-                                            Lưu thay đổi
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
-                            </TabsContent>
                         </Tabs>
                     </div>
                 </div>

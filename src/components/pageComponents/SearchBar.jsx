@@ -98,12 +98,12 @@ export default function SearchBar({ authUserData }) {
         async (e) => {
             setCurrentPage(1);
             e.preventDefault();
-            console.log({
-                searchQuery,
-                location,
-                jobCategory,
-                experienceLevel,
-            });
+            // console.log({
+            //     searchQuery,
+            //     location,
+            //     jobCategory,
+            //     experienceLevel,
+            // });
             const result = await POST_METHOD(`jobs/search-no-match?page=${1}&perPage=${perPage}`, {
                 skill: searchQuery,
                 location: location,
@@ -333,6 +333,7 @@ const vietnameseProvinces = [
     "Hà Giang",
     "Hà Nam",
     "Hà Nội",
+    "Hồ Chí Minh",
     "Hà Tĩnh",
     "Hải Dương",
     "Hải Phòng",
@@ -366,7 +367,7 @@ const vietnameseProvinces = [
     "Thanh Hóa",
     "Thừa Thiên Huế",
     "Tiền Giang",
-    "TP Hồ Chí Minh",
+
     "Trà Vinh",
     "Tuyên Quang",
     "Vĩnh Long",

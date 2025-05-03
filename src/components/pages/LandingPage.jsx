@@ -14,7 +14,7 @@ import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
 
 import { NotebookPen, BotMessageSquare } from "lucide-react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileUser } from "lucide-react";
 import IconGroup2 from "@/components/ui/IconGroup2";
 
 import Login from "@/components/pageComponents/Login";
@@ -45,7 +45,7 @@ const LandingPage = () => {
                     <SparklesText
                         sparklesCount={20}
                         className="text-4xl min-[490px]:text-5xl min-[760px]:text-6xl font-medium font-sans mb-5"
-                        text="Định hướng tư vấn nghề nghiệp với NLP và AI"
+                        text="Định hướng nghề nghiệp"
                     />
                     <SparklesText
                         sparklesCount={20}
@@ -79,7 +79,7 @@ const LandingPage = () => {
                 <div className="text-center mb-12">
                     <p className="text-2xl font-bold"> Hoạt động như thế nào?</p>
                     <p className="max-w-[600px] mt-5 opacity-75">
-                        Tìm kiếm việc làm từ nhiều nguồn tuyển dụng. Nhận đề xuất công việc phù hợp dựa trên CV và kỹ năng của bạn. Trải nghiệm phỏng vấn ảo và nhận đánh
+                        Tìm kiếm việc làm từ nguồn tuyển dụng uy tín. Nhận đề xuất công việc phù hợp dựa trên CV và kỹ năng của bạn. Trải nghiệm phỏng vấn ảo và nhận đánh
                         giá chi tiết.
                     </p>
                 </div>
@@ -100,7 +100,7 @@ const LandingPage = () => {
                             <div className="flex justify-between items-center mt-5">
                                 <Link href={"/blog"}>
                                     <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
-                                        Xem thêm
+                                        Xem
                                     </CardItem>
                                 </Link>
                             </div>
@@ -110,19 +110,19 @@ const LandingPage = () => {
                         <CardBody className="bg-gray-50 relative group/card flex flex-col items-center dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-background dark:border-white/[0.2] border-black/[0.1] min-[680px]:w-44 w-full h-auto rounded-xl p-6 border  ">
                             <CardItem translateZ="50" className="text-xl font-bold text-neutral-600 dark:text-white ">
                                 <div className="bg-[#7e7e7e37] rounded-full w-16 h-16 flex items-center justify-center">
-                                    <BotMessageSquare width={40} height={40} />
+                                    <FileUser width={40} height={40} />
                                 </div>
                             </CardItem>
                             <CardItem as="p" translateZ="60" className="font-bold mt-2 ">
-                                Chatbot AI
+                                CV
                             </CardItem>
-                            <CardItem translateZ="60" className="w-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
-                                Trợ lý thông minh hỗ trợ bạn tìm kiếm việc làm, phân tích CV và đề xuất kỹ năng cần học.
+                            <CardItem translateZ="60" className="w-full h-full text-sm mt-3 text-neutral-500 dark:text-neutral-300">
+                                Phân tích CV, đề xuất cải thiện và tạo CV linh hoạt phù hợp với vị trí ứng tuyển của bạn.
                             </CardItem>
                             <div className="flex justify-between items-center mt-5">
                                 <Link href={"/chatbot"}>
                                     <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
-                                        Xem thêm
+                                        Xem
                                     </CardItem>
                                 </Link>
                             </div>
@@ -144,7 +144,7 @@ const LandingPage = () => {
                             <div className="flex justify-between items-center mt-5">
                                 <Link href={"/jobs"}>
                                     <CardItem translateZ={10} as="button" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs ">
-                                        Xem thêm
+                                        Xem
                                     </CardItem>
                                 </Link>
                             </div>

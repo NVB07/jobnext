@@ -6,7 +6,11 @@ const BlogPage = async ({ params }) => {
     const blogData = await GET_METHOD("blogs/" + params.blogid);
     if (blogData) {
         const authorData = await GET_METHOD("users/" + blogData.authorUid);
-        if (authorData?.success) data = { blogData, authorData: authorData.userRecord };
+        if (authorData?.success) {
+            data = { blogData, authorData: authorData.userRecord };
+        } else {
+            console.log("fal");
+        }
     }
 
     return (

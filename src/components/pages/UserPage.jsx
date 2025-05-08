@@ -28,6 +28,7 @@ export default function UserProfile({ uid }) {
     const handleSignOut = () => {
         signOut(auth);
         deleteCookie("accessToken");
+
         location.href = "/";
     };
 

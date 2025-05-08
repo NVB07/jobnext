@@ -11,6 +11,8 @@ const deleteCookie = (key) => {
     Cookies.remove(key);
 };
 const getCookie = (key) => {
+    console.log(Cookies.get(key));
+
     return Cookies.get(key); // 👉 Trả về undefined nếu không có
 };
 export { updateAuthCookie, deleteCookie, getCookie };

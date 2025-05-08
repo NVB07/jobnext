@@ -12,6 +12,8 @@ import { Globe } from "@/components/magicui/globe";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
 import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
+import { BoxReveal } from "@/components/magicui/box-reveal";
+import { getCookie } from "@/lib/auth/cookiesManager";
 
 import { NotebookPen, BotMessageSquare } from "lucide-react";
 import { ArrowRight, FileUser } from "lucide-react";
@@ -152,6 +154,44 @@ const LandingPage = () => {
                     </CardContainer>
                 </div>
             </div>
+            <div className="w-full px-5">
+                <div className="mt-14 px-5 min-[490px]:px-5 relative flex flex-col min-[768px]:flex-row border border-[#65656542] rounded-xl p-5 bg-[hsl(var(--background)/70%)] ">
+                    <div className="min-[768px]:w-1/2 w-full "></div>
+                    <div className="min-[768px]:w-1/2 w-full items-center justify-center overflow-hidden   ">
+                        <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+                            <p className="text-4xl font-semibold">
+                                CV Creator<span className="text-[#5046e6]">.</span>
+                            </p>
+                        </BoxReveal>
+
+                        <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+                            <h2 className="mt-[.5rem] text-[1rem]">Kéo thả dễ dàng - Tùy biến linh hoạt</h2>
+                        </BoxReveal>
+
+                        <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+                            <div className="mt-6">
+                                <p>
+                                    Không cần phải rành công nghệ hay phần mềm phức tạp, giờ đây bạn có thể tự tay tạo ra một bản CV đẹp mắt, chuyên nghiệp chỉ với vài
+                                    thao tác <span className="font-semibold text-[#6e65e9]">kéo thả</span> đơn giản.
+                                    <br />
+                                    -&gt; Tùy chỉnh mọi chi tiết – từ màu sắc, bố cục đến font chữ – sao cho thể hiện đúng cá tính và điểm mạnh của mày nhất. Giao diện
+                                    trực quan, dễ sử dụng, tạo CV chưa bao giờ dễ và vui như thế!
+                                    <br />
+                                </p>
+                            </div>
+                        </BoxReveal>
+
+                        <div className="mt-4">
+                            <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+                                <a href={"/cv"} target="_blank" className="px-3 py-2 text-white flex rounded-md  bg-[#5046e6]">
+                                    Tạo CV
+                                </a>
+                            </BoxReveal>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="w-full px-5 my-12 relative bg-[hsl(var(--background)/70%)]">
                 <div className="relative w-full h-fit  overflow-hidden border border-[#65656542]  rounded-xl p-5">
                     <div className="flex flex-col min-[760px]:flex-row ">

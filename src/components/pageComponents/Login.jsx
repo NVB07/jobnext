@@ -104,6 +104,10 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             // Tạo tài khoản với email và password
             const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
             const user = userCredential.user;
+            await POST_METHOD("users", {
+                _id: user.uid,
+                uid: user.uid,
+            });
             await updateProfile(user, {
                 displayName: data.username,
             });
@@ -112,15 +116,10 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             await sendEmailVerification(user);
 
             // Tạo dữ liệu user trong database
-            await POST_METHOD("users", {
-                _id: user.uid,
-
-                uid: user.uid,
-            });
 
             updateAuthCookie("accessToken", user.stsTokenManager.accessToken, 360);
             setOpenDialog(false);
-            location.href = next || "/";
+            // location.href = next || "/";
             reset();
         } catch (error) {
             console.error("Lỗi đăng ký:", error);

@@ -61,14 +61,14 @@ const ResendVerificationToast = ({ user }) => {
 
             <div className="text-sm opacity-75 ">Kiểm tra email và nhấn liên kết xác thực tài khoản. Tài khoản sẽ bị xóa sau 15 phút nếu không xác thực.</div>
             <div className="text-sm opacity-75  ">Bạn có thể tắt cảnh báo này nếu như đã xác thực tài khoản.</div>
-            <button
+            {/* <button
                 className={`mt-2 font-medium  text-blue-500 ${!canResend ? "opacity-50 cursor-not-allowed" : ""}`}
                 onClick={handleResendVerification}
                 disabled={!canResend}
             >
                 Gửi lại liên kết xác thực
             </button>
-            {!canResend && <p className="text-sm opacity-75">Vui lòng chờ {countdown} giây để gửi lại.</p>}
+            {!canResend && <p className="text-sm opacity-75">Vui lòng chờ {countdown} giây để gửi lại.</p>} */}
         </div>
     );
 };

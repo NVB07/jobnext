@@ -129,7 +129,7 @@ export default function SearchBar({ authUserData }) {
                 onSubmit={handleSearch}
                 className="sticky bg-background z-[50] w-auto top-[70px] ml-14 -mt-[70px] min-[490px]:top-[76px] md:w-full md:pt-[84px] md:-mt-[84px] md:ml-0 md:top-0 md:pb-2"
             >
-                <div className="flex items-center gap-2 p-2 rounded-lg border">
+                <div className="flex items-center gap-2 p-2 rounded-lg border bg-foreground/5">
                     <div className="relative flex-1 flex items-center">
                         <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
                         <Input

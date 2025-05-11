@@ -5,7 +5,7 @@ import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, Loader2 } fro
 import { Badge } from "@/components/ui/badge";
 
 import Image from "next/image";
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { useRouter } from "next13-progressbar";
 import { toast } from "sonner";
 
@@ -24,6 +24,8 @@ export default function JobCard({ job, authUserData }) {
     const [jobDescription, setJobDescription] = useState(null);
     const [JobRequirements, setJobRequirements] = useState(null);
     const [saved, setSaved] = useState(job.isSaved);
+    const [imgError, setImgError] = useState(false);
+    const [dialogImgError, setDialogImgError] = useState(false);
 
     const router = useRouter();
 
@@ -90,13 +92,13 @@ export default function JobCard({ job, authUserData }) {
                 const result = await POST_METHOD("users/unsave-job", { userId: authUserData.uid, jobId: job._id });
                 if (result?.success) {
                     setSaved(false);
-                    toast.success("Đã xóa công việc khỏi danh sách");
+                    toast.success("Đã bỏ lưu công việc ");
                 }
             } else {
                 const result = await POST_METHOD("users/save-job", { userId: authUserData.uid, jobId: job._id });
                 if (result?.success) {
                     setSaved(true);
-                    toast.success("Đã lưu công việc vào danh sách");
+                    toast.success("Đã lưu công việc ");
                 }
             }
         } catch (error) {
@@ -114,8 +116,16 @@ export default function JobCard({ job, authUserData }) {
         }
     };
 
+    const handleImageError = useCallback(() => {
+        setImgError(true);
+    }, []);
+
+    const handleDialogImageError = useCallback(() => {
+        setDialogImgError(true);
+    }, []);
+
     return (
-        <div className="w-full my-3 rounded-2xl border  hover:shadow-lg transition-all duration-300 overflow-hidden">
+        <div className="w-full my-3 rounded-2xl border bg-card  hover:shadow-lg transition-all duration-300 overflow-hidden">
             <div className="relative">
                 {/* <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div> */}
 
@@ -128,8 +138,9 @@ export default function JobCard({ job, authUserData }) {
                                         className="w-full h-full object-contain"
                                         width={96}
                                         height={96}
-                                        src={job.companyLogo || "/company-default-logo.svg"}
+                                        src={imgError ? "/company-default-logo.svg" : job?.companyLogo || "/company-default-logo.svg"}
                                         alt={job.company}
+                                        onError={handleImageError}
                                     />
                                 </div>
 
@@ -243,8 +254,9 @@ export default function JobCard({ job, authUserData }) {
                                             className="w-16  h-16 md:w-[96px] md:h-[96px] rounded-md object-contain mr-4 bg-white p-1"
                                             width={150}
                                             height={150}
-                                            src={job.companyLogo || "/company-default-logo.svg"}
+                                            src={dialogImgError ? "/company-default-logo.svg" : job.companyLogo || "/company-default-logo.svg"}
                                             alt={job.company}
+                                            onError={handleDialogImageError}
                                         />
                                     </DialogTitle>
                                     <DialogDescription className="flex flex-col w-full items-start justify-start ">

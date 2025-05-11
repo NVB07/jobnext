@@ -12,20 +12,45 @@ import Login from "./Login";
 
 import { GET_METHOD, DELETE_METHOD, POST_METHOD } from "@/services/services";
 
-const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content, createTime, setBlogChange, authUserData, inUserPage = false }) => {
+const BlogItem = ({
+    authorUid,
+    blogId,
+    myBlog = false,
+    save,
+    title,
+    tag,
+    content,
+    createTime,
+    setBlogChange,
+    onSaveToggle,
+    authUserData,
+    inUserPage = false,
+    onDeleteBlog,
+}) => {
     const [authorData, setAuthorData] = useState();
     const [openOption, setOpenOption] = useState(false);
+    const [isSaved, setIsSaved] = useState(save);
+
+    useEffect(() => {
+        setIsSaved(save);
+    }, [save]);
 
     const handleSavedJob = async () => {
         try {
-            if (save) {
+            if (isSaved) {
                 const result = await POST_METHOD("blogs/unsave-blog", {
                     blogId: blogId,
                     userId: authUserData.uid,
                 });
                 if (result?.success) {
-                    setBlogChange((prev) => !prev); // Thêm dòng này
-                    toast.success("Đã xóa blog khỏi danh sách");
+                    setIsSaved(false);
+                    // Cập nhật UI cục bộ, không gọi refetch API
+                    if (onSaveToggle) {
+                        onSaveToggle(blogId, false);
+                    } else if (setBlogChange) {
+                        setBlogChange((prev) => !prev); // Giữ lại để tương thích với các component khác
+                    }
+                    toast.success("Đã bỏ lưu blog ");
                 }
             } else {
                 const result = await POST_METHOD("blogs/save-blog", {
@@ -33,8 +58,14 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
                     userId: authUserData.uid,
                 });
                 if (result?.success) {
-                    setBlogChange((prev) => !prev); // Thêm dòng này
-                    toast.success("Đã lưu blog vào danh sách");
+                    setIsSaved(true);
+                    // Cập nhật UI cục bộ, không gọi refetch API
+                    if (onSaveToggle) {
+                        onSaveToggle(blogId, true);
+                    } else if (setBlogChange) {
+                        setBlogChange((prev) => !prev); // Giữ lại để tương thích với các component khác
+                    }
+                    toast.success("Đã lưu blog");
                 }
             }
         } catch (error) {
@@ -65,7 +96,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
     useEffect(() => {
         if (!inUserPage) {
             const getAuthor = async () => {
-                const response = await GET_METHOD(`users/${authorUid}`);
+                const response = await GET_METHOD(`users/${authorUid}?isOtherId=true`);
 
                 if (response?.success) {
                     setAuthorData(response.userRecord);
@@ -82,12 +113,13 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
         if (result?.success) {
             toast.success("Xóa blog thành công");
             setBlogChange((pre) => !pre);
+            onDeleteBlog(blogId);
         } else {
             toast.error("Lỗi khi xóa blog");
         }
     };
     return (
-        <div className="w-full border rounded-xl  mb-4 p-3">
+        <div className="w-full border rounded-xl bg-card  mb-4 p-3">
             <div className="w-full flex justify-between h-">
                 <Link href={`/user/${authorUid}`} variant="ghost" className="p-0 flex items-center  hover:opacity-80 h-[30px] hover:bg-transparent rounded-full  mb-5">
                     {authorData ? (
@@ -107,7 +139,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
                 <div className="flex items-start">
                     {authUserData ? (
                         <Button onClick={handleSavedJob} size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
-                            {!save ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
+                            {!isSaved ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
                         </Button>
                     ) : (
                         <Login>
@@ -121,7 +153,7 @@ const BlogItem = ({ authorUid, blogId, myBlog = false, save, title, tag, content
                         <PopoverTrigger className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-accent">
                             <Ellipsis className="!w-5 !h-5" />
                         </PopoverTrigger>
-                        <PopoverContent className="w-48 p-1" align="end">
+                        <PopoverContent className="w-48 p-1 bg-background" align="end">
                             <Button onClick={handleCopyLink} variant="ghost" className="w-full hover:bg-foreground/5 flex justify-start h-8">
                                 <Link2 />
                                 <p className="text-sm">Sao chép liên kết</p>

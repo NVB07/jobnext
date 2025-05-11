@@ -2,16 +2,18 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+import NoData from "@/components/pages/NoData";
 import BlogItem from "@/components/pageComponents/BlogItem";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 import { POST_METHOD } from "@/services/services";
 import withPopstateRerender from "@/components/pageComponents/WithPopstateRerender";
-const SavedBlogTab = ({ authUserData }) => {
+const SavedBlogTab = ({ authUserData, otherUid = null }) => {
     const [blogData, setBlogData] = useState({ data: [], pagination: {} });
     const [currentPage, setCurrentPage] = useState(1);
     const [blogsChange, setBlogChange] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const perPage = 10;
     const maxVisiblePages = 5;
 
@@ -29,18 +31,52 @@ const SavedBlogTab = ({ authUserData }) => {
         return Array.from({ length: end - start + 1 }, (_, i) => start + i);
     };
 
+    // Thêm hàm để cập nhật trạng thái lưu của blog cục bộ
+    const handleBlogSaveToggle = (blogId, isSaved) => {
+        setBlogData((prevData) => ({
+            ...prevData,
+            data: prevData.data.map((blog) =>
+                blog._id === blogId
+                    ? {
+                          ...blog,
+                          savedBy: isSaved ? [...blog.savedBy, authUserData?.uid] : blog.savedBy.filter((uid) => uid !== authUserData?.uid),
+                      }
+                    : blog
+            ),
+        }));
+    };
+
+    const handleDeleteBlog = (blogId) => {
+        setBlogData((prevData) => ({
+            ...prevData,
+            data: prevData.data.filter((blog) => blog._id !== blogId),
+        }));
+    };
+
     useEffect(() => {
-        if (authUserData) {
+        if (authUserData && otherUid === null) {
+            setIsLoading(true);
             const fetchBlogs = async () => {
-                // const result = await GET_METHOD("blogs", currentPage, perPage);
                 const result = await POST_METHOD(`blogs/my-blogs?page=${currentPage}&perPage=${perPage}`, { uid: authUserData.uid });
                 if (result?.success) {
                     setBlogData(result);
                 }
+                setIsLoading(false);
             };
             fetchBlogs();
         }
-    }, [currentPage, blogsChange, authUserData]);
+        if (authUserData && otherUid !== null) {
+            setIsLoading(true);
+            const fetchBlogs = async () => {
+                const result = await POST_METHOD(`blogs/my-blogs?page=${currentPage}&perPage=${perPage}`, { uid: otherUid });
+                if (result?.success) {
+                    setBlogData(result);
+                }
+                setIsLoading(false);
+            };
+            fetchBlogs();
+        }
+    }, [currentPage, authUserData, otherUid]);
 
     // Hàm chuyển trang
     const handlePageChange = (page) => {
@@ -49,30 +85,12 @@ const SavedBlogTab = ({ authUserData }) => {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
-
     return (
-        <div className="w-full">
+        <div className="w-full min-h-screen">
             <div className="flex min-[820px]:flex-row flex-col overflow-visible gap-4">
                 <div className="w-full">
                     <div className="w-full mt-4">
-                        {blogData?.data.length !== 0 ? (
-                            blogData?.data.map((blog) => (
-                                <BlogItem
-                                    key={blog._id}
-                                    blogId={blog._id}
-                                    tag={blog.tags}
-                                    save={authUserData ? blog.savedBy.includes(authUserData?.uid) : false}
-                                    authorUid={authUserData?.uid}
-                                    content={blog.content + blog.content + blog.content + blog.content + blog.content + blog.content + blog.content + blog.content}
-                                    createTime={blog.createdAt}
-                                    title={blog.title}
-                                    myBlog={true}
-                                    setBlogChange={setBlogChange}
-                                    authUserData={authUserData}
-                                    inUserPage={true}
-                                />
-                            ))
-                        ) : (
+                        {isLoading ? (
                             <>
                                 <div className=" w-full border rounded-xl  mb-4 p-3">
                                     <div className=" h-12">
@@ -116,6 +134,27 @@ const SavedBlogTab = ({ authUserData }) => {
                                     </div>
                                 </div>
                             </>
+                        ) : blogData?.data.length !== 0 ? (
+                            blogData?.data.map((blog) => (
+                                <BlogItem
+                                    key={blog._id}
+                                    blogId={blog._id}
+                                    tag={blog.tags}
+                                    save={authUserData ? blog.savedBy.includes(authUserData?.uid) : false}
+                                    authorUid={otherUid ? otherUid : authUserData?.uid}
+                                    content={blog.content}
+                                    createTime={blog.createdAt}
+                                    title={blog.title}
+                                    myBlog={true}
+                                    setBlogChange={setBlogChange}
+                                    onSaveToggle={handleBlogSaveToggle}
+                                    authUserData={authUserData}
+                                    inUserPage={otherUid ? false : true}
+                                    onDeleteBlog={handleDeleteBlog}
+                                />
+                            ))
+                        ) : (
+                            <NoData title={`${otherUid ? "Người dùng này" : "Bạn"} chưa có bài viết nào`} subTitle="Đi đến trang bài viết để tạo bài viết" />
                         )}
                     </div>
                     {blogData.pagination.totalPages > 1 && (

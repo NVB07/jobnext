@@ -56,7 +56,7 @@ const BlogPage = () => {
                 <div className="w-full min-[820px]:w-1/3 h-fit  bg-background min-[820px]:sticky top-[112px] z-10">
                     <p className="text-2xl font-bold ">Viết Blog</p>
                     <div className="w-full mt-1 text-gray-500">Viết để ghi nhớ hoặc chia sẻ kinh nghiệm </div>
-                    <Link href={"/new-blog"} className="w-full hover:bg-accent block border rounded-md h-24 min-[820px]:h-64 mt-4 p-3 text-neutral-500 ">
+                    <Link href={"/new-blog"} className="w-full bg-foreground/5 hover:bg-accent block border rounded-md h-24 min-[820px]:h-64 mt-4 p-3 text-neutral-500 ">
                         Nhấn để viết {"(trình chỉnh sửa markdown)"}
                     </Link>
                 </div>
@@ -72,7 +72,7 @@ const BlogPage = () => {
                                     tag={blog.tags}
                                     save={authUserData ? blog.savedBy.includes(authUserData?.uid) : false}
                                     authorUid={blog.authorUid}
-                                    content={blog.content + blog.content + blog.content + blog.content + blog.content + blog.content + blog.content + blog.content}
+                                    content={blog.content}
                                     createTime={blog.createdAt}
                                     title={blog.title}
                                     myBlog={blog.authorUid === authUserData?.uid}

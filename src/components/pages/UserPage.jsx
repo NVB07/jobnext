@@ -2,9 +2,8 @@
 
 import { useState, useContext } from "react";
 import { useRouter } from "next13-progressbar";
-
+import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -28,6 +27,7 @@ export default function UserProfile({ uid }) {
     const handleSignOut = () => {
         signOut(auth);
         deleteCookie("accessToken");
+        deleteCookie("uid");
 
         location.href = "/";
     };
@@ -40,18 +40,25 @@ export default function UserProfile({ uid }) {
     }
 
     return (
-        <div className=" w-full  relative z-0">
-            <div className=" bg-background w-full mx-auto px-4">
+        <div className=" w-full flex flex-col items-center  relative z-0">
+            <div className=" bg-background container mx-auto px-4">
                 <div className=" w-full grid grid-cols-1 md:grid-cols-3 gap-6 ">
                     {/* Profile Summary */}
                     <div className="md:col-span-1 mt-24 md:mt-0 relative z-20 -mb-20">
                         <Card className=" sticky top-24 z-10">
                             <CardHeader className="pb-2">
                                 <div className="flex justify-between items-start">
-                                    <Avatar className="h-20 w-20">
+                                    <Image
+                                        src={authUserData?.photoURL ? authUserData.photoURL : "/avatar-default.jpg"}
+                                        alt="Avatar"
+                                        width={80}
+                                        height={80}
+                                        className="rounded-full"
+                                    />
+                                    {/* <Avatar className="h-20 w-20">
                                         <AvatarImage src={authUserData?.photoURL || "/avatar-default.jpg"} alt="Avatar" />
                                         <AvatarFallback className="bg-gradient-to-r from-orange-400 to-pink-500  text-xl">Jobnext</AvatarFallback>
-                                    </Avatar>
+                                    </Avatar> */}
                                     <Button onClick={handleNextPae} variant="ghost" size="icon" className="rounded-full">
                                         <Pencil className="h-4 w-4" />
                                     </Button>

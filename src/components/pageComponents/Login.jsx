@@ -85,8 +85,9 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
                 }
             }
             updateAuthCookie("accessToken", user.stsTokenManager.accessToken, 360);
+            updateAuthCookie("uid", user.uid, 360);
             setOpenDialog(false);
-            router.push(next || "/");
+            location.href = next || "/";
         } catch (error) {
             console.error("Google Sign-in Error:", error);
             deleteCookie("accessToken");
@@ -118,8 +119,9 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             // Tạo dữ liệu user trong database
 
             updateAuthCookie("accessToken", user.stsTokenManager.accessToken, 360);
+            updateAuthCookie("uid", user.uid, 360);
             setOpenDialog(false);
-            // location.href = next || "/";
+            location.href = next || "/";
             reset();
         } catch (error) {
             console.error("Lỗi đăng ký:", error);
@@ -142,9 +144,10 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             console.log("Đăng nhập thành công:", user);
             toast.success("Đăng nhập thành công");
             updateAuthCookie("accessToken", user.stsTokenManager.accessToken, 360);
+            updateAuthCookie("uid", user.uid, 360);
             setOpenDialog(false);
-            router.push(next || "/");
             reset();
+            location.href = next || "/";
         } catch (error) {
             console.error("Lỗi đăng nhập:", error);
             deleteCookie("accessToken");

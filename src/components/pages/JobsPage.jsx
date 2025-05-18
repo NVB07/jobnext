@@ -25,10 +25,6 @@ const JobsPage = () => {
             return "recommend";
         } else if (tab === "searchjobs" || tab === null) {
             return "searchjobs";
-        } else if (tab === "history") {
-            return "history";
-        } else if (tab === "savedjobs") {
-            return "savedjobs";
         } else if (tab === "custom") {
             return "custom";
         } else {
@@ -82,13 +78,13 @@ const JobsPage = () => {
                             >
                                 <span className="text-left block w-full text-base font-medium"> Việc làm phù hợp {`(vietnamworks)`} </span>
                             </TabsTrigger>
-                            <TabsTrigger
+                            {/* <TabsTrigger
                                 className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
                                 value="savedjobs"
                                 onClick={() => toggleSidebar("savedjobs")}
                             >
                                 <span className="text-left block w-full text-base font-medium">Việc làm đã lưu</span>
-                            </TabsTrigger>
+                            </TabsTrigger> */}
                             <TabsTrigger
                                 className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
                                 value="custom"
@@ -96,13 +92,13 @@ const JobsPage = () => {
                             >
                                 <span className="text-left block w-full text-base font-medium">Tạo phỏng vấn tùy chỉnh</span>
                             </TabsTrigger>
-                            <TabsTrigger
+                            {/* <TabsTrigger
                                 className="w-full mb-2 data-[state=active]:bg-foreground/10 hover:bg-foreground/5 rounded-s-md rounded-e-none"
                                 value="history"
                                 onClick={() => toggleSidebar("history")}
                             >
                                 <span className="text-left block w-full text-base font-medium">Lịch sử phỏng vấn</span>
-                            </TabsTrigger>
+                            </TabsTrigger> */}
                         </div>
                     </div>
                 </TabsList>
@@ -119,12 +115,12 @@ const JobsPage = () => {
                     <TabsContent value="recommend" className="mt-0">
                         <Recommend authUserData={authUserData} />
                     </TabsContent>
-                    <TabsContent value="history">
+                    {/* <TabsContent value="history">
                         <InterviewHistory authUserData={authUserData} />
-                    </TabsContent>
-                    <TabsContent value="savedjobs">
+                    </TabsContent> */}
+                    {/* <TabsContent value="savedjobs">
                         <SavedJob authUserData={authUserData} />
-                    </TabsContent>
+                    </TabsContent> */}
                     <TabsContent value="custom">
                         <CustomInterview authUserData={authUserData} />
                     </TabsContent>

@@ -1,6 +1,7 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -102,7 +103,7 @@ const BlogDetail = ({ data }) => {
         );
     }
     return (
-        <div className=" px-5 flex justify-center ">
+        <div className="px-1 flex  flex-col items-center ">
             {loading ? (
                 <div className="w-full max-w-4xl">
                     <div className=" border-none shadow-none text-white">
@@ -147,56 +148,64 @@ const BlogDetail = ({ data }) => {
                     </div>
                 </div>
             ) : (
-                <div className="w-full max-w-4xl">
-                    <h1 className="text-2xl border-b border-foreground pb-2 font-bold">{blogData?.blogData.title}</h1>
-                    <div className="flex items-center justify-between mt-4 mb-4">
-                        <div className="flex ">
-                            <Image
-                                src={blogData?.authorData.photoURL || "/avatar-default.jpg"}
-                                width={50}
-                                height={50}
-                                alt={blogData?.authorData.displayName}
-                                className="w-[50px] h-[50px] rounded-full"
-                            />
-                            <div className="ml-3">
-                                <p className="text-lg font-medium ">{blogData?.authorData.displayName}</p>
-                                <p className="text-sm text-foreground/80 font-medium ">{handleConvertDate(blogData?.blogData.createdAt)}</p>
+                <Card className="w-full max-w-4xl">
+                    <CardHeader>
+                        <CardTitle>
+                            <h1 className="text-2xl border-b border-foreground pb-2 font-bold">{blogData?.blogData.title}</h1>
+                        </CardTitle>
+                        <CardDescription className="pt-3 flex justify-between">
+                            <div className="flex ">
+                                <Image
+                                    src={blogData?.authorData.photoURL || "/avatar-default.jpg"}
+                                    width={50}
+                                    height={50}
+                                    alt={blogData?.authorData.displayName}
+                                    className="w-[50px] h-[50px] rounded-full"
+                                />
+                                <div className="ml-3">
+                                    <p className="text-lg text-foreground font-medium ">{blogData?.authorData.displayName}</p>
+                                    <p className="text-sm text-foreground/80 font-medium ">{handleConvertDate(blogData?.blogData.createdAt)}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex items-center">
-                            {authUserData ? (
-                                <Button onClick={handleSavedJob} size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
-                                    {!save ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
-                                </Button>
-                            ) : (
-                                <Login>
-                                    <Button size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
-                                        <Bookmark className="!w-5 !h-5" />
+                            <div className="flex items-center">
+                                {authUserData ? (
+                                    <Button onClick={handleSavedJob} size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
+                                        {!save ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
                                     </Button>
-                                </Login>
-                            )}
-                            <Popover modal={true} open={openOption} onOpenChange={() => setOpenOption((prev) => !prev)}>
-                                <PopoverTrigger className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-accent">
-                                    <Ellipsis className="!w-5 !h-5" />
-                                </PopoverTrigger>
-                                <PopoverContent className="w-48 p-1" align="end">
-                                    <Button onClick={handleCopyLink} variant="ghost" className="w-full flex justify-start h-8">
-                                        <Link2 />
-                                        <p className="text-sm">Sao chép liên kết</p>
-                                    </Button>
-                                    {/* <Button variant="ghost" className="w-full flex justify-start h-8">
-                                <Flag />
-                                <p className="text-sm">Báo cáo</p>
-                            </Button> */}
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-                    </div>
-                    {blogData?.blogData.content ? <MDView content={blogData?.blogData.content} /> : null}
-
-                    <p className="text-foreground/70 text-sm border-t border-foreground pt-3 mt-8">{blogData?.blogData?.savedBy.length} người đã lưu</p>
-                </div>
+                                ) : (
+                                    <Login>
+                                        <Button size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
+                                            <Bookmark className="!w-5 !h-5" />
+                                        </Button>
+                                    </Login>
+                                )}
+                                <Popover modal={true} open={openOption} onOpenChange={() => setOpenOption((prev) => !prev)}>
+                                    <PopoverTrigger className="w-8 h-8 rounded-full flex items-center  justify-center hover:bg-accent">
+                                        <Ellipsis className="!w-5 !h-5" />
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-48 p-1 bg-background" align="end">
+                                        <Button onClick={handleCopyLink} variant="ghost" className="w-full  flex justify-start h-8">
+                                            <Link2 />
+                                            <p className="text-sm">Sao chép liên kết</p>
+                                        </Button>
+                                        {/* <Button variant="ghost" className="w-full flex justify-start h-8">
+                                 <Flag />
+                                 <p className="text-sm">Báo cáo</p>
+                             </Button> */}
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="w-full">{blogData?.blogData.content ? <MDView content={blogData?.blogData.content} /> : null}</CardContent>
+                    <CardFooter className="w-full">
+                        <p className="text-foreground/70 w-full text-sm border-t border-foreground pt-3 mt-8">{blogData?.blogData?.savedBy.length} người đã lưu</p>
+                    </CardFooter>
+                </Card>
             )}
+            <div className="w-full max-w-4xl">
+                <h2>Lieen quan</h2>
+            </div>
         </div>
     );
 };

@@ -22,7 +22,7 @@ import SavedBlogTab from "../pageComponents/userTabs/SavedBlogTab";
 
 export default function UserProfile({ uid }) {
     const { authUserData } = useContext(AuthContext);
-    const [activeTab, setActiveTab] = useState("blogs");
+    const [activeTab, setActiveTab] = useState("saved-jobs");
     const router = useRouter();
     const handleSignOut = () => {
         signOut(auth);
@@ -110,13 +110,13 @@ export default function UserProfile({ uid }) {
 
                     {/* Tabs Content */}
                     <div className="md:col-span-2 w-full min-h-screen">
-                        <Tabs defaultValue="blogs" value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <Tabs defaultValue="saved-jobs" value={activeTab} onValueChange={setActiveTab} className="w-full">
                             <div className="bg-background pt-20  md:pt-24 sticky top-0 z-10 ">
-                                <TabsList className="grid grid-cols-3   ">
-                                    <TabsTrigger value="blogs" className="data-[state=active]:">
+                                <TabsList className="grid grid-cols-2   ">
+                                    {/* <TabsTrigger value="blogs" className="data-[state=active]:">
                                         <FileText className="h-4 w-4 mr-2" />
                                         <span className="hidden sm:inline">Bài viết</span>
-                                    </TabsTrigger>
+                                    </TabsTrigger> */}
                                     <TabsTrigger value="saved-jobs" className="data-[state=active]:">
                                         <Bookmark className="h-4 w-4 mr-2" />
                                         <span className="hidden sm:inline">Đã lưu</span>
@@ -126,15 +126,14 @@ export default function UserProfile({ uid }) {
                                         <span className="hidden sm:inline">Phỏng vấn</span>
                                     </TabsTrigger>
                                 </TabsList>
-                                {activeTab === "blogs" && <h2 className="text-xl font-bold my-2">Quản lý bài viết</h2>}
-                                {activeTab === "saved-jobs" && <h2 className="text-xl font-bold my-2">Công việc đã lưu</h2>}
-                                {activeTab === "interviews" && <h2 className="text-xl font-bold my-2">Lịch phỏng vấn</h2>}
+                                {/* {activeTab === "saved-jobs" && <h2 className="text-xl font-bold my-2">Công việc đã lưu</h2>}
+                                {activeTab === "interviews" && <h2 className="text-xl font-bold my-2">Lịch phỏng vấn</h2>} */}
                             </div>
 
                             {/* Blog Management */}
-                            <TabsContent value="blogs" className="space-y-4 w-full">
+                            {/* <TabsContent value="blogs" className="space-y-4 w-full">
                                 <SavedBlogTab authUserData={authUserData} />
-                            </TabsContent>
+                            </TabsContent> */}
 
                             {/* Saved Jobs */}
                             <TabsContent value="saved-jobs" className="space-y-4 w-full">

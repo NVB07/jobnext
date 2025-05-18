@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useContext } from "react";
-
+import { useState, useRef, useEffect, useContext, useCallback } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
 import { Send, Ellipsis, RefreshCcw, Info } from "lucide-react";
+import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, Loader2 } from "lucide-react";
 
 import { POST_METHOD, GET_METHOD } from "@/services/services";
 import { auth } from "@/firebase/firebaseConfig";
@@ -21,6 +22,51 @@ export default function InterviewPage() {
     const [inputValue, setInputValue] = useState("");
     const textareaRef = useRef(null);
     const messagesEndRef = useRef(null);
+
+    const [showDetail, setShowDetail] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [jobDescription, setJobDescription] = useState(null);
+    const [JobRequirements, setJobRequirements] = useState(null);
+    const [dialogImgError, setDialogImgError] = useState(false);
+
+    const getDetail = async () => {
+        const response = await fetch("/api/jobdetail", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                url: chatData?.job?.url,
+            }),
+        });
+        const result = await response.json();
+        if (result.success) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(result.data, "text/html"); // Chuyển thành DOM
+            const title = doc.querySelectorAll(".sc-1671001a-4.gDSEwb");
+            const [jobDes, jobReq] = title;
+            // setJobDescription(jobDes.innerText.trim().replaceAll("•	", " "));
+            // setJobRequirements(jobReq.innerText.trim().replaceAll("•	", " "));
+            setJobDescription(jobDes);
+            setJobRequirements(jobReq);
+        }
+    };
+
+    const handleOpen = async (val) => {
+        setShowDetail(val);
+        if (val) {
+            setLoading(true);
+            await getDetail();
+            setLoading(false);
+        } else {
+            setJobDescription(null);
+            setJobRequirements(null);
+        }
+    };
+
+    const handleDialogImageError = useCallback(() => {
+        setDialogImgError(true);
+    }, []);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -178,24 +224,24 @@ export default function InterviewPage() {
     };
 
     return (
-        <div className="flex flex-col w-full max-w-4xl pt-[75px] h-screen">
+        <div className="flex flex-col w-full max-w-4xl pt-[75px]  h-screen">
             {/* Header */}
-            <div className="flex justify-between items-center   ">
+            <div className="flex justify-between items-center    ">
                 <h1 className="text-lg font-bold text-wrap  truncate line-clamp-2 px-2">{chatData ? chatData.jobTitle : ""}</h1>
 
                 <Popover>
                     <PopoverTrigger>
-                        <div className="w-8 h-8 rounded-full border border-foreground/10 hover:bg-foreground/5 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-lg  border-foreground/10 hover:bg-foreground/5 flex items-center justify-center">
                             <Ellipsis className="w-6 h-6 text-foreground/80" />
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent align="end" className="w-fit">
+                    <PopoverContent align="end" className="w-fit p-2">
                         <div className="flex flex-col items-start w-fit gap-1">
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button variant="ghost">
+                                    <Button variant="ghost" className="w-fit   hover:bg-foreground/5">
                                         <Info />
-                                        Xem thông tin
+                                        Xem thông tin phỏng vấn
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent className="max-w-[95%] md:max-w-[80%] max-h-[90%] p-0 flex flex-col gap-0">
@@ -225,9 +271,69 @@ export default function InterviewPage() {
                                     </ScrollArea>
                                 </DialogContent>
                             </Dialog>
-                            <Button variant="ghost">
-                                <RefreshCcw /> Phỏng vấn lại
-                            </Button>
+                            {chatData?.job && (
+                                <Dialog className="w-full" open={showDetail} onOpenChange={(val) => handleOpen(val)}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="ghost" className="w-full flex justify-start items-center   hover:bg-foreground/5">
+                                            <ExternalLinkIcon className="w-4 h-4" />
+                                            <span className="mr-2">Xem chi tiết</span>
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-[95%] md:max-w-[60%] max-h-[90%] flex flex-col p-0 gap-0">
+                                        <DialogHeader className={"flex flex-row space-y-0 w-full p-3"}>
+                                            <DialogTitle className="min-w-fit">
+                                                <Image
+                                                    className="w-16  h-16 md:w-[96px] md:h-[96px] rounded-md object-contain mr-4 bg-white p-1"
+                                                    width={150}
+                                                    height={150}
+                                                    src={dialogImgError ? "/company-default-logo.svg" : chatData?.job?.companyLogo || "/company-default-logo.svg"}
+                                                    alt={chatData?.job?.company}
+                                                    onError={handleDialogImageError}
+                                                />
+                                            </DialogTitle>
+                                            <DialogDescription className="flex flex-col w-full items-start justify-start ">
+                                                <span className="text-base md:text-lg text-left  cursor-pointer font-bold text-wrap text-foreground truncate line-clamp-2">
+                                                    {chatData?.job?.title}
+                                                </span>
+                                                <span className="text-sm text-left flex items-center  text-foreground/80 text-wrap  truncate line-clamp-2">
+                                                    <BuildingIcon className="w-4 h-4 mr-1.5 shrink-0 text-purple-500" />
+                                                    {chatData?.job?.company}
+                                                </span>
+                                                <span className="text-sm flex items-center text-left  text-foreground/80 text-wrap  truncate line-clamp-2 mt-1">
+                                                    <MapPinIcon className="w-4 h-4 mr-1.5 shrink-0 text-pink-500" />{" "}
+                                                    {chatData?.job?.locationVI + " - " + chatData?.job?.jobLevelVI}
+                                                </span>
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <ScrollArea className="h-screen p-3">
+                                            {!loading ? (
+                                                jobDescription || JobRequirements ? (
+                                                    <div className="w-full h-fit">
+                                                        <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
+                                                        <p
+                                                            className="text-sm text-foreground/80 border-foreground/50 border-t pt-3 mt-2"
+                                                            dangerouslySetInnerHTML={{ __html: JobRequirements?.innerHTML }}
+                                                        ></p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-center text-orange-500 font-bold">Công việc đã hết hạn hoặc bị xóa</div>
+                                                )
+                                            ) : (
+                                                "Loading..."
+                                            )}
+                                        </ScrollArea>
+                                        <DialogFooter className={"flex flex-row justify-between items-end px-3 pb-3"}>
+                                            <a
+                                                href={chatData?.job?.url || "#"}
+                                                target="_blank"
+                                                className="border border-green-500 text-green-500 inline-block px-2 py-1 rounded-full text-sm  hover:bg-accent "
+                                            >
+                                                Truy cập job {">>"}
+                                            </a>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
                         </div>
                     </PopoverContent>
                 </Popover>

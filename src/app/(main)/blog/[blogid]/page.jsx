@@ -14,7 +14,7 @@ const BlogPage = async ({ params }) => {
     }
 
     return (
-        <div className="mt-32  w-full">
+        <div className="mt-24  w-full">
             <BlogDetail data={data} />
         </div>
     );

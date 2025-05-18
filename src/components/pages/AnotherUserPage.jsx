@@ -29,12 +29,12 @@ export default function AnotherUserPage({ uid }) {
     }, [uid]);
 
     return (
-        <div className=" w-full flex flex-col items-center  relative z-0">
-            <div className=" bg-background container mx-auto px-4">
-                <div className=" w-full grid grid-cols-1 md:grid-cols-3 gap-6 ">
+        <div className=" w-full flex flex-col items-center  z-0">
+            <div className=" bg-background  min-h-screen pt-20 w-full md:pt-24 mx-auto px-4">
+                <div className=" w-full flex justify-center ">
                     {/* Profile Summary */}
-                    <div className="md:col-span-1 mt-24 md:mt-0 relative z-20 -mb-20">
-                        <Card className=" sticky top-24 z-10">
+                    <div className="md:col-span-1 md:mt-0 max-w-4xl w-full -mb-20">
+                        <Card className="">
                             <CardHeader className="pb-2">
                                 <div className="flex justify-between items-start">
                                     <Image
@@ -92,10 +92,10 @@ export default function AnotherUserPage({ uid }) {
                     </div>
 
                     {/* Tabs Content */}
-                    <div className="md:col-span-2 w-full min-h-screen pt-20  md:pt-24">
+                    {/* <div className="md:col-span-2 w-full min-h-screen pt-20  md:pt-24">
                         <h2 className="text-xl  font-bold my-2">Bài viết của {userData?.userRecord?.displayName}</h2>
                         <SavedBlogTab otherUid={uid} authUserData={authUserData} />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

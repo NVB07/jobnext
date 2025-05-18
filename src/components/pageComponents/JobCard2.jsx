@@ -274,13 +274,17 @@ export default function JobCard({ job, authUserData }) {
                                 </DialogHeader>
                                 <ScrollArea className="h-screen p-3">
                                     {!loading ? (
-                                        <div className="w-full h-fit">
-                                            <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
-                                            <p
-                                                className="text-sm text-foreground/80 border-foreground/50 border-t pt-3 mt-2"
-                                                dangerouslySetInnerHTML={{ __html: JobRequirements?.innerHTML }}
-                                            ></p>
-                                        </div>
+                                        jobDescription || JobRequirements ? (
+                                            <div className="w-full h-fit">
+                                                <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
+                                                <p
+                                                    className="text-sm text-foreground/80 border-foreground/50 border-t pt-3 mt-2"
+                                                    dangerouslySetInnerHTML={{ __html: JobRequirements?.innerHTML }}
+                                                ></p>
+                                            </div>
+                                        ) : (
+                                            <div className="text-center text-orange-500 font-bold">Công việc đã hết hạn hoặc bị xóa</div>
+                                        )
                                     ) : (
                                         "Loading..."
                                     )}

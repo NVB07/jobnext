@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "@/context/AuthContextProvider";
+import { GET_METHOD } from "@/services/services";
 
 import { cn } from "@/lib/utils";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
@@ -24,8 +25,18 @@ import PersonalInfoUpload from "../pageComponents/personal-info-upload";
 import ResendVerificationToast from "@/components/pageComponents/ResendVerificationToast";
 
 const LandingPage = () => {
+    const [topCompanies, setTopCompanies] = useState([]);
     const { authUserData, setReload } = useContext(AuthContext);
     const carousel = ["/carousel/1.png", "/carousel/2.png", "/carousel/3.png", "/carousel/4.png", "/carousel/5.png", "/carousel/6.png", "/carousel/7.png"];
+    useEffect(() => {
+        const fetchTopCompanies = async () => {
+            const response = await GET_METHOD("jobs/stats/top-companies?limit=20");
+            if (response?.success) {
+                setTopCompanies(response?.data);
+            }
+        };
+        fetchTopCompanies();
+    }, []);
     return (
         <div className="w-full flex flex-col items-center relative z-10 bg-[hsl(var(--background)/40%)]  pt-24  ">
             <div className="container">
@@ -113,7 +124,7 @@ const LandingPage = () => {
                                 <div className="w-16 h-16  bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <FileText className="h-8 w-8 text-pink-400" />
                                 </div>
-                                <CardTitle className="text-xl">CV</CardTitle>
+                                <CardTitle className="text-xl">CV analysis</CardTitle>
                             </CardHeader>
                             <CardContent className=" text-center">Phân tích CV, đề xuất cải thiện và tạo CV linh hoạt phù hợp với vị trí ứng tuyển của bạn.</CardContent>
                             <CardFooter className="justify-center pt-2">
@@ -293,15 +304,17 @@ const LandingPage = () => {
                         </div>
                     </div>
                 </div>
+
                 <div className="mt-14 min-[490px]:px-5 px-0 overflow-x-hidden">
-                    <Marquee pauseOnHover className="[--duration:20s] ">
-                        {firstRow.map((review) => (
-                            <ReviewCard key={review.username} {...review} />
+                    <h3 className="text-2xl font-bold mb-4">TOP công ty nhiều vị trí tuyển dụng</h3>
+                    <Marquee pauseOnHover className="[--duration:50s] h-fit">
+                        {topCompanies.slice(0, topCompanies.length / 2).map((company, index) => (
+                            <ReviewCard key={index} companyName={company?.company} totalJobs={company?.totalJobs} img={company?.companyLogo} />
                         ))}
                     </Marquee>
-                    <Marquee reverse pauseOnHover className="[--duration:20s]">
-                        {secondRow.map((review) => (
-                            <ReviewCard key={review.username} {...review} />
+                    <Marquee reverse pauseOnHover className="[--duration:50s]">
+                        {topCompanies.slice(topCompanies.length / 2, topCompanies.length).map((company, index) => (
+                            <ReviewCard key={index} companyName={company?.company} totalJobs={company?.totalJobs} img={company?.companyLogo} />
                         ))}
                     </Marquee>
                 </div>
@@ -312,67 +325,19 @@ const LandingPage = () => {
 
 export default LandingPage;
 
-const reviews = [
-    {
-        name: "Jack",
-        username: "@jack",
-        body: "Phân tích CV tự động và đề xuất công việc phù hợp dựa trên kỹ năng, kinh nghiệm của ứng viên.",
-        img: "https://avatar.vercel.sh/jack",
-    },
-    {
-        name: "Jill",
-        username: "@jill",
-        body: "Hỗ trợ tối ưu CV, gợi ý chỉnh sửa để tăng khả năng thu hút nhà tuyển dụng.",
-        img: "https://avatar.vercel.sh/jill",
-    },
-    {
-        name: "John",
-        username: "@john",
-        body: "Tích hợp hệ thống phỏng vấn ảo, giúp ứng viên luyện tập và cải thiện kỹ năng trả lời phỏng vấn.",
-        img: "https://avatar.vercel.sh/john",
-    },
-    {
-        name: "Jane",
-        username: "@jane",
-        body: "Thu thập và cập nhật danh sách việc làm từ các nền tảng tuyển dụng hàng đầu, giúp ứng viên tiếp cận nhiều cơ hội hơn.",
-        img: "https://avatar.vercel.sh/jane",
-    },
-    {
-        name: "Jenny",
-        username: "@jenny",
-        body: "Gợi ý các kỹ năng cần thiết để nâng cao năng lực, đáp ứng yêu cầu của thị trường lao động.",
-        img: "https://avatar.vercel.sh/jenny",
-    },
-    {
-        name: "James",
-        username: "@james",
-        body: "Hỗ trợ kết nối tìm kiếm việc làm, giúp quy trình tìm việc diễn ra nhanh chóng và hiệu quả hơn.",
-        img: "https://avatar.vercel.sh/james",
-    },
-];
-
-var firstRow = reviews.slice(0, reviews.length / 2);
-var secondRow = reviews.slice(reviews.length / 2);
-
-var ReviewCard = ({ img, name, username, body }) => {
+var ReviewCard = ({ img, companyName, totalJobs }) => {
     return (
-        <figure
-            className={cn(
-                "relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
-                // light styles
-                "border-gray-950/[.1] bg-pink-500/10"
-                // dark styles
-                // "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
-            )}
-        >
-            <div className="flex flex-row items-center gap-2">
-                <img className="rounded-full" width="32" height="32" alt="" src={img} />
-                <div className="flex flex-col">
-                    <figcaption className="text-sm font-medium dark:text-white">{name}</figcaption>
-                    <p className="text-xs font-medium dark:text-white/40">{username}</p>
+        <figure className={cn("relative h-full w-64 overflow-hidden rounded-xl border p-4", "border-gray-950/[.1] bg-pink-500/10")}>
+            <div className="flex flex-row items-start gap-2">
+                <div className="w-16 min-w-16 h-16 min-h-16 bg-white p-1 rounded-md">
+                    <Image className="rounded-md w-full h-full object-contain" width={64} height={64} alt="logo company" src={img} />
+                </div>
+                <div className="flex flex-col items-start">
+                    <figcaption className="text-sm font-semibold">{companyName?.length > 30 ? companyName.slice(0, 30) + "..." : companyName}</figcaption>
+                    <p className="text-sm font-medium text-foreground/60">{totalJobs} việc làm</p>
                 </div>
             </div>
-            <blockquote className="mt-2 text-sm">{body}</blockquote>
+            {/* <blockquote className="mt-2 text-sm">{body}</blockquote> */}
         </figure>
     );
 };

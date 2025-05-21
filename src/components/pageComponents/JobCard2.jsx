@@ -45,10 +45,27 @@ export default function JobCard({ job, authUserData }) {
             const doc = parser.parseFromString(result.data, "text/html"); // Chuyển thành DOM
             const title = doc.querySelectorAll(".sc-1671001a-4.gDSEwb");
             const [jobDes, jobReq] = title;
+            const jobDesContent = jobDes.querySelector(".sc-1671001a-6.dVvinc");
+            const jobReqContent = jobReq.querySelector(".sc-1671001a-6.dVvinc");
+
             // setJobDescription(jobDes.innerText.trim().replaceAll("•	", " "));
             // setJobRequirements(jobReq.innerText.trim().replaceAll("•	", " "));
-            setJobDescription(jobDes);
-            setJobRequirements(jobReq);
+            setJobDescription(
+                jobDesContent.innerHTML
+                    .replace(/<br\s*\/?>/gi, "\n")
+                    .replace(/<\/p>/gi, "\n")
+                    .replaceAll("", "-")
+                    .replace(/<[^>]+>/g, "")
+                    .trim()
+            );
+            setJobRequirements(
+                jobReqContent.innerHTML
+                    .replace(/<br\s*\/?>/gi, "\n")
+                    .replace(/<\/p>/gi, "\n")
+                    .replaceAll("", "-")
+                    .replace(/<[^>]+>/g, "")
+                    .trim()
+            );
         }
     };
 
@@ -56,7 +73,12 @@ export default function JobCard({ job, authUserData }) {
         setShowDetail(val);
         if (val) {
             setLoading(true);
-            await getDetail();
+            if (job.jobSource !== "admin") {
+                await getDetail();
+            } else {
+                setJobDescription(job.description);
+                setJobRequirements(job.jobRequirement);
+            }
             setLoading(false);
         } else {
             setJobDescription(null);
@@ -65,21 +87,28 @@ export default function JobCard({ job, authUserData }) {
     };
 
     const handleInterview = () => {
-        if (JobRequirements) {
-            const paragraphs = JobRequirements.querySelectorAll("p");
-
-            let JobRequirementsHandle = "";
-            paragraphs.forEach((p) => {
-                JobRequirementsHandle += "\n" + p.textContent.trim() + "\n";
-            });
-
+        if (job.jobSource !== "admin") {
+            if (JobRequirements) {
+                setJobData({
+                    uid: authUserData?.uid,
+                    jobId: job.jobId,
+                    jobTitle: job.title,
+                    skills: job.skills,
+                    jobRequirements: JobRequirements,
+                    candidateDescription: authUserData?.userData.review,
+                    jobSource: job.jobSource,
+                });
+                router.push("/jobs/interview");
+            }
+        } else {
             setJobData({
                 uid: authUserData?.uid,
                 jobId: job.jobId,
+                jobSource: job.jobSource,
                 jobTitle: job.title,
                 skills: job.skills,
-                jobRequirements: JobRequirementsHandle,
-                jobRequirementsElement: JobRequirements.innerHTML,
+                jobRequirements: job.jobRequirement,
+                jobRequirementsElement: job.jobRequirement,
                 candidateDescription: authUserData?.userData.review,
             });
             router.push("/jobs/interview");
@@ -274,13 +303,32 @@ export default function JobCard({ job, authUserData }) {
                                 </DialogHeader>
                                 <ScrollArea className="h-screen p-3">
                                     {!loading ? (
-                                        jobDescription || JobRequirements ? (
+                                        job.jobSource !== "admin" && (jobDescription || JobRequirements) ? (
                                             <div className="w-full h-fit">
-                                                <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
+                                                {/* <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
                                                 <p
                                                     className="text-sm text-foreground/80 border-foreground/50 border-t pt-3 mt-2"
                                                     dangerouslySetInnerHTML={{ __html: JobRequirements?.innerHTML }}
-                                                ></p>
+                                                ></p> */}
+                                                <div className="flex flex-col gap-2">
+                                                    <h1 className="text-lg font-bold">Mô tả công việc</h1>
+                                                    <p className="text-sm text-foreground/80 whitespace-pre-line">{jobDescription}</p>
+                                                </div>
+                                                <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
+                                                    <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
+                                                    <p className="text-sm text-foreground/80  whitespace-pre-line">{JobRequirements}</p>
+                                                </div>
+                                            </div>
+                                        ) : job.jobSource === "admin" && (jobDescription || JobRequirements) ? (
+                                            <div className="w-full h-fit">
+                                                <div className="flex flex-col gap-2">
+                                                    <h1 className="text-lg font-bold">Mô tả công việc</h1>
+                                                    <p className="text-sm text-foreground/80 whitespace-pre-line">{job.description}</p>
+                                                </div>
+                                                <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
+                                                    <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
+                                                    <p className="text-sm text-foreground/80  whitespace-pre-line">{job.jobRequirement}</p>
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="text-center text-orange-500 font-bold">Công việc đã hết hạn hoặc bị xóa</div>
@@ -322,14 +370,6 @@ export default function JobCard({ job, authUserData }) {
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
-                        {/* <Button
-                            size="sm"
-                            className="rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
-                            onClick={() => handleInterview()}
-                        >
-                            <span className="mr-2">Xem chi tiết</span>
-                            <ExternalLinkIcon className="w-4 h-4" />
-                        </Button> */}
                     </div>
                 </div>
             </div>

@@ -45,10 +45,25 @@ export default function InterviewPage() {
             const doc = parser.parseFromString(result.data, "text/html"); // Chuyển thành DOM
             const title = doc.querySelectorAll(".sc-1671001a-4.gDSEwb");
             const [jobDes, jobReq] = title;
-            // setJobDescription(jobDes.innerText.trim().replaceAll("•	", " "));
-            // setJobRequirements(jobReq.innerText.trim().replaceAll("•	", " "));
-            setJobDescription(jobDes);
-            setJobRequirements(jobReq);
+            const jobDesContent = jobDes.querySelector(".sc-1671001a-6.dVvinc");
+            const jobReqContent = jobReq.querySelector(".sc-1671001a-6.dVvinc");
+
+            setJobDescription(
+                jobDesContent.innerHTML
+                    .replace(/<br\s*\/?>/gi, "\n")
+                    .replace(/<\/p>/gi, "\n")
+                    .replaceAll("", "-")
+                    .replace(/<[^>]+>/g, "")
+                    .trim()
+            );
+            setJobRequirements(
+                jobReqContent.innerHTML
+                    .replace(/<br\s*\/?>/gi, "\n")
+                    .replace(/<\/p>/gi, "\n")
+                    .replaceAll("", "-")
+                    .replace(/<[^>]+>/g, "")
+                    .trim()
+            );
         }
     };
 
@@ -253,10 +268,7 @@ export default function InterviewPage() {
                                         <div className="w-full h-fit">
                                             <div className="w-full">
                                                 <p className="font-semibold block text-base text-foreground">Thông tin công việc:</p>
-                                                <div
-                                                    className="text-sm text-foreground/80  mt-2 [&_h2]:text-base [&_h2]:text-foreground text-left"
-                                                    dangerouslySetInnerHTML={{ __html: chatData?.jobRequirementsElement.replace(/\n{2,}/g, "<br>") }}
-                                                ></div>
+                                                <p className="text-sm text-foreground/80  whitespace-pre-line">{chatData?.jobRequirement}</p>
                                                 {chatData?.skills && (
                                                     <div className="w-full mt-2 text-sm text-foreground/80 text-left">
                                                         <span className="text-foreground/90 font-semibold">Yêu cầu kỹ năng :</span> {chatData?.skills}
@@ -309,11 +321,14 @@ export default function InterviewPage() {
                                             {!loading ? (
                                                 jobDescription || JobRequirements ? (
                                                     <div className="w-full h-fit">
-                                                        <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
-                                                        <p
-                                                            className="text-sm text-foreground/80 border-foreground/50 border-t pt-3 mt-2"
-                                                            dangerouslySetInnerHTML={{ __html: JobRequirements?.innerHTML }}
-                                                        ></p>
+                                                        <div className="flex flex-col gap-2">
+                                                            <h1 className="text-lg font-bold">Mô tả công việc</h1>
+                                                            <p className="text-sm text-foreground/80 whitespace-pre-line">{jobDescription}</p>
+                                                        </div>
+                                                        <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
+                                                            <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
+                                                            <p className="text-sm text-foreground/80  whitespace-pre-line">{JobRequirements}</p>
+                                                        </div>
                                                     </div>
                                                 ) : (
                                                     <div className="text-center text-orange-500 font-bold">Công việc đã hết hạn hoặc bị xóa</div>

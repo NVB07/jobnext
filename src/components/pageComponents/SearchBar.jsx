@@ -269,7 +269,7 @@ export default function SearchBar({ authUserData }) {
             </form>
             <div className="w-full">
                 {allJobs?.data?.length > 0
-                    ? allJobs.data.map((job) => <JobCard key={job.jobId} job={job} authUserData={authUserData} />)
+                    ? allJobs.data.map((job, index) => <JobCard key={index} job={job} authUserData={authUserData} />)
                     : !loading && <p>Không có job</p>}
             </div>
             {allJobs?.pagination?.totalPages > 1 && (

@@ -47,12 +47,12 @@ const InterviewSetup = () => {
                 } else {
                     const bodyReq = {
                         jobRequirement: jobData.jobRequirements,
-                        jobRequirementsElement: jobData.jobRequirementsElement || jobData.jobRequirements,
                         candidateDescription: candidate || authUserData?.userData.review,
                         jobId: jobData.jobId,
                         skills: jobData.skills,
                         jobTitle: jobData.jobTitle,
                         uid: jobData.uid,
+                        jobSource: jobData.jobSource,
                     };
                     const resultPost = await POST_METHOD("interviews", bodyReq, { Authorization: `Bearer ${token}` });
                     if (resultPost) {
@@ -118,13 +118,8 @@ const InterviewSetup = () => {
 
                     <div className="w-full">
                         <div className="font-bold">Yêu cầu công việc :</div>
-                        {jobData.jobRequirementsElement ? (
-                            <div
-                                className="text-sm text-foreground/80 border-foreground/50   mt-2"
-                                dangerouslySetInnerHTML={{ __html: jobData?.jobRequirementsElement }}
-                            ></div>
-                        ) : (
-                            <div className="text-sm text-foreground/80 border-foreground/50   mt-2"> {jobData.jobRequirements}</div>
+                        {jobData.jobRequirements && (
+                            <div className="text-sm text-foreground/80 border-foreground/50  whitespace-pre-line mt-2"> {jobData.jobRequirements}</div>
                         )}
                     </div>
                 </div>

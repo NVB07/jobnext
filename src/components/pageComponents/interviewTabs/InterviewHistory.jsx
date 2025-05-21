@@ -169,8 +169,10 @@ function HistoryItem({ interview, setReload }) {
                                 <div>
                                     <h3 className="text-xl font-bold  md:line-clamp-2">{interview.jobTitle}</h3>
                                     <div className="flex items-center mt-2 text-sm ">
-                                        <FolderRoot className={`w-4 h-4 mr-1 shrink-0 ${interview.jobId ? "text-blue-500" : "text-green-500"}`} />
-                                        <span className={` ${interview.jobId ? "text-blue-500" : "text-green-500"}`}>{interview.jobId ? "vietnamworks" : "custom "}</span>
+                                        <FolderRoot className={"w-4 h-4 mr-1 shrink-0 text-blue-500"} />
+                                        <span className={"text-foreground/60 text-xs"}>
+                                            {interview.jobSource === "admin" || interview.jobSource === "vietnamworks" ? " có sẵn trên hệ thống" : "tự tạo"}
+                                        </span>
                                     </div>
                                 </div>
                             </div>

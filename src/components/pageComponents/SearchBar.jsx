@@ -98,12 +98,7 @@ export default function SearchBar({ authUserData }) {
         async (e) => {
             setCurrentPage(1);
             e.preventDefault();
-            // console.log({
-            //     searchQuery,
-            //     location,
-            //     jobCategory,
-            //     experienceLevel,
-            // });
+
             const result = await POST_METHOD(`jobs/search-no-match?page=${1}&perPage=${perPage}`, {
                 skill: searchQuery,
                 location: location,

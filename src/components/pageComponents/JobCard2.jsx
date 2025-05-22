@@ -1,6 +1,6 @@
 "use client";
 
-import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, Loader2 } from "lucide-react";
+import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, Loader2, Eye } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 
@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useState, useContext, useCallback } from "react";
 import { useRouter } from "next13-progressbar";
 import { toast } from "sonner";
-
+import Link from "next/link";
 import { JobContext } from "@/context/JobProvider";
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -255,121 +255,136 @@ export default function JobCard({ job, authUserData }) {
                     </div>
                     <p className="text-sm mt-3 text-foreground/70">Hết hạn vào {new Date(job.expiredOn).toLocaleDateString("vi-VN")}</p>
                     <div className="flex justify-between mt-6">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className={`rounded-full border border-foreground/70 text-foreground/70  ${
-                                saved ? " text-pink-500  border-pink-500 hover:text-pink-500 " : " "
-                            }`}
-                            onClick={handleSavedJob}
-                        >
-                            <BookmarkIcon className={`w-4 h-4 mr-1 ${saved ? "fill-pink-500 stroke-pink-500 " : ""}`} />
-                            Lưu
-                        </Button>
-                        <Dialog className="w-full" open={showDetail} onOpenChange={(val) => handleOpen(val)}>
-                            <DialogTrigger asChild>
-                                <Button
-                                    size="sm"
-                                    className="rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
-                                >
-                                    <span className="mr-2">Xem chi tiết</span>
-                                    <ExternalLinkIcon className="w-4 h-4" />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-[95%] md:max-w-[60%] max-h-[90%] flex flex-col p-0 gap-0">
-                                <DialogHeader className={"flex flex-row space-y-0 w-full p-3"}>
-                                    <DialogTitle className="min-w-fit">
-                                        <Image
-                                            className="w-16  h-16 md:w-[96px] md:h-[96px] rounded-md object-contain mr-4 bg-white p-1"
-                                            width={150}
-                                            height={150}
-                                            src={dialogImgError ? "/company-default-logo.svg" : job.companyLogo || "/company-default-logo.svg"}
-                                            alt={job.company}
-                                            onError={handleDialogImageError}
-                                        />
-                                    </DialogTitle>
-                                    <DialogDescription className="flex flex-col w-full items-start justify-start ">
-                                        <span className="text-base md:text-lg text-left  cursor-pointer font-bold text-wrap text-foreground truncate line-clamp-2">
-                                            {job.title}
-                                        </span>
-                                        <span className="text-sm text-left flex items-center  text-foreground/80 text-wrap  truncate line-clamp-2">
-                                            <BuildingIcon className="w-4 h-4 mr-1.5 shrink-0 text-purple-500" />
-                                            {job.company}
-                                        </span>
-                                        <span className="text-sm flex items-center text-left  text-foreground/80 text-wrap  truncate line-clamp-2 mt-1">
-                                            <MapPinIcon className="w-4 h-4 mr-1.5 shrink-0 text-pink-500" /> {job.locationVI + " - " + job.jobLevelVI}
-                                        </span>
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <ScrollArea className="h-screen p-3">
-                                    {!loading ? (
-                                        job.jobSource !== "admin" && (jobDescription || JobRequirements) ? (
-                                            <div className="w-full h-fit">
-                                                {/* <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className={`rounded-full border border-foreground/70 text-foreground/70  ${
+                                    saved ? " text-pink-500  border-pink-500 hover:text-pink-500 " : " "
+                                }`}
+                                onClick={handleSavedJob}
+                            >
+                                <BookmarkIcon className={`w-4 h-4 mr-1 ${saved ? "fill-pink-500 stroke-pink-500 " : ""}`} />
+                                Lưu
+                            </Button>
+                            <Dialog className="w-full" open={showDetail} onOpenChange={(val) => handleOpen(val)}>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        size="sm"
+                                        className="rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
+                                    >
+                                        <span className="mr-2">Xem nhanh</span>
+                                        <Eye className="w-4 h-4" />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-[95%] md:max-w-[60%] max-h-[90%] flex flex-col p-0 gap-0">
+                                    <DialogHeader className={"flex flex-row space-y-0 w-full p-3"}>
+                                        <DialogTitle className="min-w-fit">
+                                            <Image
+                                                className="w-16  h-16 md:w-[96px] md:h-[96px] rounded-md object-contain mr-4 bg-white p-1"
+                                                width={150}
+                                                height={150}
+                                                src={dialogImgError ? "/company-default-logo.svg" : job.companyLogo || "/company-default-logo.svg"}
+                                                alt={job.company}
+                                                onError={handleDialogImageError}
+                                            />
+                                        </DialogTitle>
+                                        <DialogDescription className="flex flex-col w-full items-start justify-start ">
+                                            <span className="text-base md:text-lg text-left  cursor-pointer font-bold text-wrap text-foreground truncate line-clamp-2">
+                                                {job.title}
+                                            </span>
+                                            <span className="text-sm text-left flex items-center  text-foreground/80 text-wrap  truncate line-clamp-2">
+                                                <BuildingIcon className="w-4 h-4 mr-1.5 shrink-0 text-purple-500" />
+                                                {job.company}
+                                            </span>
+                                            <span className="text-sm flex items-center text-left  text-foreground/80 text-wrap  truncate line-clamp-2 mt-1">
+                                                <MapPinIcon className="w-4 h-4 mr-1.5 shrink-0 text-pink-500" /> {job.locationVI + " - " + job.jobLevelVI}
+                                            </span>
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <ScrollArea className="h-screen p-3">
+                                        {!loading ? (
+                                            job.jobSource !== "admin" && (jobDescription || JobRequirements) ? (
+                                                <div className="w-full h-fit">
+                                                    {/* <p className="text-sm text-foreground/80" dangerouslySetInnerHTML={{ __html: jobDescription?.innerHTML }}></p>
                                                 <p
                                                     className="text-sm text-foreground/80 border-foreground/50 border-t pt-3 mt-2"
                                                     dangerouslySetInnerHTML={{ __html: JobRequirements?.innerHTML }}
                                                 ></p> */}
-                                                <div className="flex flex-col gap-2">
-                                                    <h1 className="text-lg font-bold">Mô tả công việc</h1>
-                                                    <p className="text-sm text-foreground/80 whitespace-pre-line">{jobDescription}</p>
+                                                    <div className="flex flex-col gap-2">
+                                                        <h1 className="text-lg font-bold">Mô tả công việc</h1>
+                                                        <p className="text-sm text-foreground/80 whitespace-pre-line">{jobDescription}</p>
+                                                    </div>
+                                                    <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
+                                                        <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
+                                                        <p className="text-sm text-foreground/80  whitespace-pre-line">{JobRequirements}</p>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
-                                                    <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
-                                                    <p className="text-sm text-foreground/80  whitespace-pre-line">{JobRequirements}</p>
+                                            ) : job.jobSource === "admin" && (jobDescription || JobRequirements) ? (
+                                                <div className="w-full h-fit">
+                                                    <div className="flex flex-col gap-2">
+                                                        <h1 className="text-lg font-bold">Mô tả công việc</h1>
+                                                        <p className="text-sm text-foreground/80 whitespace-pre-line">{job.description}</p>
+                                                    </div>
+                                                    <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
+                                                        <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
+                                                        <p className="text-sm text-foreground/80  whitespace-pre-line">{job.jobRequirement}</p>
+                                                    </div>
+                                                    <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
+                                                        <h1 className="text-lg font-bold">Ứng tuyển</h1>
+                                                        <p className="text-sm text-foreground/80  whitespace-pre-line">{job.contact}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ) : job.jobSource === "admin" && (jobDescription || JobRequirements) ? (
-                                            <div className="w-full h-fit">
-                                                <div className="flex flex-col gap-2">
-                                                    <h1 className="text-lg font-bold">Mô tả công việc</h1>
-                                                    <p className="text-sm text-foreground/80 whitespace-pre-line">{job.description}</p>
-                                                </div>
-                                                <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
-                                                    <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
-                                                    <p className="text-sm text-foreground/80  whitespace-pre-line">{job.jobRequirement}</p>
-                                                </div>
-                                            </div>
+                                            ) : (
+                                                <div className="text-center text-orange-500 font-bold">Công việc đã hết hạn hoặc bị xóa</div>
+                                            )
                                         ) : (
-                                            <div className="text-center text-orange-500 font-bold">Công việc đã hết hạn hoặc bị xóa</div>
-                                        )
-                                    ) : (
-                                        "Loading..."
-                                    )}
-                                </ScrollArea>
-                                <DialogFooter className={"flex flex-row justify-between items-end px-3 pb-3"}>
-                                    <a
-                                        href={job.url || "#"}
-                                        target="_blank"
-                                        className="border border-green-500 text-green-500 inline-block px-2 py-1 rounded-full text-sm  hover:bg-accent "
-                                    >
-                                        Truy cập job {">>"}
-                                    </a>
-                                    <div className="flex-1 flex justify-end items-center">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className={`rounded-full mr-5 border border-foreground/70 text-foreground/70  ${
-                                                saved ? " text-pink-500  border-pink-500 hover:text-pink-500 " : " "
-                                            }`}
-                                            onClick={handleSavedJob}
-                                        >
-                                            <BookmarkIcon className={`w-4 h-4 mr-1 ${saved ? "fill-pink-500 stroke-pink-500 " : ""}`} />
-                                            Lưu
-                                        </Button>
+                                            "Loading..."
+                                        )}
+                                    </ScrollArea>
+                                    <DialogFooter className={"flex flex-row justify-between items-end px-3 pb-3"}>
+                                        {job?.url && (
+                                            <a
+                                                href={job.url || "#"}
+                                                target="_blank"
+                                                className="border border-green-500 text-green-500 inline-block px-2 py-1 rounded-full text-sm  hover:bg-accent "
+                                            >
+                                                Truy cập job {">>"}
+                                            </a>
+                                        )}
+                                        <div className="flex-1 flex justify-end items-center">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className={`rounded-full mr-5 border border-foreground/70 text-foreground/70  ${
+                                                    saved ? " text-pink-500  border-pink-500 hover:text-pink-500 " : " "
+                                                }`}
+                                                onClick={handleSavedJob}
+                                            >
+                                                <BookmarkIcon className={`w-4 h-4 mr-1 ${saved ? "fill-pink-500 stroke-pink-500 " : ""}`} />
+                                                Lưu
+                                            </Button>
 
-                                        <Button
-                                            disabled={JobRequirements ? false : true}
-                                            onClick={handleInterview}
-                                            variant="outline"
-                                            className="rounded-full w-32 text-base font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
-                                        >
-                                            {JobRequirements ? " Phỏng vấn" : <Loader2 className="animate-spin" />}
-                                        </Button>
-                                    </div>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                                            <Button
+                                                disabled={JobRequirements ? false : true}
+                                                onClick={handleInterview}
+                                                variant="outline"
+                                                className="rounded-full w-32 text-base font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
+                                            >
+                                                {JobRequirements ? " Phỏng vấn" : <Loader2 className="animate-spin" />}
+                                            </Button>
+                                        </div>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                        <Link
+                            href={`/jobs/${job._id}`}
+                            className="flex items-center justify-center gap-2 rounded-full border px-2 h-8 text-xs bg-orange-500 hover:bg-orange-600 text-white"
+                        >
+                            <span className="mr-2">Xem chi tiết</span>
+                            <ExternalLinkIcon className="w-4 h-4" />
+                        </Link>
                     </div>
                 </div>
             </div>

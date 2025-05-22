@@ -18,6 +18,7 @@ const InterviewSetup = () => {
     const [checkbox, setCheckbox] = useState(true);
     const [candidate, setCandidate] = useState(null);
     const [loading, setLoading] = useState(false);
+    console.log(jobData);
 
     const changeChecked = () => {
         setCheckbox((prev) => {
@@ -118,8 +119,10 @@ const InterviewSetup = () => {
 
                     <div className="w-full">
                         <div className="font-bold">Yêu cầu công việc :</div>
-                        {jobData.jobRequirements && (
-                            <div className="text-sm text-foreground/80 border-foreground/50  whitespace-pre-line mt-2"> {jobData.jobRequirements}</div>
+                        {typeof jobData.jobRequirementsElement === "string" ? (
+                            <p className="text-sm text-foreground/80 whitespace-pre-line">{jobData.jobRequirementsElement}</p>
+                        ) : (
+                            <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: jobData.jobRequirementsElement.innerHTML }}></div>
                         )}
                     </div>
                 </div>

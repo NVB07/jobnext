@@ -12,7 +12,12 @@ import { uploadCV, uploadText } from "@/services/services";
 import { toast } from "sonner";
 import Link from "next/link";
 
-export default function PersonalInfoUpload({ children = <RainbowButton className="text-base">Tải lên thông tin cá nhân</RainbowButton>, uid, setReload }) {
+export default function PersonalInfoUpload({
+    children = <RainbowButton className="text-base">Tải lên thông tin cá nhân</RainbowButton>,
+    uid,
+    setReload,
+    inUserPage = false,
+}) {
     const [open, setOpen] = useState(false);
     const [personalInfo, setPersonalInfo] = useState("");
     const [file, setFile] = useState(null);
@@ -141,9 +146,11 @@ export default function PersonalInfoUpload({ children = <RainbowButton className
 
                 <DialogFooter>
                     <div className="w-full gap-2 sm:flex-row flex flex-col justify-between">
-                        <Link className="h-9 flex items-center justify-center px-2 bg-foreground/10 hover:bg-foreground/15 rounded-lg" href={`/user/${uid}/update`}>
-                            Nhập thông tin thủ công
-                        </Link>
+                        {!inUserPage && (
+                            <Link className="h-9 flex items-center justify-center px-2 bg-foreground/10 hover:bg-foreground/15 rounded-lg" href={`/user/${uid}/update`}>
+                                Nhập thông tin thủ công
+                            </Link>
+                        )}
                         <Button type="submit" onClick={handleSubmit} disabled={isProcessing}>
                             {isProcessing ? "Đang xử lý..." : "Tải lên"}
                         </Button>

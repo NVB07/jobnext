@@ -6,10 +6,22 @@ import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 import { Pencil, Bookmark, Clock, FileText, Calendar, Briefcase, MapPin, GraduationCap } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/firebaseConfig";
@@ -17,11 +29,11 @@ import { deleteCookie } from "@/lib/auth/cookiesManager";
 
 import { AuthContext } from "@/context/AuthContextProvider";
 import SavedJob from "../pageComponents/interviewTabs/SavedJob";
+import PersonalInfoUpload from "@/components/pageComponents/personal-info-upload";
 import InterviewHistory from "../pageComponents/interviewTabs/InterviewHistory";
-import SavedBlogTab from "../pageComponents/userTabs/SavedBlogTab";
 
 export default function UserProfile({ uid }) {
-    const { authUserData } = useContext(AuthContext);
+    const { authUserData, setReload } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("saved-jobs");
     const router = useRouter();
     const handleSignOut = () => {
@@ -55,13 +67,26 @@ export default function UserProfile({ uid }) {
                                         height={80}
                                         className="rounded-full"
                                     />
-                                    {/* <Avatar className="h-20 w-20">
-                                        <AvatarImage src={authUserData?.photoURL || "/avatar-default.jpg"} alt="Avatar" />
-                                        <AvatarFallback className="bg-gradient-to-r from-orange-400 to-pink-500  text-xl">Jobnext</AvatarFallback>
-                                    </Avatar> */}
-                                    <Button onClick={handleNextPae} variant="ghost" size="icon" className="rounded-full">
-                                        <Pencil className="h-4 w-4" />
-                                    </Button>
+
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button variant="outline" size="icon" className="rounded-full">
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="bg-background w-fit" side="bottom" align="center">
+                                            <Button onClick={handleNextPae} variant="ghost" className="flex hover:bg-foreground/5  justify-start w-full">
+                                                <Pencil className="h-4 w-4" />
+                                                <span className="ml-2">Nhập thông tin cá nhân</span>
+                                            </Button>
+                                            <PersonalInfoUpload uid={authUserData?.uid} setReload={setReload} inUserPage={true}>
+                                                <div className="flex items-center gap-2 h-9 text-sm px-4 hover:bg-foreground/5 rounded-lg cursor-pointer">
+                                                    <Pencil className="h-4 w-4" />
+                                                    <span className="ml-2">Tải lên CV</span>
+                                                </div>
+                                            </PersonalInfoUpload>
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
                                 <CardTitle className="mt-4 text-xl">{authUserData?.displayName}</CardTitle>
                             </CardHeader>
@@ -87,23 +112,39 @@ export default function UserProfile({ uid }) {
 
                                 <Separator />
 
-                                <div className="space-y-2">
-                                    <h4 className="text-sm font-medium">Kỹ năng</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {authUserData?.userData?.profile?.Skills &&
-                                            authUserData?.userData?.profile?.Skills.split(",").map((skill, index) => {
-                                                return (
-                                                    <Badge key={index} className={`bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-sm`}>
-                                                        {skill}
-                                                    </Badge>
-                                                );
-                                            })}
-                                    </div>
-                                </div>
-                                <Separator />
-                                <Button variant="destructive" onClick={handleSignOut}>
-                                    Đăng xuất
-                                </Button>
+                                {authUserData?.userData?.profile?.Skills && (
+                                    <>
+                                        <div className="space-y-2">
+                                            <h4 className="text-sm font-medium">Kỹ năng</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {authUserData?.userData?.profile?.Skills &&
+                                                    authUserData?.userData?.profile?.Skills.split(",").map((skill, index) => {
+                                                        return (
+                                                            <Badge key={index} className={`bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-sm`}>
+                                                                {skill}
+                                                            </Badge>
+                                                        );
+                                                    })}
+                                            </div>
+                                        </div>
+                                        <Separator />
+                                    </>
+                                )}
+                                <AlertDialog>
+                                    <AlertDialogTrigger>
+                                        <Button variant="destructive">Đăng xuất</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Bạn có chắc chắn muốn đăng xuất không?</AlertDialogTitle>
+                                            <AlertDialogDescription></AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                                            <AlertDialogAction onClick={handleSignOut}>Đăng xuất</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </CardContent>
                         </Card>
                     </div>

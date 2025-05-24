@@ -186,9 +186,7 @@ export default function JobDetail() {
                             </div>
                             <div className="flex items-center text-foreground/80">
                                 <MapPin className="h-4 w-4 mr-2 text-pink-600" />
-                                <span>
-                                    {job.locationVI || job.location} - {job.jobLevelVI || job.jobLevel}
-                                </span>
+                                <span>{job.locationVI || job.location}</span>
                             </div>
                         </div>
                     </div>
@@ -284,7 +282,7 @@ export default function JobDetail() {
                                 </CardHeader>
                                 <CardContent className="pt-0">
                                     {typeof jobDescription === "string" ? (
-                                        <p className="text-sm text-foreground/80 whitespace-pre-line">{jobDescription}</p>
+                                        <p className="text-base text-foreground/80 whitespace-pre-line">{jobDescription}</p>
                                     ) : (
                                         <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: jobDescription.innerHTML }}></div>
                                     )}
@@ -296,7 +294,7 @@ export default function JobDetail() {
                                     <h2 className="text-lg font-semibold">Mô tả công việc</h2>
                                 </CardHeader>
                                 <CardContent className="pt-0">
-                                    <p className="text-sm text-foreground/80 whitespace-pre-line">{jobDescription}</p>
+                                    <p className="text-base text-foreground/80 whitespace-pre-line">{jobDescription}</p>
                                 </CardContent>
                             </Card>
                         )}
@@ -308,7 +306,7 @@ export default function JobDetail() {
                                 </CardHeader>
                                 <CardContent className="pt-0">
                                     {typeof jobRequirements === "string" ? (
-                                        <p className="text-sm text-foreground/80 whitespace-pre-line">{jobRequirements}</p>
+                                        <p className="text-base text-foreground/80 whitespace-pre-line">{jobRequirements}</p>
                                     ) : (
                                         <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: jobRequirements.innerHTML }}></div>
                                     )}
@@ -320,7 +318,7 @@ export default function JobDetail() {
                                     <h2 className="text-lg font-semibold">Yêu cầu công việc</h2>
                                 </CardHeader>
                                 <CardContent className="pt-0">
-                                    <p className="text-sm text-foreground/80 whitespace-pre-line">{jobRequirements}</p>
+                                    <p className="text-base text-foreground/80 whitespace-pre-line">{jobRequirements}</p>
                                 </CardContent>
                             </Card>
                         )}
@@ -349,7 +347,7 @@ export default function JobDetail() {
                             <h2 className="text-lg font-semibold">Ứng tuyển</h2>
                         </CardHeader>
                         <CardContent className="pt-0">
-                            <p className="text-sm text-foreground/80 whitespace-pre-line">{job.contact}</p>
+                            <p className="text-base text-foreground/80 whitespace-pre-line">{job.contact}</p>
                         </CardContent>
                     </Card>
                 )}

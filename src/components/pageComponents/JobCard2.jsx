@@ -136,13 +136,25 @@ export default function JobCard({ job, authUserData }) {
     };
 
     const getMatchGradient = () => {
-        if (job.semanticScore >= 80) {
+        // Use hybridScore from matchData if available, otherwise fallback to semanticScore
+        const displayScore = job.matchData?.hybridScore ? parseFloat(job.matchData.hybridScore) : job.semanticScore;
+
+        if (displayScore >= 80) {
             return "url(#gradient-high)";
-        } else if (job.semanticScore >= 60) {
+        } else if (displayScore >= 60) {
             return "url(#gradient-medium)";
         } else {
             return "url(#gradient-low)";
         }
+    };
+
+    // Get the display score for rendering
+    const getDisplayScore = () => {
+        // Priority: hybridScore > semanticScore
+        if (job.matchData?.hybridScore) {
+            return Math.round(parseFloat(job.matchData.hybridScore));
+        }
+        return Math.round(job.semanticScore || 0);
     };
 
     const handleImageError = useCallback(() => {
@@ -205,14 +217,39 @@ export default function JobCard({ job, authUserData }) {
                                             </Badge>
                                         );
                                     })}
+
+                                    {/* AI Detected Skills */}
+                                    {job.matchData && job.matchData.detectedSkills && job.matchData.detectedSkills.length > 0 && (
+                                        <>
+                                            {job.matchData.detectedSkills.slice(0, 3).map((skill, index) => {
+                                                // Only show if not already in job.skills
+                                                if (!job.skills.toLowerCase().includes(skill.toLowerCase())) {
+                                                    return (
+                                                        <Badge
+                                                            key={`detected-${index}`}
+                                                            className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border border-gray-300 shadow-sm opacity-75"
+                                                        >
+                                                            🔍 {skill}
+                                                        </Badge>
+                                                    );
+                                                }
+                                                return null;
+                                            })}
+                                        </>
+                                    )}
                                 </div>
+
+                                {/* AI Skills Info */}
+                                {job.matchData && job.matchData.detectedSkills && job.matchData.detectedSkills.length > 0 && (
+                                    <div className="text-xs text-gray-500 mt-1">🔍 AI phát hiện thêm {job.matchData.detectedSkills.length} kỹ năng</div>
+                                )}
                             </div>
                         </div>
 
                         <div className="mt-5 md:mt-0 md:ml-6 flex flex-col items-center justify-start">
-                            {job.semanticScore && (
+                            {(job.semanticScore || job.matchData?.hybridScore) && (
                                 <>
-                                    <div className="relative w-20 h-20">
+                                    <div className="relative w-20 h-20 group cursor-help">
                                         <svg viewBox="0 0 100 100" className="w-full h-full">
                                             <defs>
                                                 <linearGradient id="gradient-high" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -237,18 +274,98 @@ export default function JobCard({ job, authUserData }) {
                                                 fill="none"
                                                 stroke={getMatchGradient()}
                                                 strokeWidth="10"
-                                                strokeDasharray={`${(2 * Math.PI * 45 * job.semanticScore) / 100} ${2 * Math.PI * 45 * (1 - job.semanticScore / 100)}`}
+                                                strokeDasharray={`${(2 * Math.PI * 45 * getDisplayScore()) / 100} ${2 * Math.PI * 45 * (1 - getDisplayScore() / 100)}`}
                                                 strokeDashoffset={2 * Math.PI * 45 * 0.25}
                                                 strokeLinecap="round"
                                             />
                                         </svg>
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <span className="text-base font-bold bg-gradient-to-r from-purple-500 via-pink-600 to-orange-500 bg-clip-text text-transparent">
-                                                {job.semanticScore}%
+                                                {getDisplayScore()}%
                                             </span>
                                         </div>
+
+                                        {/* Hover Tooltip for Score Breakdown */}
+                                        {job.matchData && job.matchData.breakdown && (
+                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg min-w-48">
+                                                    <div className="font-semibold text-center mb-2">Score Breakdown</div>
+                                                    <div className="space-y-1">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-purple-300">Semantic:</span>
+                                                            <span>{job.matchData.breakdown.semantic}%</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-green-300">Keywords:</span>
+                                                            <span>{job.matchData.breakdown.tfidf}%</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-blue-300">Skills:</span>
+                                                            <span>{job.matchData.breakdown.skillMatch}%</span>
+                                                        </div>
+                                                        {job.matchData.detectedSkills && job.matchData.detectedSkills.length > 0 && (
+                                                            <div className="border-t border-gray-700 pt-2 mt-2">
+                                                                <div className="text-gray-300 text-xs">Detected Skills:</div>
+                                                                <div className="text-xs text-gray-400">
+                                                                    {job.matchData.detectedSkills.slice(0, 3).join(", ")}
+                                                                    {job.matchData.detectedSkills.length > 3 && "..."}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    {/* Arrow */}
+                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Fallback tooltip for non-hybrid scores */}
+                                        {job.matchData && !job.matchData.breakdown && job.semanticScore && (
+                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg min-w-32">
+                                                    <div className="font-semibold text-center mb-1">Match Score</div>
+                                                    <div className="text-center">
+                                                        <span className="text-purple-300">{job.matchData.method === "hybrid" ? "Hybrid" : "Semantic"}:</span>
+                                                        <span className="ml-2">{getDisplayScore()}%</span>
+                                                    </div>
+                                                    {job.matchData.detectedSkills && job.matchData.detectedSkills.length > 0 && (
+                                                        <div className="border-t border-gray-700 pt-2 mt-2">
+                                                            <div className="text-gray-300 text-xs">Detected Skills:</div>
+                                                            <div className="text-xs text-gray-400">
+                                                                {job.matchData.detectedSkills.slice(0, 2).join(", ")}
+                                                                {job.matchData.detectedSkills.length > 2 && "..."}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {/* Arrow */}
+                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="text-xs font-medium  -500 mt-1">Mức độ phù hợp</div>
+                                    <div className="text-xs font-medium mt-1 text-center">
+                                        <div>Mức độ phù hợp</div>
+                                        {/* Method Indicator */}
+                                        {job.matchData && job.matchData.method && (
+                                            <div className="flex items-center justify-center mt-1">
+                                                {job.matchData.method === "hybrid" && (
+                                                    <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-sm">
+                                                        🧠 Hybrid
+                                                    </span>
+                                                )}
+                                                {job.matchData.method === "transformer" && (
+                                                    <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-sm">
+                                                        🤖 AI
+                                                    </span>
+                                                )}
+                                                {job.matchData.method === "tfidf" && (
+                                                    <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-full shadow-sm">
+                                                        ⚡ Fast
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </>
                             )}
                         </div>
@@ -300,6 +417,52 @@ export default function JobCard({ job, authUserData }) {
                                             <span className="text-sm flex items-center text-left  text-foreground/80 text-wrap  truncate line-clamp-2 mt-1">
                                                 <MapPinIcon className="w-4 h-4 mr-1.5 shrink-0 text-pink-500" /> {job.locationVI + " - " + job.jobLevelVI}
                                             </span>
+
+                                            {/* Score Information in Dialog */}
+                                            {(job.semanticScore || job.matchData?.hybridScore) && (
+                                                <div className="flex items-center gap-3 mt-2 p-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100 w-full">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                                            {getDisplayScore()}%
+                                                        </span>
+                                                        {job.matchData && job.matchData.method && (
+                                                            <span
+                                                                className={`text-xs px-2 py-1 rounded-full text-white ${
+                                                                    job.matchData.method === "hybrid"
+                                                                        ? "bg-gradient-to-r from-purple-500 to-pink-500"
+                                                                        : job.matchData.method === "transformer"
+                                                                        ? "bg-gradient-to-r from-blue-500 to-purple-500"
+                                                                        : "bg-gradient-to-r from-green-500 to-blue-500"
+                                                                }`}
+                                                            >
+                                                                {job.matchData.method === "hybrid"
+                                                                    ? "🧠 Hybrid"
+                                                                    : job.matchData.method === "transformer"
+                                                                    ? "🤖 AI"
+                                                                    : "⚡ Fast"}
+                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Detailed Breakdown */}
+                                                    {job.matchData && job.matchData.breakdown && (
+                                                        <div className="flex-1 grid grid-cols-3 gap-2 text-xs">
+                                                            <div className="text-center">
+                                                                <div className="text-purple-600 font-medium">{job.matchData.breakdown.semantic}%</div>
+                                                                <div className="text-gray-500">Semantic</div>
+                                                            </div>
+                                                            <div className="text-center">
+                                                                <div className="text-green-600 font-medium">{job.matchData.breakdown.tfidf}%</div>
+                                                                <div className="text-gray-500">Keywords</div>
+                                                            </div>
+                                                            <div className="text-center">
+                                                                <div className="text-blue-600 font-medium">{job.matchData.breakdown.skillMatch}%</div>
+                                                                <div className="text-gray-500">Skills</div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                         </DialogDescription>
                                     </DialogHeader>
                                     <ScrollArea className="h-screen p-3">

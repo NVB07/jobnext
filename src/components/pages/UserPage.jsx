@@ -131,7 +131,7 @@ export default function UserProfile({ uid }) {
                                     </>
                                 )}
                                 <AlertDialog>
-                                    <AlertDialogTrigger>
+                                    <AlertDialogTrigger asChild>
                                         <Button variant="destructive">Đăng xuất</Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>

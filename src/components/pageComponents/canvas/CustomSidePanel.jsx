@@ -59,7 +59,7 @@ export const TemplatesPanel = observer(({ store, setCId, authUserData }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await GET_METHOD("cvTemplate");
+            const result = await GET_METHOD("admin/cvTemplate");
             if (result?.success) {
                 setTemplates(result.data);
             }
@@ -322,12 +322,12 @@ export const DownloadPanel = observer(({ store }) => {
                 ))}
             </div>
             <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 5 }}>
-                <button onClick={downloadJSON} style={{ width: "100%", background: "green", padding: 5, borderRadius: 8, color: "white" }}>
+                {/* <button onClick={downloadJSON} style={{ width: "100%", background: "green", padding: 5, borderRadius: 8, color: "white" }}>
                     Xuất Json
                 </button>
                 <button onClick={downloadPNG} style={{ width: "100%", background: "green", padding: 10, borderRadius: 8, color: "white" }}>
                     Tải xuống PNG
-                </button>
+                </button> */}
                 <button onClick={downloadPDF} style={{ width: "100%", background: "blue", padding: 10, borderRadius: 8, color: "white" }}>
                     Tải xuống PDF
                 </button>

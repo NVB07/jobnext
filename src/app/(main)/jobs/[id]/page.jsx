@@ -328,7 +328,7 @@ export default function JobDetail() {
                         <CardContent className="py-8 text-center">
                             <p className="text-orange-500 font-medium mb-2">Không thể tải nội dung chi tiết từ nguồn gốc.</p>
                             <p className="text-sm text-muted-foreground">
-                                Bạn có thể xem thông tin đầy đủ tại trang gốc bằng cách nhấp vào nút "Mở trang gốc" phía trên.
+                                Bạn có thể xem thông tin đầy đủ tại trang gốc bằng cách nhấp vào nút &quot;Mở trang gốc &quot; phía trên.
                             </p>
                         </CardContent>
                     </Card>

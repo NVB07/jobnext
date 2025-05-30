@@ -12,6 +12,7 @@ import NoData from "@/components/pages/NoData";
 const perPage = 20;
 const maxVisiblePages = 5;
 
+// 🚀 UPGRADED: Enhanced fetchJobs with new endpoint and fallback
 const fetchJobs = async ({ queryKey }) => {
     const [, page, authUserData, filters] = queryKey;
     const { address, rank, skills } = filters;
@@ -24,11 +25,44 @@ const fetchJobs = async ({ queryKey }) => {
     body.groupJobFunctionV3Name = authUserData?.userData.profile.Industry;
     body.review = authUserData?.userData.review;
     body.uid = authUserData?.uid;
+    body.method = "transformer"; // Add method for better matching
 
-    const result = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, body);
+    try {
+        // 🚀 PRIMARY: Try new hybrid-search endpoint first
+        console.log("🚀 Trying new hybrid-search endpoint...");
+        const result = await POST_METHOD(`jobs/hybrid-search?page=${page}&perPage=${perPage}`, body);
 
-    if (!result?.success) throw new Error("Lỗi khi tải dữ liệu");
-    return result;
+        if (result?.success) {
+            console.log(`✅ Hybrid endpoint success ${result.searchInfo?.cached ? "(cached ⚡)" : "(fresh 🔥)"}`);
+            return result;
+        }
+        throw new Error("Hybrid endpoint failed");
+    } catch (primaryError) {
+        console.warn("❌ Hybrid endpoint failed, trying fallback...", primaryError.message);
+
+        try {
+            // 🗝️ FALLBACK: Use old search endpoint
+            const fallbackResult = await POST_METHOD(`jobs/search?page=${page}&perPage=${perPage}`, body);
+
+            if (!fallbackResult?.success) throw new Error("Lỗi khi tải dữ liệu");
+
+            console.log("✅ Fallback endpoint success");
+            // Add fallback indicator
+            fallbackResult.searchInfo = {
+                cached: false,
+                method: "fallback",
+                endpoint: "jobs/search",
+            };
+
+            return fallbackResult;
+        } catch (fallbackError) {
+            console.error("❌ Both endpoints failed:", {
+                primary: primaryError.message,
+                fallback: fallbackError.message,
+            });
+            throw new Error("Không thể tải dữ liệu công việc");
+        }
+    }
 };
 
 const Recommend = ({ authUserData }) => {
@@ -51,18 +85,12 @@ const Recommend = ({ authUserData }) => {
         } else if (item === "skills") {
             setSkillsCheckbox((prev) => !prev);
         }
+
+        // 🔧 FIX: Reset to page 1 when filters change to prevent empty pages
+        setCurrentPage(1);
     };
 
-    // const {
-    //     data: matchingJobs,
-    //     isLoading,
-    //     error,
-    // } = useQuery({
-    //     queryKey: ["matchingJobs", currentPage, authUserData],
-    //     queryFn: fetchJobs,
-    //     keepPreviousData: true, // Giữ dữ liệu trang trước trong khi tải trang mới
-    //     staleTime: 1000 * 60 * 15, // Cache dữ liệu trong 15 phút
-    // });
+    // 🔥 ENHANCED: Updated query with better caching strategy
     const {
         data: matchingJobs,
         isLoading,
@@ -75,13 +103,15 @@ const Recommend = ({ authUserData }) => {
             {
                 address: adddressCheckbox,
                 rank: rankCheckbox,
-
                 skills: skillsCheckbox,
             },
         ],
         queryFn: fetchJobs,
         keepPreviousData: true,
-        staleTime: 1000 * 60 * 15,
+        staleTime: 1000 * 60 * 5, // Reduced from 15 to 5 minutes for fresher data
+        cacheTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
+        refetchOnWindowFocus: false, // Don't refetch on window focus
+        retry: 1, // Only retry once since we have fallback in fetchJobs
     });
 
     const getPageRange = () => {
@@ -104,10 +134,52 @@ const Recommend = ({ authUserData }) => {
         }
     };
 
+    // 🎨 NEW: Cache status indicator component
+    const CacheStatusIndicator = () => {
+        if (!matchingJobs?.searchInfo) return null;
+
+        const { cached, method, endpoint } = matchingJobs.searchInfo;
+
+        // if (cached) {
+        //     return (
+        //         <div className="mb-3 p-2 bg-green-50 border border-green-200 rounded-lg">
+        //             <div className="flex items-center gap-2 text-sm text-green-700">
+        //                 <span className="text-lg">⚡</span>
+        //                 <span className="font-medium">Kết quả được tải từ cache - Siêu nhanh!</span>
+        //             </div>
+        //         </div>
+        //     );
+        // }
+
+        // if (method === "fallback") {
+        //     return (
+        //         <div className="mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+        //             <div className="flex items-center gap-2 text-sm text-yellow-700">
+        //                 <span className="text-lg">🔄</span>
+        //                 <span className="font-medium">Sử dụng endpoint dự phòng</span>
+        //             </div>
+        //         </div>
+        //     );
+        // }
+
+        return (
+            <div className="mb-3 p-2 bg-blue-50/10 border rounded-lg">
+                <div className="flex items-center gap-2 text-sm text-blue-500">
+                    <span className="text-lg">🔥</span>
+                    <span className="font-medium">Kết quả mới nhất</span>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="w-full">
             <div ref={topRef} className="absolute top-0" />
             <h1 className="text-xl font-bold mb-3">Công việc phù hợp với bạn</h1>
+
+            {/* 🚀 NEW: Performance status indicator */}
+            <CacheStatusIndicator />
+
             <div className="flex flex-col xl:flex-row gap-3">
                 <div className="flex  gap-3">
                     {authUserData?.userData.profile.Address && (
@@ -148,8 +220,21 @@ const Recommend = ({ authUserData }) => {
                     </div>
                 )}
             </div>
-            {isLoading && <p>Đang tải...</p>}
-            {error && <p className="text-red-500">Lỗi tải dữ liệu</p>}
+
+            {/* 🔄 ENHANCED: Better loading and error states */}
+            {isLoading && (
+                <div className="flex items-center gap-2 p-4 text-blue-600">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    <span>Đang tìm kiếm công việc phù hợp...</span>
+                </div>
+            )}
+
+            {error && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600 font-medium">⚠️ Lỗi tải dữ liệu</p>
+                    <p className="text-red-500 text-sm mt-1">{error.message}</p>
+                </div>
+            )}
 
             {matchingJobs?.data?.length > 0
                 ? matchingJobs.data.map((job) => <JobCard key={job.jobId} job={job} authUserData={authUserData} />)
@@ -184,6 +269,8 @@ const Recommend = ({ authUserData }) => {
                         {"("}
                         {currentPage}/{matchingJobs?.pagination.totalPages || 1}
                         {")"}
+                        {/* 🆕 NEW: Show total jobs count */}
+                        {matchingJobs?.pagination?.totalJobs && <span className="ml-2">• {matchingJobs.pagination.totalJobs} công việc</span>}
                     </p>
                 </div>
             )}

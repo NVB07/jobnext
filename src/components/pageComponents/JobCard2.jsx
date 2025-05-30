@@ -166,7 +166,7 @@ export default function JobCard({ job, authUserData }) {
     }, []);
 
     return (
-        <div className="w-full my-3 rounded-2xl border bg-card  hover:shadow-lg transition-all duration-300 overflow-hidden">
+        <div className="w-full my-3 rounded-2xl border bg-card  hover:shadow-lg transition-all duration-300 ">
             <div className="relative">
                 {/* <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500"></div> */}
 
@@ -240,9 +240,9 @@ export default function JobCard({ job, authUserData }) {
                                 </div>
 
                                 {/* AI Skills Info */}
-                                {job.matchData && job.matchData.detectedSkills && job.matchData.detectedSkills.length > 0 && (
+                                {/* {job.matchData && job.matchData.detectedSkills && job.matchData.detectedSkills.length > 0 && (
                                     <div className="text-xs text-gray-500 mt-1">🔍 AI phát hiện thêm {job.matchData.detectedSkills.length} kỹ năng</div>
-                                )}
+                                )} */}
                             </div>
                         </div>
 
@@ -346,7 +346,7 @@ export default function JobCard({ job, authUserData }) {
                                     <div className="text-xs font-medium mt-1 text-center">
                                         <div>Mức độ phù hợp</div>
                                         {/* Method Indicator */}
-                                        {job.matchData && job.matchData.method && (
+                                        {/* {job.matchData && job.matchData.method && (
                                             <div className="flex items-center justify-center mt-1">
                                                 {job.matchData.method === "hybrid" && (
                                                     <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-sm">
@@ -364,7 +364,7 @@ export default function JobCard({ job, authUserData }) {
                                                     </span>
                                                 )}
                                             </div>
-                                        )}
+                                        )} */}
                                     </div>
                                 </>
                             )}
@@ -390,7 +390,7 @@ export default function JobCard({ job, authUserData }) {
                                         size="sm"
                                         className="rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
                                     >
-                                        <span className="mr-2">Xem nhanh</span>
+                                        {/* <span className="mr-2">Xem nhanh</span> */}
                                         <Eye className="w-4 h-4" />
                                     </Button>
                                 </DialogTrigger>
@@ -420,12 +420,12 @@ export default function JobCard({ job, authUserData }) {
 
                                             {/* Score Information in Dialog */}
                                             {(job.semanticScore || job.matchData?.hybridScore) && (
-                                                <div className="flex items-center gap-3 mt-2 p-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100 w-full">
+                                                <div className="flex items-center gap-3 w-full">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                                            {getDisplayScore()}%
+                                                        <span className="text-lg font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">
+                                                            {getDisplayScore()}% phù hợp với bạn
                                                         </span>
-                                                        {job.matchData && job.matchData.method && (
+                                                        {/* {job.matchData && job.matchData.method && (
                                                             <span
                                                                 className={`text-xs px-2 py-1 rounded-full text-white ${
                                                                     job.matchData.method === "hybrid"
@@ -441,7 +441,7 @@ export default function JobCard({ job, authUserData }) {
                                                                     ? "🤖 AI"
                                                                     : "⚡ Fast"}
                                                             </span>
-                                                        )}
+                                                        )} */}
                                                     </div>
 
                                                     {/* Detailed Breakdown */}

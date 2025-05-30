@@ -14,6 +14,7 @@ import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, Loader2 } fro
 import { POST_METHOD, GET_METHOD } from "@/services/services";
 import { auth } from "@/firebase/firebaseConfig";
 import { AuthContext } from "@/context/AuthContextProvider";
+import { toast } from "sonner";
 export default function InterviewPage() {
     const { authUserData } = useContext(AuthContext);
     const pathname = usePathname();
@@ -208,6 +209,8 @@ export default function InterviewPage() {
             }
 
             setMessages((prevMessages) => [...prevMessages, messageObj]);
+        } else {
+            toast.error("Có lỗi xảy ra! Vui lòng thử lại sau");
         }
     };
 

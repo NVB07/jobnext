@@ -92,20 +92,20 @@ const Header = () => {
                                             href={"/CV-analysis"}
                                         >
                                             <FileUser />
-                                            <p className="text-[10px]">My CV</p>
+                                            <p className="text-[10px]">CV</p>
                                         </Link>
                                     </>
                                 ) : (
                                     <Login>
                                         <div className="w-12 h-12 flex flex-col items-center justify-center rounded-lg hover:bg-[#7e7e7e37] transition-colors">
                                             <FileUser />
-                                            <p className="text-[10px]">My CV</p>
+                                            <p className="text-[10px]">CV</p>
                                         </div>
                                     </Login>
                                 )}
                             </TooltipTrigger>
                             <TooltipContent sideOffset={8}>
-                                <p>My CV</p>
+                                <p>CV</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -115,18 +115,18 @@ const Header = () => {
                             <TooltipTrigger className="w-fit mx-1 min-[420px]:mx-2 rounded-full">
                                 <Link
                                     prefetch={true}
-                                    target="_blank"
+                                    // target="_blank"
                                     className={` w-12 h-12 flex flex-col items-center justify-center rounded-lg hover:border-2 transition-colors ${
                                         urlPath.includes("/blog") && "border-2  bg-[#7e7e7e37]"
                                     }`}
-                                    href={"/cv"}
+                                    href={"/blog"}
                                 >
                                     <NotebookPen />
-                                    <p className="text-[10px]">CV</p>
+                                    <p className="text-[10px]">News</p>
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent sideOffset={8}>
-                                <p>CV Creator</p>
+                                <p>News</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>

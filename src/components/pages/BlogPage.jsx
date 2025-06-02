@@ -52,17 +52,17 @@ const BlogPage = () => {
 
     return (
         <div className="w-full min-[490px]:pt-[72px] pt-16 px-5  min-h-screen ">
-            <div className="flex min-[820px]:flex-row flex-col mt-10 overflow-visible gap-4">
-                <div className="w-full min-[820px]:w-1/3 h-fit  bg-background min-[820px]:sticky top-[112px] z-10">
+            <div className="flex min-[820px]:flex-row flex-col mt-2 overflow-visible justify-center gap-4">
+                {/* <div className="w-full min-[820px]:w-1/3 h-fit  bg-background min-[820px]:sticky top-[112px] z-10">
                     <p className="text-2xl font-bold ">Viết Blog</p>
                     <div className="w-full mt-1 text-gray-500">Viết để ghi nhớ hoặc chia sẻ kinh nghiệm </div>
                     <Link href={"/new-blog"} className="w-full bg-foreground/5 hover:bg-accent block border rounded-md h-24 min-[820px]:h-64 mt-4 p-3 text-neutral-500 ">
                         Nhấn để viết {"(trình chỉnh sửa markdown)"}
                     </Link>
-                </div>
-                <div className="w-full min-[820px]:w-2/3 min-[820px]:border-l min-h-screen min-[820px]:pl-4">
+                </div> */}
+                <div className="w-full min-[820px]:max-w-4xl min-[820px]:border-l min-[820px]:pl-4">
                     <h1 className="text-2xl w-full  font-bold">Đọc để khám phá</h1>
-                    <div className="w-full mt-1 text-gray-500">Các bài viết chia sẻ về kinh nghiệm và kiến thức</div>
+                    <div className="w-full mt-1 text-gray-500">Khám phá thông tin hữu ích liên quan tới nghề nghiệp </div>
                     <div className="w-full mt-4">
                         {blogData?.data.length !== 0 ? (
                             blogData?.data.map((blog) => (

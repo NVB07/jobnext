@@ -63,32 +63,6 @@ const BlogDetail = ({ data }) => {
         fetchData();
     }, [save]);
 
-    const handleSavedJob = async () => {
-        try {
-            if (save) {
-                const result = await POST_METHOD("blogs/unsave-blog", {
-                    blogId: blogData?.blogData._id,
-                    userId: authUserData.uid,
-                });
-                if (result?.success) {
-                    setSave(false);
-                    toast.success("Đã xóa blog khỏi danh sách");
-                }
-            } else {
-                const result = await POST_METHOD("blogs/save-blog", {
-                    blogId: blogData?.blogData._id,
-                    userId: authUserData.uid,
-                });
-                if (result?.success) {
-                    setSave(true);
-                    toast.success("Đã lưu blog ");
-                }
-            }
-        } catch (error) {
-            toast.error("Có lỗi xảy ra");
-        }
-    };
-
     if (!blogData) {
         return (
             <div className="w-full h-[calc(100vh-360px)] flex flex-col items-center justify-center">
@@ -168,7 +142,7 @@ const BlogDetail = ({ data }) => {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                {authUserData ? (
+                                {/* {authUserData ? (
                                     <Button onClick={handleSavedJob} size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
                                         {!save ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
                                     </Button>
@@ -178,7 +152,7 @@ const BlogDetail = ({ data }) => {
                                             <Bookmark className="!w-5 !h-5" />
                                         </Button>
                                     </Login>
-                                )}
+                                )} */}
                                 <Popover modal={true} open={openOption} onOpenChange={() => setOpenOption((prev) => !prev)}>
                                     <PopoverTrigger className="w-8 h-8 rounded-full flex items-center  justify-center hover:bg-accent">
                                         <Ellipsis className="!w-5 !h-5" />
@@ -203,9 +177,9 @@ const BlogDetail = ({ data }) => {
                     </CardFooter>
                 </Card>
             )}
-            <div className="w-full max-w-4xl">
+            {/* <div className="w-full max-w-4xl">
                 <h2>Lieen quan</h2>
-            </div>
+            </div> */}
         </div>
     );
 };

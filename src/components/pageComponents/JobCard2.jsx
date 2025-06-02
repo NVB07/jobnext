@@ -5,7 +5,7 @@ import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, Loader2, Eye 
 import { Badge } from "@/components/ui/badge";
 
 import Image from "next/image";
-import { useState, useContext, useCallback } from "react";
+import { useState, useContext, useCallback, useMemo } from "react";
 import { useRouter } from "next13-progressbar";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -16,6 +16,36 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
 import { POST_METHOD } from "@/services/services";
+
+// Simple in-memory cache for job details with cleanup
+const jobDetailsCache = new Map();
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+const MAX_CACHE_SIZE = 100; // Maximum number of cached items
+
+// Cache cleanup function
+const cleanupCache = () => {
+    const now = Date.now();
+    const entriesToRemove = [];
+
+    for (const [key, value] of jobDetailsCache.entries()) {
+        if (now - value.timestamp > CACHE_DURATION) {
+            entriesToRemove.push(key);
+        }
+    }
+
+    entriesToRemove.forEach((key) => jobDetailsCache.delete(key));
+
+    // If cache is still too large, remove oldest entries
+    if (jobDetailsCache.size > MAX_CACHE_SIZE) {
+        const entries = Array.from(jobDetailsCache.entries()).sort((a, b) => a[1].timestamp - b[1].timestamp);
+
+        const toRemove = entries.slice(0, entries.length - MAX_CACHE_SIZE);
+        toRemove.forEach(([key]) => jobDetailsCache.delete(key));
+    }
+};
+
+// Cleanup cache every 10 minutes
+setInterval(cleanupCache, 10 * 60 * 1000);
 
 export default function JobCard({ job, authUserData }) {
     const { setJobData } = useContext(JobContext);
@@ -29,43 +59,54 @@ export default function JobCard({ job, authUserData }) {
 
     const router = useRouter();
 
-    const getDetail = async () => {
-        const response = await fetch("/api/jobdetail", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                url: job.url,
-            }),
-        });
-        const result = await response.json();
-        if (result.success) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(result.data, "text/html"); // Chuyển thành DOM
-            const title = doc.querySelectorAll(".sc-1671001a-4.gDSEwb");
-            const [jobDes, jobReq] = title;
-            const jobDesContent = jobDes.querySelector(".sc-1671001a-6.dVvinc");
-            const jobReqContent = jobReq.querySelector(".sc-1671001a-6.dVvinc");
+    // Create cache key based on job URL
+    const cacheKey = useMemo(() => (job.url ? `job_details_${job.url}` : null), [job.url]);
 
-            // setJobDescription(jobDes.innerText.trim().replaceAll("•	", " "));
-            // setJobRequirements(jobReq.innerText.trim().replaceAll("•	", " "));
-            setJobDescription(
-                jobDesContent.innerHTML
-                    .replace(/<br\s*\/?>/gi, "\n")
-                    .replace(/<\/p>/gi, "\n")
-                    .replaceAll("", "-")
-                    .replace(/<[^>]+>/g, "")
-                    .trim()
-            );
-            setJobRequirements(
-                jobReqContent.innerHTML
-                    .replace(/<br\s*\/?>/gi, "\n")
-                    .replace(/<\/p>/gi, "\n")
-                    .replaceAll("", "-")
-                    .replace(/<[^>]+>/g, "")
-                    .trim()
-            );
+    const getDetail = async () => {
+        // Check cache first
+        if (cacheKey && jobDetailsCache.has(cacheKey)) {
+            const cachedData = jobDetailsCache.get(cacheKey);
+            setJobDescription(cachedData.jobDescription);
+            setJobRequirements(cachedData.jobRequirements);
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/jobdetail", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    url: job.url,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                // Data is already processed on server side
+                setJobDescription(result.data.jobDescription);
+                setJobRequirements(result.data.jobRequirements);
+
+                // Cache the successful result
+                if (cacheKey) {
+                    jobDetailsCache.set(cacheKey, {
+                        jobDescription: result.data.jobDescription,
+                        jobRequirements: result.data.jobRequirements,
+                        timestamp: Date.now(),
+                    });
+                }
+            } else {
+                // Handle error case
+                console.error("Failed to fetch job details:", result.error);
+                setJobDescription("Không thể tải mô tả công việc");
+                setJobRequirements("Không thể tải yêu cầu công việc");
+            }
+        } catch (error) {
+            console.error("Error fetching job details:", error);
+            setJobDescription("Không thể tải mô tả công việc");
+            setJobRequirements("Không thể tải yêu cầu công việc");
         }
     };
 

@@ -35,44 +35,6 @@ const BlogItem = ({
         setIsSaved(save);
     }, [save]);
 
-    const handleSavedJob = async () => {
-        try {
-            if (isSaved) {
-                const result = await POST_METHOD("blogs/unsave-blog", {
-                    blogId: blogId,
-                    userId: authUserData.uid,
-                });
-                if (result?.success) {
-                    setIsSaved(false);
-                    // Cập nhật UI cục bộ, không gọi refetch API
-                    if (onSaveToggle) {
-                        onSaveToggle(blogId, false);
-                    } else if (setBlogChange) {
-                        setBlogChange((prev) => !prev); // Giữ lại để tương thích với các component khác
-                    }
-                    toast.success("Đã bỏ lưu blog ");
-                }
-            } else {
-                const result = await POST_METHOD("blogs/save-blog", {
-                    blogId: blogId,
-                    userId: authUserData.uid,
-                });
-                if (result?.success) {
-                    setIsSaved(true);
-                    // Cập nhật UI cục bộ, không gọi refetch API
-                    if (onSaveToggle) {
-                        onSaveToggle(blogId, true);
-                    } else if (setBlogChange) {
-                        setBlogChange((prev) => !prev); // Giữ lại để tương thích với các component khác
-                    }
-                    toast.success("Đã lưu blog");
-                }
-            }
-        } catch (error) {
-            toast.error("Có lỗi xảy ra");
-        }
-    };
-
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);
         const day = String(date.getDate()).padStart(2, "0");
@@ -121,7 +83,7 @@ const BlogItem = ({
     return (
         <div className="w-full border rounded-xl bg-card  mb-4 p-3">
             <div className="w-full flex justify-between h-">
-                <Link href={`/user/${authorUid}`} variant="ghost" className="p-0 flex items-center  hover:opacity-80 h-[30px] hover:bg-transparent rounded-full  mb-5">
+                <div className="p-0 flex items-center rounded-full  mb-5">
                     {authorData ? (
                         <Image
                             className="w-6 h-6 rounded-full -mr-1 overflow-hidden"
@@ -135,9 +97,9 @@ const BlogItem = ({
                         <Skeleton className="w-6 h-6 rounded-full" />
                     )}
                     <p className="font-semibold ml-2 text-sm  ">{authorData?.displayName}</p>
-                </Link>
+                </div>
                 <div className="flex items-start">
-                    {authUserData ? (
+                    {/* {authUserData ? (
                         <Button onClick={handleSavedJob} size="icon" variant="ghost" className="rounded-full w-8 h-8 mr-1">
                             {!isSaved ? <Bookmark className="!w-5 !h-5" /> : <BookmarkCheck className="!w-5 !h-5 text-green-500" />}
                         </Button>
@@ -147,7 +109,7 @@ const BlogItem = ({
                                 <Bookmark className="!w-5 !h-5" />
                             </Button>
                         </Login>
-                    )}
+                    )} */}
 
                     <Popover modal={true} open={openOption} onOpenChange={() => setOpenOption((prev) => !prev)}>
                         <PopoverTrigger className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-accent">
@@ -163,17 +125,17 @@ const BlogItem = ({
                                 <p className="text-sm">Báo cáo</p>
                             </Button> */}
                             {/* my Blog */}
-                            {myBlog && (
+                            {/* {myBlog && (
                                 <Button onClick={deleteBlog} variant="ghost" className="w-full hover:bg-foreground/5 flex justify-start h-8">
                                     <Trash2 color="#ef4444" />
                                     <p className="text-sm text-red-500">Xóa</p>
                                 </Button>
-                            )}
+                            )} */}
                         </PopoverContent>
                     </Popover>
                 </div>
             </div>
-            <Link href={`/blog/${blogId}`} className="w-full cursor-pointer">
+            <Link href={`/blog/${blogId}`} className="w-full hover:text-blue-500 cursor-pointer">
                 <div className="w-full">
                     <h1 className="text-base md:text-xl font-bold">{title.length > 85 ? title.slice(0, 85) + "..." : title}</h1>
                 </div>

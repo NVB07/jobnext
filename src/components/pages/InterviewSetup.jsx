@@ -18,7 +18,6 @@ const InterviewSetup = () => {
     const [checkbox, setCheckbox] = useState(true);
     const [candidate, setCandidate] = useState(null);
     const [loading, setLoading] = useState(false);
-    console.log(jobData);
 
     const changeChecked = () => {
         setCheckbox((prev) => {

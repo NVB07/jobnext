@@ -1,21 +1,17 @@
 "use client";
-import Link from "next/link";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import BlogItem from "@/components/pageComponents/BlogItem";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-import { AuthContext } from "@/context/AuthContextProvider";
 import { GET_METHOD } from "@/services/services";
 import withPopstateRerender from "../pageComponents/WithPopstateRerender";
 const BlogPage = () => {
     const [blogData, setBlogData] = useState({ data: [], pagination: {} });
     const [currentPage, setCurrentPage] = useState(1);
-    const [blogsChange, setBlogChange] = useState(false);
     const perPage = 10;
     const maxVisiblePages = 5;
-    const { authUserData } = useContext(AuthContext);
 
     const getPageRange = () => {
         const totalPages = blogData.pagination.totalPages;
@@ -40,7 +36,7 @@ const BlogPage = () => {
             }
         };
         fetchBlogs();
-    }, [currentPage, blogsChange]);
+    }, [currentPage]);
 
     // Hàm chuyển trang
     const handlePageChange = (page) => {
@@ -53,32 +49,13 @@ const BlogPage = () => {
     return (
         <div className="w-full min-[490px]:pt-[72px] pt-16 px-5  min-h-screen ">
             <div className="flex min-[820px]:flex-row flex-col mt-2 overflow-visible justify-center gap-4">
-                {/* <div className="w-full min-[820px]:w-1/3 h-fit  bg-background min-[820px]:sticky top-[112px] z-10">
-                    <p className="text-2xl font-bold ">Viết Blog</p>
-                    <div className="w-full mt-1 text-gray-500">Viết để ghi nhớ hoặc chia sẻ kinh nghiệm </div>
-                    <Link href={"/new-blog"} className="w-full bg-foreground/5 hover:bg-accent block border rounded-md h-24 min-[820px]:h-64 mt-4 p-3 text-neutral-500 ">
-                        Nhấn để viết {"(trình chỉnh sửa markdown)"}
-                    </Link>
-                </div> */}
                 <div className="w-full min-[820px]:max-w-4xl min-[820px]:border-l min-[820px]:pl-4">
                     <h1 className="text-2xl w-full  font-bold">Đọc để khám phá</h1>
                     <div className="w-full mt-1 text-gray-500">Khám phá thông tin hữu ích liên quan tới nghề nghiệp </div>
                     <div className="w-full mt-4">
                         {blogData?.data.length !== 0 ? (
                             blogData?.data.map((blog) => (
-                                <BlogItem
-                                    key={blog._id}
-                                    blogId={blog._id}
-                                    tag={blog.tags}
-                                    save={authUserData ? blog.savedBy.includes(authUserData?.uid) : false}
-                                    authorUid={blog.authorUid}
-                                    content={blog.content}
-                                    createTime={blog.createdAt}
-                                    title={blog.title}
-                                    myBlog={blog.authorUid === authUserData?.uid}
-                                    setBlogChange={setBlogChange}
-                                    authUserData={authUserData}
-                                />
+                                <BlogItem key={blog._id} blogId={blog._id} tag={blog.tags} content={blog.content} createTime={blog.createdAt} title={blog.title} />
                             ))
                         ) : (
                             <>

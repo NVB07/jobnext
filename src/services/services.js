@@ -79,13 +79,11 @@ const uploadCV = async (uid, file) => {
         const formData = new FormData();
         formData.append("cv", file);
         formData.append("uid", uid);
-        console.log("đang tải lên cv");
 
         const response = await axios.post(`${SeverLink}users/uploadcv`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
 
-        console.log("Tải lên CV thành công:", response.data);
         return response.data;
     } catch (error) {
         console.error("Lỗi khi tải lên CV:", error.response?.data || error.message);
@@ -96,7 +94,6 @@ const uploadText = async (uid, text) => {
     try {
         const response = await axios.post(`${SeverLink}users/uploadtext`, { uid, text });
 
-        console.log("Tải lên văn bản thành công:", response.data);
         return response.data;
     } catch (error) {
         console.error("Lỗi khi tải lên văn bản:", error.response?.data || error.message);

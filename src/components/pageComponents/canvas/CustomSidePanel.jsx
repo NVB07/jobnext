@@ -55,8 +55,6 @@ export const LogoSection = {
 export const TemplatesPanel = observer(({ store, setCId, authUserData }) => {
     const [templates, setTemplates] = useState([]);
 
-    console.log("AuthUserData in TemplatesPanel:", authUserData);
-
     useEffect(() => {
         const fetchData = async () => {
             const result = await GET_METHOD("admin/cvTemplate");
@@ -73,13 +71,9 @@ export const TemplatesPanel = observer(({ store, setCId, authUserData }) => {
     };
 
     const addNew = async () => {
-        console.log("Add New Clicked");
-        console.log("AuthUserData in addNew:", authUserData);
-
         // Đặt cid về null trước khi tạo mới
         if (authUserData?.uid) {
             setCId(null);
-            console.log("UID exists:", authUserData.uid);
 
             try {
                 store.clear();
@@ -98,14 +92,12 @@ export const TemplatesPanel = observer(({ store, setCId, authUserData }) => {
                 });
 
                 if (created?.success) {
-                    console.log("Tạo CV mới thành công:", created);
                     setCId(created.data._id);
                 }
             } catch (err) {
                 console.error("❌ Lỗi khi tạo CV mới:", err);
             }
         } else {
-            console.log("No UID found in authUserData");
             // Vẫn clear store mặc dù không có UID
             store.clear();
             store.addPage({

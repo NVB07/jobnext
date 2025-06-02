@@ -10,7 +10,6 @@ export function useAutoSave(store, uid, cvid, setCId) {
 
         const requestSave = () => {
             if (timeoutRef.current) return;
-            console.log("change");
 
             timeoutRef.current = setTimeout(async () => {
                 timeoutRef.current = null;
@@ -21,14 +20,12 @@ export function useAutoSave(store, uid, cvid, setCId) {
                         const created = await POST_METHOD("cv", { json: JSON.stringify(json), uid: uid });
 
                         if (created?.success) {
-                            console.log("Created CV:", created);
                             setCId(created.data._id);
                         }
                     } else {
                         const update = await PATCH_METHOD(`cv/${cvid}`, { json: JSON.stringify(json) });
 
                         if (update?.success) {
-                            console.log("Updated CV:", update);
                             setCId(update.data._id);
                         }
                     }

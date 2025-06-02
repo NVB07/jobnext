@@ -44,14 +44,12 @@ const useAutoSave = (store, uid, cid, setCId) => {
                     const created = await POST_METHOD("cv", { json: JSON.stringify(json), uid: uid });
 
                     if (created?.success) {
-                        console.log("Created CV:", created);
                         setCId(created.data._id);
                     }
                 } else {
                     const update = await PATCH_METHOD(`cv/${cid}`, { json: JSON.stringify(json) });
 
                     if (update?.success) {
-                        console.log("Updated CV:", update);
                     }
                 }
             } catch (err) {
@@ -89,8 +87,6 @@ const useAutoSave = (store, uid, cid, setCId) => {
 const Editor = () => {
     const { authUserData } = useContext(AuthContext);
     const [cid, setCId] = useState(null);
-
-    console.log("AuthUserData in Editor component:", authUserData);
 
     useAutoSave(store, authUserData?.uid, cid, setCId);
 

@@ -155,7 +155,6 @@ function HistoryItem({ interview, setReload }) {
             toast.success("Xóa thành công");
         } else {
             toast.error("Lỗi khi xóa");
-            console.log("Delete failed");
         }
     };
 

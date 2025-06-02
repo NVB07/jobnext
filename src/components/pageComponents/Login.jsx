@@ -77,7 +77,6 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
 
                         uid: user.uid,
                     });
-                    console.log("User data created successfully in database");
                 } catch (dbError) {
                     console.error("Failed to create user data:", dbError);
                     await deleteUser(user);
@@ -141,7 +140,6 @@ const Login = ({ children = <Button>Đăng nhập</Button> }) => {
             const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
             const user = userCredential.user;
 
-            console.log("Đăng nhập thành công:", user);
             toast.success("Đăng nhập thành công");
             updateAuthCookie("accessToken", user.stsTokenManager.accessToken, 360);
             updateAuthCookie("uid", user.uid, 360);

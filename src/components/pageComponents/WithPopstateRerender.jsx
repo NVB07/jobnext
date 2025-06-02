@@ -7,7 +7,6 @@ const withPopstateRerender = (WrappedComponent) => {
 
         useEffect(() => {
             const handlePopState = () => {
-                console.log("Bấm quay lại → rerender");
                 setKey((prev) => prev + 1);
             };
 

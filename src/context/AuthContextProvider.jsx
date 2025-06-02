@@ -18,7 +18,6 @@ const AuthContextProvider = ({ children }) => {
 
                 if (userDB?.success) {
                     setAuthUserData({ ...userDB.user, ...user });
-                    console.log({ ...userDB.user, ...user });
                 }
                 updateAuthCookie("accessToken", user.auth.currentUser.stsTokenManager.accessToken, 360);
             } else {

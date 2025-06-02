@@ -29,11 +29,9 @@ const fetchJobs = async ({ queryKey }) => {
 
     try {
         // 🚀 PRIMARY: Try new hybrid-search endpoint first
-        console.log("🚀 Trying new hybrid-search endpoint...");
         const result = await POST_METHOD(`jobs/hybrid-search?page=${page}&perPage=${perPage}`, body);
 
         if (result?.success) {
-            console.log(`✅ Hybrid endpoint success ${result.searchInfo?.cached ? "(cached ⚡)" : "(fresh 🔥)"}`);
             return result;
         }
         throw new Error("Hybrid endpoint failed");
@@ -46,7 +44,6 @@ const fetchJobs = async ({ queryKey }) => {
 
             if (!fallbackResult?.success) throw new Error("Lỗi khi tải dữ liệu");
 
-            console.log("✅ Fallback endpoint success");
             // Add fallback indicator
             fallbackResult.searchInfo = {
                 cached: false,

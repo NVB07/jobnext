@@ -59,7 +59,7 @@ const SavedJob = ({ authUserData }) => {
                     <NoData title="Bạn chưa lưu công việc nào" />
                 )}
             </div>
-            {savedJobs?.pagination.totalPages > 1 && (
+            {savedJobs.data.length > 9 && (
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>

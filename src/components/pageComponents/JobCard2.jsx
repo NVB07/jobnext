@@ -568,15 +568,6 @@ export default function JobCard({ job, authUserData }) {
                                                 <BookmarkIcon className={`w-4 h-4 mr-1 ${saved ? "fill-pink-500 stroke-pink-500 " : ""}`} />
                                                 Lưu
                                             </Button>
-
-                                            <Button
-                                                disabled={JobRequirements ? false : true}
-                                                onClick={handleInterview}
-                                                variant="outline"
-                                                className="rounded-full w-32 text-base font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md"
-                                            >
-                                                {JobRequirements ? " Phỏng vấn" : <Loader2 className="animate-spin" />}
-                                            </Button>
                                         </div>
                                     </DialogFooter>
                                 </DialogContent>

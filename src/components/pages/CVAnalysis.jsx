@@ -14,8 +14,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 
 export default function CVAnalysis() {
     const { authUserData } = useContext(AuthContext);
-    const [danhGiaChung, setDanhGiaChung] = useState("");
-    const [deXuatChinhSua, setDeXuatChinhSua] = useState("");
+    const [danhGiaUuDiem, setDanhGiaUuDiem] = useState("");
+    const [danhGiaNhuocDiem, setDanhGiaNhuocDiem] = useState("");
+    const [canChinhSuaChiTiet, setCanChinhSuaChiTiet] = useState("");
+    const [canThem, setCanThem] = useState("");
     const [luuY, setLuuY] = useState("");
 
     function formatToVNTime(isoString) {
@@ -32,27 +34,23 @@ export default function CVAnalysis() {
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     }
 
-    function tachNoiDungMarkdown(md) {
-        const parts = md.split(/\*\*LƯU Ý:\*\*/);
-        if (parts.length < 2) return { error: "Không tìm thấy phần III. LƯU Ý" };
-
-        const [beforeLuuY, luuY] = parts;
-        const [danhGia, deXuat] = beforeLuuY.split(/\*\*ĐỀ XUẤT CHỈNH SỬA CHI TIẾT:\*\*/);
-
-        if (!danhGia || !deXuat) return { error: "Không tìm thấy phần I hoặc II" };
-
-        return {
-            danhGiaChung: danhGia.trim(),
-            deXuatChinhSua: deXuat.trim(),
-            luuY: luuY.trim(),
-        };
-    }
     useEffect(() => {
         if (authUserData?.userData?.recommend) {
-            const ketQua = tachNoiDungMarkdown(authUserData?.userData?.recommend);
-            setDanhGiaChung(ketQua.danhGiaChung.replace(/\*\*ĐÁNH GIÁ CHUNG:\*\*\s*/, ""));
-            setDeXuatChinhSua(ketQua.deXuatChinhSua.replace(/\*\*ĐỀ XUẤT CHỈNH SỬA CHI TIẾT:\*\*\s*/, ""));
-            setLuuY(ketQua.luuY.replace(/\*\*LƯU Ý:\*\*\s*/, ""));
+            try {
+                // Xử lý recommend dạng object (định dạng mới)
+                const { DanhGia, CanChinhSuaChiTiet, CanThem, LuuY } = authUserData.userData.recommend;
+
+                if (DanhGia) {
+                    setDanhGiaUuDiem(DanhGia.UuDiem || "");
+                    setDanhGiaNhuocDiem(DanhGia.NhuocDiem || "");
+                }
+
+                setCanChinhSuaChiTiet(CanChinhSuaChiTiet || "");
+                setCanThem(CanThem || "");
+                setLuuY(LuuY || "");
+            } catch (error) {
+                console.error("Lỗi khi xử lý dữ liệu recommend:", error);
+            }
         }
     }, [authUserData?.userData?.recommend]);
 
@@ -81,40 +79,36 @@ export default function CVAnalysis() {
                         </CardHeader>
                         <CardContent className="p-6">
                             <div className="space-y-6">
-                                {danhGiaChung.includes("Ưu điểm:") && danhGiaChung.includes("Nhược điểm:") ? (
-                                    <>
-                                        <div>
-                                            <h3 className="font-semibold text-lg mb-2">Ưu điểm:</h3>
-                                            <ul className="list-disc pl-5 space-y-1">
-                                                {danhGiaChung
-                                                    .split("Ưu điểm:")[1]
-                                                    .split("Nhược điểm:")[0]
-                                                    .split("- ")
-                                                    .filter((item) => item.trim())
-                                                    .map((item, index) => (
-                                                        <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                            {item.trim()}
-                                                        </li>
-                                                    ))}
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-lg mb-2">Nhược điểm:</h3>
-                                            <ul className="list-disc pl-5 space-y-1">
-                                                {danhGiaChung
-                                                    .split("Nhược điểm:")[1]
-                                                    .split("- ")
-                                                    .filter((item) => item.trim())
-                                                    .map((item, index) => (
-                                                        <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                            {item.trim()}
-                                                        </li>
-                                                    ))}
-                                            </ul>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <p>{danhGiaChung}</p>
+                                {danhGiaUuDiem && (
+                                    <div>
+                                        <h3 className="font-semibold text-lg mb-2">Ưu điểm:</h3>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                            {danhGiaUuDiem
+                                                .split("\n")
+                                                .filter((item) => item.trim())
+                                                .map((item, index) => (
+                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
+                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {danhGiaNhuocDiem && (
+                                    <div>
+                                        <h3 className="font-semibold text-lg mb-2">Nhược điểm:</h3>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                            {danhGiaNhuocDiem
+                                                .split("\n")
+                                                .filter((item) => item.trim())
+                                                .map((item, index) => (
+                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
+                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    </div>
                                 )}
                             </div>
                         </CardContent>
@@ -265,17 +259,34 @@ export default function CVAnalysis() {
                     <CardContent className="p-6">
                         <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
                             <div className="space-y-6">
-                                {/* Phần đề xuất chỉnh sửa */}
-                                {deXuatChinhSua && typeof deXuatChinhSua === "string" && (
+                                {/* Phần cần chỉnh sửa chi tiết */}
+                                {canChinhSuaChiTiet && (
                                     <div>
-                                        <h3 className="font-semibold text-lg mb-3 text-emerald-600">Đề xuất chỉnh sửa:</h3>
+                                        <h3 className="font-semibold text-lg mb-3 text-emerald-600">Cần chỉnh sửa chi tiết:</h3>
                                         <ul className="list-disc pl-5 space-y-2">
-                                            {deXuatChinhSua
-                                                .split("- ")
+                                            {canChinhSuaChiTiet
+                                                .split("\n")
                                                 .filter((item) => item.trim())
                                                 .map((item, index) => (
                                                     <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                        {item.trim()}
+                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {/* Phần cần thêm */}
+                                {canThem && (
+                                    <div className="mt-6 pt-4 border-t">
+                                        <h3 className="font-semibold text-lg mb-3 text-blue-600">Cần thêm:</h3>
+                                        <ul className="list-disc pl-5 space-y-2">
+                                            {canThem
+                                                .split("\n")
+                                                .filter((item) => item.trim())
+                                                .map((item, index) => (
+                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
+                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
                                                     </li>
                                                 ))}
                                         </ul>
@@ -283,19 +294,10 @@ export default function CVAnalysis() {
                                 )}
 
                                 {/* Phần lưu ý */}
-                                {luuY && typeof luuY === "string" && luuY.trim() !== "" && (
+                                {luuY && (
                                     <div className="mt-6 pt-4 border-t">
                                         <h3 className="font-semibold text-lg mb-3 text-amber-600">Lưu ý:</h3>
-                                        <ul className="list-disc pl-5 space-y-2">
-                                            {luuY
-                                                .split("- ")
-                                                .filter((item) => item.trim())
-                                                .map((item, index) => (
-                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                        {item.trim()}
-                                                    </li>
-                                                ))}
-                                        </ul>
+                                        <p className="text-slate-700 dark:text-slate-300">{luuY}</p>
                                     </div>
                                 )}
                             </div>

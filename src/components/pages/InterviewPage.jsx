@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useContext, useCallback } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -286,71 +286,12 @@ export default function InterviewPage() {
                                     </ScrollArea>
                                 </DialogContent>
                             </Dialog>
-                            {chatData?.job && (
-                                <Dialog className="w-full" open={showDetail} onOpenChange={(val) => handleOpen(val)}>
-                                    <DialogTrigger asChild>
-                                        <Button variant="ghost" className="w-full flex justify-start items-center   hover:bg-foreground/5">
-                                            <ExternalLinkIcon className="w-4 h-4" />
-                                            <span className="mr-2">Xem chi tiết</span>
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="max-w-[95%] md:max-w-[60%] max-h-[90%] flex flex-col p-0 gap-0">
-                                        <DialogHeader className={"flex flex-row space-y-0 w-full p-3"}>
-                                            <DialogTitle className="min-w-fit">
-                                                <Image
-                                                    className="w-16  h-16 md:w-[96px] md:h-[96px] rounded-md object-contain mr-4 bg-white p-1"
-                                                    width={150}
-                                                    height={150}
-                                                    src={dialogImgError ? "/company-default-logo.svg" : chatData?.job?.companyLogo || "/company-default-logo.svg"}
-                                                    alt={chatData?.job?.company}
-                                                    onError={handleDialogImageError}
-                                                />
-                                            </DialogTitle>
-                                            <DialogDescription className="flex flex-col w-full items-start justify-start ">
-                                                <span className="text-base md:text-lg text-left  cursor-pointer font-bold text-wrap text-foreground truncate line-clamp-2">
-                                                    {chatData?.job?.title}
-                                                </span>
-                                                <span className="text-sm text-left flex items-center  text-foreground/80 text-wrap  truncate line-clamp-2">
-                                                    <BuildingIcon className="w-4 h-4 mr-1.5 shrink-0 text-purple-500" />
-                                                    {chatData?.job?.company}
-                                                </span>
-                                                <span className="text-sm flex items-center text-left  text-foreground/80 text-wrap  truncate line-clamp-2 mt-1">
-                                                    <MapPinIcon className="w-4 h-4 mr-1.5 shrink-0 text-pink-500" />{" "}
-                                                    {chatData?.job?.locationVI + " - " + chatData?.job?.jobLevelVI}
-                                                </span>
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <ScrollArea className="h-screen p-3">
-                                            {!loading ? (
-                                                jobDescription || JobRequirements ? (
-                                                    <div className="w-full h-fit">
-                                                        <div className="flex flex-col gap-2">
-                                                            <h1 className="text-lg font-bold">Mô tả công việc</h1>
-                                                            <p className="text-sm text-foreground/80 whitespace-pre-line">{jobDescription}</p>
-                                                        </div>
-                                                        <div className="flex flex-col gap-2 border-foreground/50 border-t pt-3 mt-2">
-                                                            <h1 className="text-lg font-bold">Yêu cầu công việc</h1>
-                                                            <p className="text-sm text-foreground/80  whitespace-pre-line">{JobRequirements}</p>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="text-center text-orange-500 font-bold">Công việc đã hết hạn hoặc bị xóa</div>
-                                                )
-                                            ) : (
-                                                "Loading..."
-                                            )}
-                                        </ScrollArea>
-                                        <DialogFooter className={"flex flex-row justify-between items-end px-3 pb-3"}>
-                                            <a
-                                                href={chatData?.job?.url || "#"}
-                                                target="_blank"
-                                                className="border border-green-500 text-green-500 inline-block px-2 py-1 rounded-full text-sm  hover:bg-accent "
-                                            >
-                                                Truy cập job {">>"}
-                                            </a>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
+                            {chatData?.job?._id && (
+                                <Button className="w-full p-0 h-fit flex items-center justify-center">
+                                    <Link href={`/jobs/${chatData?.job?._id}`} className=" w-full h-9 flex items-center justify-center">
+                                        Truy cập job {">>"}
+                                    </Link>
+                                </Button>
                             )}
                         </div>
                     </PopoverContent>

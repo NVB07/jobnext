@@ -26,7 +26,7 @@ const RightPanel = ({ authUserData, store, setCId, cid }) => {
             };
             fetch();
         }
-    });
+    }, []);
     const loadCV = (item) => {
         setCId(item._id);
 

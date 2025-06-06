@@ -90,6 +90,104 @@ const uploadCV = async (uid, file) => {
         throw error;
     }
 };
+
+const uploadCVWithProgress = (uid, file, callbacks = {}) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const formData = new FormData();
+            formData.append("cv", file);
+            formData.append("uid", uid);
+
+            // Tạo URL cho SSE request
+            const url = `${SeverLink}users/uploadcv`;
+
+            // Thiết lập fetch với method POST
+            const fetchOptions = {
+                method: "POST",
+                body: formData,
+                headers: {}, // Không cần Content-Type, browser sẽ tự thêm với boundary
+            };
+
+            // Thực hiện fetch để bắt đầu quá trình upload
+            fetch(url, fetchOptions)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    // Tạo EventSource từ response
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+
+                    // Xử lý chunk dữ liệu từ stream
+                    const processChunk = ({ done, value }) => {
+                        if (done) {
+                            return;
+                        }
+
+                        const chunk = decoder.decode(value, { stream: true });
+                        const lines = chunk.split("\n\n");
+
+                        lines.forEach((line) => {
+                            if (!line.trim()) return;
+
+                            try {
+                                // Tách event name và data
+                                const eventMatch = line.match(/event: (.*)\n/);
+                                const dataMatch = line.match(/data: (.*)/);
+
+                                if (eventMatch && dataMatch) {
+                                    const eventName = eventMatch[1];
+                                    const data = JSON.parse(dataMatch[1]);
+
+                                    // Xử lý các sự kiện
+                                    switch (eventName) {
+                                        case "processing":
+                                            if (callbacks.onProgress) {
+                                                callbacks.onProgress(data);
+                                            }
+                                            break;
+                                        case "done":
+                                            if (callbacks.onComplete) {
+                                                callbacks.onComplete(data);
+                                            }
+                                            resolve(data);
+                                            break;
+                                        case "error":
+                                            if (callbacks.onError) {
+                                                callbacks.onError(data);
+                                            }
+                                            reject(new Error(data.message || "Lỗi không xác định"));
+                                            break;
+                                    }
+                                }
+                            } catch (err) {
+                                console.error("Lỗi khi xử lý SSE chunk:", err, line);
+                            }
+                        });
+
+                        // Tiếp tục đọc chunk tiếp theo
+                        return reader.read().then(processChunk);
+                    };
+
+                    // Bắt đầu đọc stream
+                    reader.read().then(processChunk);
+                })
+                .catch((error) => {
+                    if (callbacks.onError) {
+                        callbacks.onError({ message: error.message });
+                    }
+                    reject(error);
+                });
+        } catch (error) {
+            if (callbacks.onError) {
+                callbacks.onError({ message: error.message });
+            }
+            reject(error);
+        }
+    });
+};
+
 const uploadText = async (uid, text) => {
     try {
         const response = await axios.post(`${SeverLink}users/uploadtext`, { uid, text });
@@ -101,4 +199,4 @@ const uploadText = async (uid, text) => {
     }
 };
 
-export { POST_METHOD, GET_METHOD, PATCH_METHOD, DELETE_METHOD, uploadCV, uploadText };
+export { POST_METHOD, GET_METHOD, PATCH_METHOD, DELETE_METHOD, uploadCV, uploadText, uploadCVWithProgress };

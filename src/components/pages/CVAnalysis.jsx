@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import NoData from "./NoData";
 import { ScrollArea } from "../ui/scroll-area";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import MDView from "@/components/pageComponents/MDView";
 
 export default function CVAnalysis() {
     const { authUserData } = useContext(AuthContext);
@@ -82,32 +83,18 @@ export default function CVAnalysis() {
                                 {danhGiaUuDiem && (
                                     <div>
                                         <h3 className="font-semibold text-lg mb-2">Ưu điểm:</h3>
-                                        <ul className="list-disc pl-5 space-y-1">
-                                            {danhGiaUuDiem
-                                                .split("\n")
-                                                .filter((item) => item.trim())
-                                                .map((item, index) => (
-                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
-                                                    </li>
-                                                ))}
-                                        </ul>
+                                        <div className="pl-5">
+                                            <MDView content={danhGiaUuDiem} />
+                                        </div>
                                     </div>
                                 )}
 
                                 {danhGiaNhuocDiem && (
                                     <div>
                                         <h3 className="font-semibold text-lg mb-2">Nhược điểm:</h3>
-                                        <ul className="list-disc pl-5 space-y-1">
-                                            {danhGiaNhuocDiem
-                                                .split("\n")
-                                                .filter((item) => item.trim())
-                                                .map((item, index) => (
-                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
-                                                    </li>
-                                                ))}
-                                        </ul>
+                                        <div className="pl-5">
+                                            <MDView content={danhGiaNhuocDiem} />
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -263,16 +250,9 @@ export default function CVAnalysis() {
                                 {canChinhSuaChiTiet && (
                                     <div>
                                         <h3 className="font-semibold text-lg mb-3 text-emerald-600">Cần chỉnh sửa chi tiết:</h3>
-                                        <ul className="list-disc pl-5 space-y-2">
-                                            {canChinhSuaChiTiet
-                                                .split("\n")
-                                                .filter((item) => item.trim())
-                                                .map((item, index) => (
-                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
-                                                    </li>
-                                                ))}
-                                        </ul>
+                                        <div className="pl-5">
+                                            <MDView content={canChinhSuaChiTiet} />
+                                        </div>
                                     </div>
                                 )}
 
@@ -280,16 +260,9 @@ export default function CVAnalysis() {
                                 {canThem && (
                                     <div className="mt-6 pt-4 border-t">
                                         <h3 className="font-semibold text-lg mb-3 text-blue-600">Cần thêm:</h3>
-                                        <ul className="list-disc pl-5 space-y-2">
-                                            {canThem
-                                                .split("\n")
-                                                .filter((item) => item.trim())
-                                                .map((item, index) => (
-                                                    <li key={index} className="text-slate-700 dark:text-slate-300">
-                                                        {item.trim().replace(/^- /, "").replaceAll("*", "")}
-                                                    </li>
-                                                ))}
-                                        </ul>
+                                        <div className="pl-5">
+                                            <MDView content={canThem} />
+                                        </div>
                                     </div>
                                 )}
 
@@ -297,7 +270,9 @@ export default function CVAnalysis() {
                                 {luuY && (
                                     <div className="mt-6 pt-4 border-t">
                                         <h3 className="font-semibold text-lg mb-3 text-amber-600">Lưu ý:</h3>
-                                        <p className="text-slate-700 dark:text-slate-300">{luuY}</p>
+                                        <div className="pl-5">
+                                            <MDView content={luuY} />
+                                        </div>
                                     </div>
                                 )}
                             </div>

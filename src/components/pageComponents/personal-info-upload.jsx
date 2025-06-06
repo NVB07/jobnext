@@ -109,7 +109,7 @@ export default function PersonalInfoUpload({
 
                 <div className="flex justify-between items-center text-xs">
                     <span className="text-gray-500 dark:text-gray-400">
-                        {status === "analyzing" && "Phân tích bằng AI..."}
+                        {status === "analyzing" && "Đang phân tích..."}
                         {status === "uploading" && "Đang tải lên..."}
                         {status === "completed" && "Hoàn thành!"}
                     </span>

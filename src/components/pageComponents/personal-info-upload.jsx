@@ -85,13 +85,11 @@ export default function PersonalInfoUpload({
                 return <AlertCircle className="h-5 w-5 text-red-500" />;
             } else if (status === "completed" || status === "uploaded" || status === "analyzed") {
                 return <CheckCircle className="h-5 w-5 text-green-500" />;
-            } else {
-                return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
             }
         };
 
         const content = (
-            <div className="w-full">
+            <div className="w-full progress-toast-section">
                 <div className="flex items-center gap-2 mb-2">
                     {getStatusIcon()}
                     <div className="text-sm font-semibold">{message}</div>

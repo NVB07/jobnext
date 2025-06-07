@@ -29,6 +29,8 @@ const schema = yup.object().shape({
                 /^\d{4}$/, // yyyy
                 /^(0?[1-9]|1[0-2])\/\d{4}$/, // mm/yyyy
                 /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d{4}$/, // dd/mm/yyyy
+                /^(0?[1-9]|1[0-2])-\d{4}$/, // mm-yyyy
+                /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-\d{4}$/, // dd-mm-yyyy
             ];
             return formats.some((regex) => regex.test(value));
         }),
@@ -136,6 +138,8 @@ const UserDataForm = memo(function UserDataForm() {
         "Vĩnh Long",
         "Vĩnh Phúc",
         "Yên Bái",
+        "International",
+        "Other",
     ];
 
     const jobCategoriesMap = {
@@ -406,7 +410,12 @@ const UserDataForm = memo(function UserDataForm() {
                                         <Label htmlFor="birthYear">
                                             Năm sinh <span className="text-red-500">*</span>
                                         </Label>
-                                        <Input id="birthYear" name="birthYear" placeholder="dd/mm/yyyy hoặc mm/yyyy hoặc yyyy" {...register("birthYear")} />
+                                        <Input
+                                            id="birthYear"
+                                            name="birthYear"
+                                            placeholder="dd/mm/yyyy, dd-mm-yyyy, mm/yyyy, mm-yyyy hoặc yyyy"
+                                            {...register("birthYear")}
+                                        />
 
                                         {errors.birthYear && <p className="text-red-500 text-sm">{errors.birthYear.message}</p>}
                                     </div>

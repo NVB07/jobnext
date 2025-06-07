@@ -362,7 +362,6 @@ const vietnameseProvinces = [
     "Thanh Hóa",
     "Thừa Thiên Huế",
     "Tiền Giang",
-
     "Trà Vinh",
     "Tuyên Quang",
     "Vĩnh Long",

@@ -5,11 +5,15 @@ import { onAuthStateChanged, onIdTokenChanged } from "firebase/auth";
 import { updateAuthCookie, deleteCookie } from "@/lib/auth/cookiesManager";
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { GET_METHOD } from "@/services/services";
+import Loading from "@/components/ui/Loading";
 
 export const AuthContext = createContext();
+
 const AuthContextProvider = ({ children }) => {
     const [authUserData, setAuthUserData] = useState(null);
     const [reload, setReload] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [authCompleted, setAuthCompleted] = useState(false);
 
     useEffect(() => {
         const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
@@ -23,6 +27,14 @@ const AuthContextProvider = ({ children }) => {
             } else {
                 setAuthUserData(null);
             }
+
+            // Auth completed, signal to Loading component
+            setAuthCompleted(true);
+
+            // Small delay to ensure progress reaches 100% smoothly
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 200);
         });
 
         const unsubscribeToken = onIdTokenChanged(auth, async (user) => {
@@ -40,7 +52,15 @@ const AuthContextProvider = ({ children }) => {
         };
     }, [authUserData?.auth.currentUser.stsTokenManager.accessToken, reload]);
 
-    return <AuthContext.Provider value={{ authUserData, setAuthUserData, setReload }}>{children}</AuthContext.Provider>;
+    if (isLoading) {
+        return (
+            <AuthContext.Provider value={{ authUserData, setAuthUserData, setReload, isLoading }}>
+                <Loading authCompleted={authCompleted} />
+            </AuthContext.Provider>
+        );
+    }
+
+    return <AuthContext.Provider value={{ authUserData, setAuthUserData, setReload, isLoading }}>{children}</AuthContext.Provider>;
 };
 
 export default AuthContextProvider;

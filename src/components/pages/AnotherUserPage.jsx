@@ -49,53 +49,10 @@ export default function AnotherUserPage({ uid }) {
                                 <CardTitle className="mt-4 text-xl">{userData?.userRecord?.displayName}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                {userData?.user?.profile?.Address && (
-                                    <div className="flex items-center gap-2 text-foreground/70">
-                                        <MapPin className="h-4 w-4" />
-                                        <span className="text-sm">{userData?.user?.profile?.Address}</span>
-                                    </div>
-                                )}
-                                {userData?.user?.profile?.Years_of_experience && (
-                                    <div className="flex items-center gap-2 text-foreground/70">
-                                        <Briefcase className="h-4 w-4" />
-                                        <span className="text-sm">{userData?.user?.profile?.Years_of_experience}</span>
-                                    </div>
-                                )}
-                                {userData?.user?.profile?.University && (
-                                    <div className="flex items-center gap-2 text-foreground/70">
-                                        <GraduationCap className="h-4 w-4" />
-                                        <span className="text-sm">{userData?.user?.profile?.University}</span>
-                                    </div>
-                                )}
-
-                                <Separator />
-
-                                {userData?.user?.profile?.Skills && (
-                                    <>
-                                        <div className="space-y-2">
-                                            <h4 className="text-sm font-medium">Kỹ năng</h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {userData?.user?.profile?.Skills.split(",").map((skill, index) => {
-                                                    return (
-                                                        <Badge key={index} className={`bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-sm`}>
-                                                            {skill}
-                                                        </Badge>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                        <Separator />
-                                    </>
-                                )}
+                                <p className="text-center text-lg font-bold">Bạn không có quyền truy cập trang này</p>
                             </CardContent>
                         </Card>
                     </div>
-
-                    {/* Tabs Content */}
-                    {/* <div className="md:col-span-2 w-full min-h-screen pt-20  md:pt-24">
-                        <h2 className="text-xl  font-bold my-2">Bài viết của {userData?.userRecord?.displayName}</h2>
-                        <SavedBlogTab otherUid={uid} authUserData={authUserData} />
-                    </div> */}
                 </div>
             </div>
         </div>

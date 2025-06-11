@@ -50,6 +50,16 @@ const PATCH_METHOD = async (url, data, headers = { "Content-Type": "application/
     }
 };
 
+const PUT_METHOD = async (url, data, headers = { "Content-Type": "application/json" }) => {
+    try {
+        const response = await axios.put(SeverLink + url, data, { headers });
+        return response.data;
+    } catch (error) {
+        console.error("Lỗi khi cập nhật dữ liệu:", error.response?.data || error.message);
+        return null;
+    }
+};
+
 // const DELETE_METHOD = async (url, headers = { "Content-Type": "application/json" }) => {
 //     try {
 //         const response = await axios.delete(SeverLink + url, { headers });
@@ -199,4 +209,4 @@ const uploadText = async (uid, text) => {
     }
 };
 
-export { POST_METHOD, GET_METHOD, PATCH_METHOD, DELETE_METHOD, uploadCV, uploadText, uploadCVWithProgress };
+export { POST_METHOD, GET_METHOD, PATCH_METHOD, PUT_METHOD, DELETE_METHOD, uploadCV, uploadText, uploadCVWithProgress };

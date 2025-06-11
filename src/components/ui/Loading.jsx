@@ -48,7 +48,7 @@ const Loading = ({ authCompleted = false }) => {
             <div className="flex flex-col items-center space-y-6">
                 {/* Logo */}
                 <div className="relative">
-                    <Image src="/logo.png" alt="Logo" width={120} height={120} className="animate-pulse" priority />
+                    <Image src="/logo.png" alt="Logo" width={120} height={120} className="animate-pulse rounded-md" priority />
                 </div>
 
                 {/* Loading text */}

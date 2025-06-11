@@ -8,16 +8,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
-import { Send, Ellipsis, RefreshCcw, Info } from "lucide-react";
+import { Send, Ellipsis, RefreshCcw, Info, ExternalLink, Eye } from "lucide-react";
 import { BookmarkIcon, BuildingIcon, MapPinIcon, ExternalLinkIcon, Loader2 } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-import { POST_METHOD, GET_METHOD } from "@/services/services";
+import { POST_METHOD, GET_METHOD, DELETE_METHOD, PUT_METHOD } from "@/services/services";
 import { auth } from "@/firebase/firebaseConfig";
 import { AuthContext } from "@/context/AuthContextProvider";
 import { toast } from "sonner";
+import { useRouter } from "next13-progressbar";
+
 export default function InterviewPage() {
     const { authUserData } = useContext(AuthContext);
     const pathname = usePathname();
+    const router = useRouter();
     const [messages, setMessages] = useState([]);
     const [chatData, setChatData] = useState(null);
     const [inputValue, setInputValue] = useState("");
@@ -26,6 +40,7 @@ export default function InterviewPage() {
 
     const [showDetail, setShowDetail] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [restartLoading, setRestartLoading] = useState(false);
     const [jobDescription, setJobDescription] = useState(null);
     const [JobRequirements, setJobRequirements] = useState(null);
     const [dialogImgError, setDialogImgError] = useState(false);
@@ -157,23 +172,6 @@ export default function InterviewPage() {
         getInterview();
     }, [authUserData]);
 
-    // const createInterview = async (answer = "") => {
-    //     const user = auth.currentUser;
-    //     const token = await user.getIdToken();
-
-    //     const bodyReq = {
-    //         jobRequirement: chatData.jobRequirement,
-    //         jobId: chatData.jobId,
-    //         skills: chatData.skills,
-    //         jobTitle: chatData.jobTitle,
-    //         answer: answer,
-    //     };
-    //     const result = await POST_METHOD("interviews", bodyReq, { Authorization: `Bearer ${token}` });
-    //     if (result) {
-    //         const messageObj = JSON.parse(result.result.replace(/```json|```/g, "").trim());
-    //         setMessages((prevMessages) => [...prevMessages, messageObj]);
-    //     }
-    // };
     const createInterview = async (answer = "") => {
         const user = auth.currentUser;
         const token = await user.getIdToken();
@@ -241,6 +239,49 @@ export default function InterviewPage() {
         }
     };
 
+    const handleRestartInterview = async () => {
+        if (!authUserData?.uid || !chatData) {
+            toast.error("Không có thông tin để khởi động lại phỏng vấn");
+            return;
+        }
+
+        setRestartLoading(true);
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                toast.error("Phiên đăng nhập đã hết hạn");
+                return;
+            }
+
+            const token = await user.getIdToken();
+            const currentInterviewId = pathname.slice(16);
+
+            // Gọi API restart interview - chỉ reset chatHistory, giữ nguyên ID
+            const restartResult = await PUT_METHOD(
+                `interviews/restart/${currentInterviewId}`,
+                {}, // Không cần body data vì server lấy thông tin từ interview hiện tại
+                {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            );
+
+            if (restartResult && restartResult.success) {
+                // Reload trang để cập nhật chatData mới
+                window.location.reload();
+                toast.success("Đã khởi động lại phỏng vấn thành công!");
+            } else {
+                console.error("Restart result:", restartResult);
+                toast.error("Có lỗi xảy ra khi khởi động lại phỏng vấn");
+            }
+        } catch (error) {
+            console.error("Error restarting interview:", error);
+            toast.error("Có lỗi xảy ra khi khởi động lại phỏng vấn");
+        } finally {
+            setRestartLoading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col w-full max-w-4xl pt-[75px]  h-screen">
             {/* Header */}
@@ -249,50 +290,99 @@ export default function InterviewPage() {
 
                 <Popover>
                     <PopoverTrigger>
-                        <div className="w-8 h-8 rounded-lg  border-foreground/10 hover:bg-foreground/5 flex items-center justify-center">
-                            <Ellipsis className="w-6 h-6 text-foreground/80" />
+                        <div className="w-8 h-8 rounded-lg border border-foreground/10 hover:bg-foreground/5 transition-colors flex items-center justify-center">
+                            <Ellipsis className="w-5 h-5 text-foreground/70" />
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent align="end" className="w-fit p-2">
-                        <div className="flex flex-col items-start w-fit gap-1">
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button variant="ghost" className="w-fit   hover:bg-foreground/5">
-                                        <Info />
-                                        Xem thông tin phỏng vấn
+                    <PopoverContent align="end" className="w-56 p-3">
+                        <div className="flex flex-col gap-1">
+                            {/* Thông tin phỏng vấn */}
+                            <div className="pb-2 border-b border-foreground/10">
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="w-full justify-start h-9 px-2 hover:bg-foreground/5 transition-colors">
+                                            <Eye className="w-4 h-4 mr-2 text-blue-600" />
+                                            <span className="text-sm font-medium">Xem thông tin</span>
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-[95%] md:max-w-[80%] max-h-[90%] p-0 flex flex-col gap-0">
+                                        <DialogHeader className={"px-3 pt-4"}>
+                                            <DialogTitle className="text-left">Phỏng vấn: {chatData?.jobTitle}</DialogTitle>
+                                            <DialogDescription className="hidden"></DialogDescription>
+                                        </DialogHeader>
+                                        <ScrollArea className="h-screen overflow-auto px-4 py-3">
+                                            <div className="w-full h-fit">
+                                                <div className="w-full">
+                                                    <p className="font-semibold block text-base text-foreground">Thông tin công việc:</p>
+                                                    <p className="text-sm text-foreground/80 whitespace-pre-line">{chatData?.jobRequirement}</p>
+                                                    {chatData?.skills && (
+                                                        <div className="w-full mt-2 text-sm text-foreground/80 text-left">
+                                                            <span className="text-foreground/90 font-semibold">Yêu cầu kỹ năng:</span> {chatData?.skills}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="w-full mt-3 border-t pt-2 text-left">
+                                                    <p className="font-semibold block text-base text-foreground">Thông tin của bạn:</p>
+                                                    <p className="text-foreground/80 text-sm">{chatData?.candidateDescription}</p>
+                                                </div>
+                                            </div>
+                                        </ScrollArea>
+                                    </DialogContent>
+                                </Dialog>
+
+                                {chatData?.job?._id && (
+                                    <Button variant="ghost" size="sm" className="w-full justify-start h-9 px-2 hover:bg-foreground/5 transition-colors mt-1">
+                                        <Link href={`/jobs/${chatData?.job?._id}`} className="w-full h-full flex items-center">
+                                            <ExternalLink className="w-4 h-4 mr-2 text-green-600" />
+                                            <span className="text-sm font-medium">Xem tin tuyển dụng</span>
+                                        </Link>
                                     </Button>
-                                </DialogTrigger>
-                                <DialogContent className="max-w-[95%] md:max-w-[80%] max-h-[90%] p-0 flex flex-col gap-0">
-                                    <DialogHeader className={"px-3 pt-4"}>
-                                        <DialogTitle className="text-left">Phỏng vấn: {chatData?.jobTitle}</DialogTitle>
-                                        <DialogDescription className="hidden"></DialogDescription>
-                                    </DialogHeader>
-                                    <ScrollArea className="h-screen overflow-auto px-4 py-3">
-                                        <div className="w-full h-fit">
-                                            <div className="w-full">
-                                                <p className="font-semibold block text-base text-foreground">Thông tin công việc:</p>
-                                                <p className="text-sm text-foreground/80  whitespace-pre-line">{chatData?.jobRequirement}</p>
-                                                {chatData?.skills && (
-                                                    <div className="w-full mt-2 text-sm text-foreground/80 text-left">
-                                                        <span className="text-foreground/90 font-semibold">Yêu cầu kỹ năng :</span> {chatData?.skills}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="w-full mt-3 border-t pt-2 text-left">
-                                                <p className="font-semibold block text-base text-foreground">Thông tin của bạn:</p>
-                                                <p className="text-foreground/80 text-sm">{chatData?.candidateDescription}</p>
-                                            </div>
-                                        </div>
-                                    </ScrollArea>
-                                </DialogContent>
-                            </Dialog>
-                            {chatData?.job?._id && (
-                                <Button className="w-full p-0 h-fit flex items-center justify-center">
-                                    <Link href={`/jobs/${chatData?.job?._id}`} className=" w-full h-9 flex items-center justify-center">
-                                        Truy cập job {">>"}
-                                    </Link>
-                                </Button>
-                            )}
+                                )}
+                            </div>
+
+                            {/* Actions */}
+                            <div className="pt-2">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="w-full justify-start h-9 px-2 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+                                            disabled={restartLoading}
+                                        >
+                                            {restartLoading ? (
+                                                <>
+                                                    <Loader2 className="h-4 w-4 animate-spin mr-2 text-red-600" />
+                                                    <span className="text-sm font-medium">Đang tạo lại...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <RefreshCcw className="h-4 w-4 mr-2 text-red-600" />
+                                                    <span className="text-sm font-medium">Phỏng vấn lại</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Xác nhận phỏng vấn lại</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Bạn có chắc muốn bắt đầu lại cuộc phỏng vấn này?
+                                                <br />
+                                                <strong>Lịch sử phỏng vấn hiện tại sẽ bị xóa hoàn toàn.</strong>
+                                                <br />
+                                                Hành động này không thể hoàn tác.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Hủy</AlertDialogCancel>
+                                            <AlertDialogAction onClick={handleRestartInterview} className="bg-red-600 hover:bg-red-700" disabled={restartLoading}>
+                                                {restartLoading ? "Đang xử lý..." : "Xác nhận"}
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
                         </div>
                     </PopoverContent>
                 </Popover>

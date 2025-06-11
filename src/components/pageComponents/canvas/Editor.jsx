@@ -12,12 +12,12 @@ import { ZoomButtons } from "polotno/toolbar/zoom-buttons";
 import { createStore } from "polotno/model/store";
 import { Tooltip } from "polotno/canvas/tooltip";
 import { DEFAULT_SECTIONS } from "polotno/side-panel";
-import { TemplatesSection, IconsSection, DownloadSection, LogoSection, TemplatesPanel } from "./CustomSidePanel";
+import { TemplatesSection, IconsSection, DownloadSection, LogoSection, TemplatesPanel, PhotosSection, PhotosPanel } from "./CustomSidePanel";
 import CustomToolBar from "./CustomToolBar";
 import { POST_METHOD, PATCH_METHOD } from "@/services/services";
 import "./CanvasStyle.css";
 
-// Tạo store không cần API
+// Tạo store đơn giản
 const store = createStore({
     key: "",
 });
@@ -98,7 +98,13 @@ const Editor = () => {
             Panel: (props) => <TemplatesPanel {...props} setCId={setCId} authUserData={authUserData} />,
         },
         IconsSection,
-        ...DEFAULT_SECTIONS.filter((section) => section.name !== "templates").filter((section) => section.name !== "photos"),
+        {
+            ...PhotosSection,
+            Panel: (props) => <PhotosPanel {...props} authUserData={authUserData} />,
+        },
+        ...DEFAULT_SECTIONS.filter((section) => section.name !== "templates")
+            .filter((section) => section.name !== "photos")
+            .filter((section) => section.name !== "upload"),
         DownloadSection,
     ];
 

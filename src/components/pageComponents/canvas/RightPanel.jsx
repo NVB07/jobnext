@@ -1,8 +1,7 @@
 "use client ";
-import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { GET_METHOD, DELETE_METHOD } from "@/services/services";
+import { DELETE_METHOD } from "@/services/services";
 import { Trash } from "lucide-react";
 import {
     AlertDialog,
@@ -16,17 +15,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const RightPanel = ({ authUserData, store, setCId, cid }) => {
-    const [myCvs, setMyCvs] = useState([]);
-    useEffect(() => {
-        if (authUserData) {
-            const fetch = async () => {
-                const result = await GET_METHOD(`cv/${authUserData.uid}`);
-                if (result?.success) setMyCvs(result.data);
-            };
-            fetch();
-        }
-    }, []);
+const RightPanel = ({ authUserData, store, setCId, cid, myCvs, setMyCvs }) => {
     const loadCV = (item) => {
         setCId(item._id);
 

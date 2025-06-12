@@ -28,7 +28,7 @@ store.addPage({
     dpi: 72,
 });
 
-const useAutoSave = (store, uid, cid, setCId) => {
+const useAutoSave = (store, uid, cid, setCId, refreshCvs) => {
     const timeoutRef = useRef(null);
     const isSavingRef = useRef(false);
 
@@ -45,6 +45,10 @@ const useAutoSave = (store, uid, cid, setCId) => {
 
                     if (created?.success) {
                         setCId(created.data._id);
+                        // Refresh danh sách CV sau khi auto-save tạo CV mới
+                        if (refreshCvs?.current) {
+                            refreshCvs.current();
+                        }
                     }
                 } else {
                     const update = await PATCH_METHOD(`cv/${cid}`, { json: JSON.stringify(json) });
@@ -81,21 +85,22 @@ const useAutoSave = (store, uid, cid, setCId) => {
                 clearTimeout(timeoutRef.current);
             }
         };
-    }, [store, uid, cid, setCId]);
+    }, [store, uid, cid, setCId, refreshCvs]);
 };
 
 const Editor = () => {
     const { authUserData } = useContext(AuthContext);
     const [cid, setCId] = useState(null);
+    const refreshCvsRef = useRef(null);
 
-    useAutoSave(store, authUserData?.uid, cid, setCId);
+    useAutoSave(store, authUserData?.uid, cid, setCId, refreshCvsRef);
 
     // Tạo custom sections với authUserData truyền vào
     const customSections = [
         LogoSection,
         {
             ...TemplatesSection,
-            Panel: (props) => <TemplatesPanel {...props} setCId={setCId} authUserData={authUserData} />,
+            Panel: (props) => <TemplatesPanel {...props} setCId={setCId} authUserData={authUserData} refreshCvs={refreshCvsRef} />,
         },
         IconsSection,
         {
@@ -115,7 +120,7 @@ const Editor = () => {
                     <SidePanel store={store} sections={customSections} defaultSection="custom-templates" />
                 </SidePanelWrap>
                 <WorkspaceWrap>
-                    <CustomToolBar store={store} cid={cid} setCId={setCId} />
+                    <CustomToolBar store={store} cid={cid} setCId={setCId} refreshCvs={refreshCvsRef} />
                     <Workspace
                         store={store}
                         components={{

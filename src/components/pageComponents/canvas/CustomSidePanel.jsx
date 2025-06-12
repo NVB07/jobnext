@@ -53,7 +53,7 @@ export const LogoSection = {
     Panel: LogoPanel,
 };
 
-export const TemplatesPanel = observer(({ store, setCId, authUserData }) => {
+export const TemplatesPanel = observer(({ store, setCId, authUserData, refreshCvs }) => {
     const [templates, setTemplates] = useState([]);
 
     useEffect(() => {
@@ -94,6 +94,10 @@ export const TemplatesPanel = observer(({ store, setCId, authUserData }) => {
 
                 if (created?.success) {
                     setCId(created.data._id);
+                    // Refresh danh sách CV sau khi tạo mới thành công
+                    if (refreshCvs?.current) {
+                        refreshCvs.current();
+                    }
                 }
             } catch (err) {
                 console.error("❌ Lỗi khi tạo CV mới:", err);

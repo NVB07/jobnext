@@ -45,15 +45,19 @@ const useAutoSave = (store, uid, cid, setCId, refreshCvs) => {
 
                     if (created?.success) {
                         setCId(created.data._id);
-                        // Refresh danh sách CV sau khi auto-save tạo CV mới
-                        if (refreshCvs?.current) {
-                            refreshCvs.current();
+                        // Refresh toàn bộ danh sách CV sau khi auto-save tạo CV mới
+                        if (refreshCvs?.current?.refreshAll) {
+                            refreshCvs.current.refreshAll();
                         }
                     }
                 } else {
                     const update = await PATCH_METHOD(`cv/${cid}`, { json: JSON.stringify(json) });
 
                     if (update?.success) {
+                        // Update specific CV trong danh sách thay vì refresh toàn bộ
+                        if (refreshCvs?.current?.updateSpecific && update.data) {
+                            refreshCvs.current.updateSpecific(update.data);
+                        }
                     }
                 }
             } catch (err) {
@@ -85,7 +89,7 @@ const useAutoSave = (store, uid, cid, setCId, refreshCvs) => {
                 clearTimeout(timeoutRef.current);
             }
         };
-    }, [store, uid, cid, setCId, refreshCvs]);
+    }, [store, uid, cid, setCId]);
 };
 
 const Editor = () => {

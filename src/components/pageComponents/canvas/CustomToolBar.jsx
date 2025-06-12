@@ -70,16 +70,23 @@ const CustomToolBar = ({ store, cid, setCId, refreshCvs }) => {
         }
     };
 
+    const updateSpecificCv = (updatedCv) => {
+        setMyCvs((prev) => prev.map((cv) => (cv._id === updatedCv._id ? updatedCv : cv)));
+    };
+
     useEffect(() => {
         fetchCvs();
     }, [authUserData]);
 
-    // Expose fetchCvs to parent through refreshCvs prop
+    // Expose both fetchCvs and updateSpecificCv to parent through refreshCvs prop
     useEffect(() => {
         if (refreshCvs) {
-            refreshCvs.current = fetchCvs;
+            refreshCvs.current = {
+                refreshAll: fetchCvs,
+                updateSpecific: updateSpecificCv,
+            };
         }
-    }, [refreshCvs, fetchCvs]);
+    }, [refreshCvs, fetchCvs, updateSpecificCv]);
 
     return (
         <Toolbar

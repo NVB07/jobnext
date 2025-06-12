@@ -83,8 +83,8 @@ export const TemplatesPanel = observer(({ store, setCId, authUserData, refreshCv
                 if (created?.success) {
                     setCId(created.data._id);
                     // Refresh danh sách CV sau khi tạo mới thành công
-                    if (refreshCvs?.current) {
-                        refreshCvs.current();
+                    if (refreshCvs?.current?.refreshAll) {
+                        refreshCvs.current.refreshAll();
                     }
                 }
             } catch (err) {

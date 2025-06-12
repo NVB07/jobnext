@@ -14,7 +14,7 @@ import { Tooltip } from "polotno/canvas/tooltip";
 import { DEFAULT_SECTIONS } from "polotno/side-panel";
 import { TemplatesSection, IconsSection, DownloadSection, LogoSection, TemplatesPanel, PhotosSection, PhotosPanel } from "./CustomSidePanel";
 import CustomToolBar from "./CustomToolBar";
-import { POST_METHOD, PATCH_METHOD } from "@/services/services";
+import { POST_METHOD, PATCH_METHOD, GET_METHOD } from "@/services/services";
 import "./CanvasStyle.css";
 
 // Tạo store đơn giản
@@ -92,15 +92,27 @@ const Editor = () => {
     const { authUserData } = useContext(AuthContext);
     const [cid, setCId] = useState(null);
     const refreshCvsRef = useRef(null);
+    const [templates, setTemplates] = useState([]);
 
     useAutoSave(store, authUserData?.uid, cid, setCId, refreshCvsRef);
+
+    // Fetch templates once when component mounts
+    useEffect(() => {
+        const fetchTemplates = async () => {
+            const result = await GET_METHOD("admin/cvTemplate");
+            if (result?.success) {
+                setTemplates(result.data);
+            }
+        };
+        fetchTemplates();
+    }, []);
 
     // Tạo custom sections với authUserData truyền vào
     const customSections = [
         LogoSection,
         {
             ...TemplatesSection,
-            Panel: (props) => <TemplatesPanel {...props} setCId={setCId} authUserData={authUserData} refreshCvs={refreshCvsRef} />,
+            Panel: (props) => <TemplatesPanel {...props} setCId={setCId} authUserData={authUserData} refreshCvs={refreshCvsRef} templates={templates} />,
         },
         IconsSection,
         {

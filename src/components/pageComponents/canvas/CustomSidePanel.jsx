@@ -53,19 +53,7 @@ export const LogoSection = {
     Panel: LogoPanel,
 };
 
-export const TemplatesPanel = observer(({ store, setCId, authUserData, refreshCvs }) => {
-    const [templates, setTemplates] = useState([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await GET_METHOD("admin/cvTemplate");
-            if (result?.success) {
-                setTemplates(result.data);
-            }
-        };
-        fetchData();
-    }, []);
-
+export const TemplatesPanel = observer(({ store, setCId, authUserData, refreshCvs, templates }) => {
     const applyTemplate = (jsonString) => {
         const jsonReal = JSON.parse(jsonString);
         store.loadJSON(jsonReal);

@@ -1,5 +1,5 @@
 // User Image Service - Gọi API server thay vì upload trực tiếp lên Cloudinary
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_LINK;
 
 export const uploadUserImage = async (file, uid) => {
     try {
@@ -7,7 +7,7 @@ export const uploadUserImage = async (file, uid) => {
         formData.append("image", file);
         formData.append("uid", uid);
 
-        const response = await fetch(`${SERVER_URL}/user-images/upload`, {
+        const response = await fetch(`${SERVER_URL}user-images/upload`, {
             method: "POST",
             body: formData,
         });
@@ -29,7 +29,7 @@ export const uploadUserImage = async (file, uid) => {
 
 export const getUserImages = async (uid) => {
     try {
-        const response = await fetch(`${SERVER_URL}/user-images/${uid}`, {
+        const response = await fetch(`${SERVER_URL}user-images/${uid}`, {
             method: "GET",
         });
 
@@ -50,7 +50,7 @@ export const getUserImages = async (uid) => {
 
 export const deleteUserImage = async (imageId, uid) => {
     try {
-        const response = await fetch(`${SERVER_URL}/user-images/${imageId}`, {
+        const response = await fetch(`${SERVER_URL}user-images/${imageId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export const deleteUserImage = async (imageId, uid) => {
 
 export const permanentDeleteUserImage = async (imageId, uid) => {
     try {
-        const response = await fetch(`${SERVER_URL}/user-images/${imageId}/permanent`, {
+        const response = await fetch(`${SERVER_URL}/user-images${imageId}/permanent`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

@@ -407,7 +407,7 @@ const jobCategoriesMap = {
 const experienceLevelsMap = {
     "Intern/Student": "Thực tập sinh/Sinh viên",
     "Fresher/Entry level": "Mới tốt nghiệp/Mới vào nghề",
-    "Experienced \\(non-manager\\)": "Có kinh nghiệm (không phải quản lý)",
+    "Experienced (non-manager)": "Có kinh nghiệm (không phải quản lý)",
     Manager: "Quản lý",
     "Director and above": "Giám đốc trở lên",
 };
